@@ -87,7 +87,6 @@
     <div class="main-content">
         <h2>Liên hệ với chúng tôi</h2>
 
-        <!-- Thông báo gửi thành công -->
         <c:if test="${not empty success}">
             <p style="color: green; margin-bottom: 15px;">
                     ${success}
