@@ -1,0 +1,157 @@
+/* container */
+.container {
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* thêm bóng mờ */
+    border-radius: 8px;
+    min-height: 420px;
+    width: 400px;
+}
+
+/* Tiêu đề đăng nhập */
+.container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #c76739;
+    font-size: 24px;
+}
+
+/*Chỉnh sửa các label */
+.container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* các input trong container */
+.container input[type="text"], .container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Quên mật khẩu */
+.container .forgot-password {
+    margin-bottom: 15px;
+    text-align: left;
+    opacity: 0.8;
+    font-size: 14px;
+    color: #666;
+}
+
+.container .forgot-password a {
+    color: #cd764d;
+    text-decoration: none;
+}
+
+.container #b-login {
+    width: 100%;
+    padding: 10px;
+    background-color: #c76739;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.container #b-login:hover {
+    background: #8c4828;
+}
+
+.register-link {
+    margin-top: 20px;
+    text-align: left;
+    opacity: 0.8;
+    font-size: 14px;
+    color: #666;
+}
+
+.register-link a {
+    color: #cd764d;
+    text-decoration: none;
+}
+
+.container .error-msg {
+    color: red;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.container .error-msg {
+    color: red;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.alert-success i {
+    margin-right: 5px;
+}
+
+.social-login-divider {
+    text-align: center;
+    margin: 15px 0;
+    position: relative;
+}
+
+.social-login-divider::before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.social-login-divider span {
+    background-color: #ffffff;
+    padding: 0 10px;
+    color: #888;
+    font-size: 14px;
+    position: relative;
+}
+
+.social-login-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.btn-social {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+.btn-google {
+    background-color: #db4437;
+}
+
+.btn-facebook {
+    background-color: #1877f2;
+}
