@@ -27,7 +27,6 @@ public class PolicyController extends HttpServlet {
 
         switch (type) {
 
-            /* ================= CHÍNH SÁCH VẬN CHUYỂN ================= */
             case "shipping":
                 title = "Chính Sách Vận Chuyển";
                 content = """
@@ -51,7 +50,6 @@ public class PolicyController extends HttpServlet {
                 """;
                 break;
 
-            /* ================= ĐIỀU KHOẢN SỬ DỤNG ================= */
             case "terms":
                 title = "Điều Khoản Sử Dụng";
                 content = """
@@ -81,7 +79,6 @@ public class PolicyController extends HttpServlet {
                 """;
                 break;
 
-            /* ================= CHÍNH SÁCH BẢO HÀNH & ĐỔI TRẢ ================= */
             case "warranty":
                 title = "Chính Sách Bảo Hành & Đổi Trả";
                 content = """

@@ -7,7 +7,6 @@ import java.util.List;
 
 public class ProductDao extends BaseDao {
 
-    // Lấy 4 sản phẩm bán chạy nhất
     public List<Product> getProductsBySold() {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT \n" +
@@ -47,7 +46,6 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    // Lấy toàn bộ sản phẩm
     public List<Product> getAllProduct() {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.id, p.category_id, p.name, p.price, p.description, p.stock, p.sold, p.weight_grams, p.state, " +
@@ -63,7 +61,6 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    // Lấy sản phẩm theo danh mục
     public List<Product> getProductForCategory(int cid) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.id, p.name, p.price, p.sold, " +
@@ -78,7 +75,6 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    // Lấy chi tiết 1 sản phẩm
     public Product getProductById(int pid) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.*, " +
@@ -97,7 +93,6 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    // Lấy sản phẩm liên quan
     public List<Product> getProductsByRelative(int cid, String name, int pid) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.id, p.name, p.price, p.sold, " +
@@ -116,9 +111,7 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    // --- PHẦN PHÂN TRANG & LỌC (Catalog) ---
 
-    // 1. Đếm tổng số sản phẩm để tính số trang
     public int countProducts(int cid) {
         return getJdbi().withHandle(handle -> {
             StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM products p WHERE p.state = 'active' AND p.stock > 0 ");
@@ -133,7 +126,6 @@ public class ProductDao extends BaseDao {
         });
     }
 
-    // 2. Lấy danh sách sản phẩm có phân trang (LIMIT, OFFSET)
     public List<Product> getFilteredProducts(int cid, String sortType, int offset) {
         return getJdbi().withHandle(handle -> {
             String sql = "SELECT p.id, p.category_id, p.name, p.price, p.sold, p.stock, p.weight_grams, " +
@@ -175,7 +167,6 @@ public class ProductDao extends BaseDao {
         });
     }
 
-    // Insert sản phẩm
     public int insertProduct(Product p) {
         return getJdbi().withHandle(handle ->
                 handle.createUpdate("INSERT INTO products (category_id, name, description, stock, sold, weight_grams, price) " +
@@ -193,7 +184,6 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    // Insert ảnh sản phẩm
     public void insertProductImage(int productId, String imageUrl) {
         getJdbi().useHandle(handle ->
                 handle.createUpdate("INSERT INTO product_images (product_id, image_url) VALUES (:pid, :url)")
@@ -213,7 +203,6 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    // ẩn sản phẩm nếu đã mua
     public boolean softDeleteProduct(int id) {
         return getJdbi().withHandle(handle ->
                 handle.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :id")
@@ -222,15 +211,12 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    //  Xóa vĩnh viễn
     public boolean hardDeleteProduct(int id) {
         return getJdbi().withHandle(handle -> {
-            // xóa ảnh trong bảng phụ trước để tránh lỗi khóa ngoại
             handle.createUpdate("DELETE FROM product_images WHERE product_id = :id")
                     .bind("id", id)
                     .execute();
 
-            // Sau đó xóa sản phẩm
             return handle.createUpdate("DELETE FROM products WHERE id = :id")
                     .bind("id", id)
                     .execute() > 0;
@@ -285,7 +271,6 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    // 2. Tìm kiếm có phân trang
     public List<Product> searchProductsPaginated(String keyword, int limit, int offset) {
         String sql = "SELECT p.id, p.category_id, p.name, p.price, p.description, p.stock, p.sold, p.weight_grams, p.state, " +
                 "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id ASC LIMIT 1) AS image_url, " +
