@@ -69,7 +69,8 @@
                         <button class="remake"><i class="fa-solid fa-pen"></i></button>
                     </td>
                     <td>
-                        <form method="post" action="${pageContext.request.contextPath}/delete-banner">
+                        <form method="post" action="${pageContext.request.contextPath}/admin/banner">
+                            <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="bid" value="${b.id}">
                             <button type="submit"><i class="fa-solid fa-trash"></i></button>
                         </form>
@@ -81,14 +82,14 @@
     </div>
 </div>
 
-<!-- POPUP THÊM BANNER -->
 <div class="form-add" id="form-add" style="display: none">
     <div class="form-title">
         <p>THÊM BANNER</p>
         <button id="take-off">X</button>
     </div>
 
-    <form class="main-form" method="post" action="${pageContext.request.contextPath}/add-banner">
+    <form class="main-form" method="post" action="${pageContext.request.contextPath}/admin/banner">
+        <input type="hidden" name="action" value="add">
         <div class="p name-p">
             <label>URL Banner</label>
             <input type="text" name="banner_url" placeholder="Link ảnh banner">
@@ -102,12 +103,12 @@
         </div>
         <div class="p">
             <label>Ngày bắt đầu</label>
-            <input type="date" name="start">
+            <input type="datetime-local" name="start">
         </div>
 
         <div class="p">
             <label>Ngày kết thúc</label>
-            <input type="date" name="end">
+            <input type="datetime-local" name="end">
         </div>
         <button class="submit" type="submit">Thêm Banner</button>
         <c:if test="${not empty sessionScope.notice}">
@@ -119,14 +120,14 @@
     </form>
 </div>
 
-<!-- POPUP SỬA BANNER -->
 <div class="form-add" id="form-remake" style="display: none">
     <div class="form-title">
         <p>SỬA BANNER</p>
         <button id="close-remake">X</button>
     </div>
 
-    <form class="main-form" method="post" action="${pageContext.request.contextPath}/update-banner">
+    <form class="main-form" method="post" action="${pageContext.request.contextPath}/admin/banner">
+        <input type="hidden" name="action" value="update">
         <input type="hidden" name="bid" id="up_bid">
         <div class="p name-p">
             <label>URL Banner</label>
@@ -143,12 +144,12 @@
 
         <div class="p">
             <label>Ngày bắt đầu</label>
-            <input type="date" name="up_start">
+            <input type="datetime-local" name="up_start">
         </div>
 
         <div class="p">
             <label>Ngày kết thúc</label>
-            <input type="date" name="up_end">
+            <input type="datetime-local" name="up_end">
         </div>
 
         <button class="submit" type="submit">Lưu Thay Đổi</button>
@@ -161,6 +162,7 @@
     </form>
 </div>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
+
 <script>
     document.querySelectorAll(".remake").forEach(btn => {
         btn.onclick = function () {
@@ -173,13 +175,13 @@
                 row.querySelector("img").src;
 
             document.querySelector("select[name='up_status']").value =
-                row.children[1].innerText.trim();
+                row.children[1].innerText.trim().toLowerCase();
 
             document.querySelector("input[name='up_start']").value =
-                row.children[2].innerText.trim();
+                row.children[2].innerText.trim().replace(' ', 'T').substring(0, 16);
 
             document.querySelector("input[name='up_end']").value =
-                row.children[3].innerText.trim();
+                row.children[3].innerText.trim().replace(' ', 'T').substring(0, 16);
 
             document.getElementById("form-remake").style.display = "block";
         }
@@ -189,4 +191,3 @@
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>
-
