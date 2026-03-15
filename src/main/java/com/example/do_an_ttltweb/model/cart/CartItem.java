@@ -1,6 +1,6 @@
 package com.example.do_an_ttltweb.model.cart;
 
-import com.example.ltwebnhom23.model.Product;
+import com.example.do_an_ttltweb.model.Product;
 
 import java.io.Serializable;
 
