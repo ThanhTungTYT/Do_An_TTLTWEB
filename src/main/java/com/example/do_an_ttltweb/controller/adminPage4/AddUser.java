@@ -1,7 +1,7 @@
 package com.example.do_an_ttltweb.controller.adminPage4;
 
-import com.example.ltwebnhom23.model.User;
-import com.example.ltwebnhom23.services.AccountService;
+import com.example.do_an_ttltweb.model.User;
+import com.example.do_an_ttltweb.services.AccountService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

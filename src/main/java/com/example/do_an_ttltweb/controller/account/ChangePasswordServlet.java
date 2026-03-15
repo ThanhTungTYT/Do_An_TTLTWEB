@@ -1,6 +1,6 @@
 package com.example.do_an_ttltweb.controller.account;
 
-import com.example.do_an_ttltweb.controller.auth.Validation;
+import com.example.do_an_ttltweb.helper.base.Validation;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.services.AuthService;
 import jakarta.servlet.ServletException;

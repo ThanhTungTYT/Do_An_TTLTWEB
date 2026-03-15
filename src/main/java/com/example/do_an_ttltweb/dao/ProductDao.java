@@ -1,6 +1,7 @@
 package com.example.do_an_ttltweb.dao;
 
-import com.example.ltwebnhom23.model.Product;
+import com.example.do_an_ttltweb.model.Product;
+import com.example.do_an_ttltweb.helper.base.BaseDao;
 
 import java.util.List;
 

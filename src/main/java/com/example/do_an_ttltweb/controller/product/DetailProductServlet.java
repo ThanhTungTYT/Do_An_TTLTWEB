@@ -1,11 +1,11 @@
 package com.example.do_an_ttltweb.controller.product;
 
-import com.example.ltwebnhom23.model.Product;
-import com.example.ltwebnhom23.model.ProductImage;
-import com.example.ltwebnhom23.model.ProductReview;
-import com.example.ltwebnhom23.services.ImageService;
-import com.example.ltwebnhom23.services.ProductService;
-import com.example.ltwebnhom23.services.ReviewService;
+import com.example.do_an_ttltweb.model.Product;
+import com.example.do_an_ttltweb.model.ProductImage;
+import com.example.do_an_ttltweb.model.ProductReview;
+import com.example.do_an_ttltweb.services.ImageService;
+import com.example.do_an_ttltweb.services.ProductService;
+import com.example.do_an_ttltweb.services.ReviewService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

@@ -1,7 +1,7 @@
 package com.example.do_an_ttltweb.controller.adminPage8;
 
-import com.example.ltwebnhom23.model.Promotion;
-import com.example.ltwebnhom23.services.PromotionService;
+import com.example.do_an_ttltweb.model.Promotion;
+import com.example.do_an_ttltweb.services.PromotionService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
