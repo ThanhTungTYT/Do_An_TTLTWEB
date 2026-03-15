@@ -1,0 +1,35 @@
+package com.example.do_an_ttltweb.controller.adminPage4;
+
+import com.example.ltwebnhom23.model.User;
+import com.example.ltwebnhom23.services.AccountService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+@WebServlet(name = "AddUser", value = "/add-user")
+public class AddUser extends HttpServlet {
+
+    private AccountService account = new AccountService();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        User user = new User();
+        user.setFull_name(request.getParameter("name"));
+        user.setEmail(request.getParameter("email"));
+        user.setPassword_hash(request.getParameter("pass"));
+        user.setPhone(request.getParameter("phone"));
+        user.setRole(request.getParameter("role"));
+
+        if(account.addUser(user)){
+            response.sendRedirect(request.getContextPath() + "/admin/users");
+        }
+    }
+}
