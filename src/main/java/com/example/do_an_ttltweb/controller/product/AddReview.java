@@ -1,8 +1,8 @@
 package com.example.do_an_ttltweb.controller.product;
 
-import com.example.ltwebnhom23.model.ProductReview;
-import com.example.ltwebnhom23.model.User;
-import com.example.ltwebnhom23.services.ReviewService;
+import com.example.do_an_ttltweb.model.ProductReview;
+import com.example.do_an_ttltweb.model.User;
+import com.example.do_an_ttltweb.services.ReviewService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

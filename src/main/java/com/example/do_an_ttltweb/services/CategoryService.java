@@ -1,7 +1,7 @@
 package com.example.do_an_ttltweb.services;
 
-import com.example.ltwebnhom23.dao.CategoryDao;
-import com.example.ltwebnhom23.model.Category;
+import com.example.do_an_ttltweb.dao.CategoryDao;
+import com.example.do_an_ttltweb.model.Category;
 
 import java.util.List;
 

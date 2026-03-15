@@ -1,9 +1,9 @@
 package com.example.do_an_ttltweb.controller.adminPage2;
 
-import com.example.ltwebnhom23.model.Category;
-import com.example.ltwebnhom23.model.Product;
-import com.example.ltwebnhom23.services.CategoryService;
-import com.example.ltwebnhom23.services.ProductService;
+import com.example.do_an_ttltweb.model.Category;
+import com.example.do_an_ttltweb.model.Product;
+import com.example.do_an_ttltweb.services.CategoryService;
+import com.example.do_an_ttltweb.services.ProductService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

@@ -1,9 +1,9 @@
 package com.example.do_an_ttltweb.controller.product;
 
-import com.example.ltwebnhom23.model.Banner;
-import com.example.ltwebnhom23.model.Product;
-import com.example.ltwebnhom23.services.BannerService;
-import com.example.ltwebnhom23.services.ProductService;
+import com.example.do_an_ttltweb.model.Banner;
+import com.example.do_an_ttltweb.model.Product;
+import com.example.do_an_ttltweb.services.BannerService;
+import com.example.do_an_ttltweb.services.ProductService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
