@@ -1,4 +1,4 @@
-package com.example.do_an_ttltweb.controller.auth;
+package com.example.do_an_ttltweb.helper.base;
 
 public class Validation {
 
