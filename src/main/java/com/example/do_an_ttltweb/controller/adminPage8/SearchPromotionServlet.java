@@ -27,7 +27,6 @@ public class SearchPromotionServlet extends HttpServlet {
         request.setAttribute("listPromotions", listPromotions);
         request.setAttribute("searchKeyword", keyword);
 
-        // Forward lại về trang chính để hiển thị kết quả
         request.getRequestDispatcher("/adminPage8.jsp").forward(request, response);
     }
 }

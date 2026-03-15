@@ -97,7 +97,6 @@ public class OrderDao extends BaseDao {
                         .list()
         );
     }
-    /* ================== GET ORDERS BY USER ================== */
     public List<Order> getOrdersByUserId(int userId) {
         return getJdbi().withHandle(h ->
                 h.createQuery(
@@ -115,7 +114,6 @@ public class OrderDao extends BaseDao {
         );
     }
 
-    /* ================== GET ITEMS BY ORDER ================== */
     public List<OrderItem> getItemsByOrderId(int orderId) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery(

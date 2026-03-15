@@ -100,9 +100,7 @@ public class PromotionDao extends BaseDao {
                         .execute()
         );
     }
-    // ================= CHECKOUT =================
 
-    // Lấy các mã hợp lệ cho thanh toán
     public List<Promotion> getAvailablePromotions() {
         return getJdbi().withHandle(handle ->
                 handle.createQuery(
@@ -123,7 +121,6 @@ public class PromotionDao extends BaseDao {
         );
     }
 
-    // Lấy 1 promotion theo id
     public Promotion getById(int id) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery(
