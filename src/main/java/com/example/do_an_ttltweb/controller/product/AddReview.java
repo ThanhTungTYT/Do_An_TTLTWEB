@@ -1,0 +1,71 @@
+package com.example.do_an_ttltweb.controller.product;
+
+import com.example.ltwebnhom23.model.ProductReview;
+import com.example.ltwebnhom23.model.User;
+import com.example.ltwebnhom23.services.ReviewService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+
+@WebServlet(name = "AddReview", value = "/addReview")
+public class AddReview extends HttpServlet {
+
+    private ReviewService reviewService = new ReviewService();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        int productId = Integer.parseInt(request.getParameter("pid"));
+        if (user == null) {
+            session.setAttribute("reviewNotice", "Bạn cần đăng nhập để gửi đánh giá");
+            response.sendRedirect(
+                    request.getContextPath() + "/product?pid=" + productId
+            );
+            return;
+        }
+
+        ProductReview review = new ProductReview();
+        review.setProductId(productId);
+        review.setUserId(user.getId());
+        review.setRating(Integer.parseInt(request.getParameter("rating")));
+        review.setComment(request.getParameter("comment"));
+
+        if(!reviewService.isBuy(user.getId(), productId)){
+            session.setAttribute("reviewNotice", "Bạn cần mua sản phẩm để tiến hành đánh giá.");
+            response.sendRedirect(
+                    request.getContextPath() + "/product?pid=" + productId
+            );
+            return;
+        }
+
+        if(reviewService.isSpam(user.getId(), productId)){
+            session.setAttribute("reviewNotice", "Bạn đang đánh giá quá nhanh, vui lòng chờ 1 phút.");
+            response.sendRedirect(
+                    request.getContextPath() + "/product?pid=" + productId
+            );
+            return;
+        }
+
+        if (!reviewService.addReview(review)) {
+            session.setAttribute("reviewNotice", "Đã xảy ra lỗi!");
+        } else {
+            session.setAttribute("reviewNotice", "Gửi đánh giá thành công");
+        }
+
+        response.sendRedirect(
+                request.getContextPath() + "/product?pid=" + productId
+        );
+    }
+}
