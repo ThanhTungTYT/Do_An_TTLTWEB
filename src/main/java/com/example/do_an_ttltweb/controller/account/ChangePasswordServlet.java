@@ -20,8 +20,20 @@ public class ChangePasswordServlet extends HttpServlet {
     private static final int LENGTH = 8;
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        request.getRequestDispatcher("/changePassword.jsp").forward(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 1. Kiểm tra session xem user đã đăng nhập chưa
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
@@ -30,12 +42,10 @@ public class ChangePasswordServlet extends HttpServlet {
             return;
         }
 
-        // 2. Lấy dữ liệu từ form
         String oldPass = request.getParameter("old_pass");
         String newPass = request.getParameter("new_pass");
         String confirmPass = request.getParameter("confirm_pass");
 
-        // 3. Validate cơ bản
         if(!validation.containChar(newPass)){
             request.setAttribute("error", "Mật khẩu phải chứa ít nhất 1 kí tự đặc biệt, chữ in hoa và số!");
             request.getRequestDispatcher("changePassword.jsp").forward(request, response);
@@ -68,7 +78,6 @@ public class ChangePasswordServlet extends HttpServlet {
             request.setAttribute("error", "Mật khẩu hiện tại không đúng. Vui lòng thử lại.");
         }
 
-        // 5. Trả về kết quả
         request.getRequestDispatcher("changePassword.jsp").forward(request, response);
     }
 }

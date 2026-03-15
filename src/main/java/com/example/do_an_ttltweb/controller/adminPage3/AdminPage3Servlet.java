@@ -33,7 +33,7 @@ public class AdminPage3Servlet extends HttpServlet {
         String endDate = req.getParameter("endDate");
 
         int page = 1;
-        int pageSize = 25; // 25 đơn hàng mỗi trang
+        int pageSize = 25;
 
         if (req.getParameter("page") != null) {
             try {

@@ -129,15 +129,12 @@ public class AdminPage2Servlet  extends HttpServlet {
         String idsStr = request.getParameter("ids");
 
         if (idsStr != null && !idsStr.trim().isEmpty()) {
-            // Tách chuỗi thành mảng
             String[] ids = idsStr.split(",");
 
             productService.deleteListProducts(ids);
 
-            // Thông báo thành công
             response.sendRedirect(request.getContextPath() + "/admin/products?msg=deleted_list_success");
         } else {
-            // Thông báo lỗi nếu danh sách rỗng
             response.sendRedirect(request.getContextPath() + "/admin/products?error=no_selection");
         }
     }
