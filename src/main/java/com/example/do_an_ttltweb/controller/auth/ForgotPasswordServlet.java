@@ -2,6 +2,7 @@ package com.example.do_an_ttltweb.controller.auth;
 
 import com.example.do_an_ttltweb.services.AuthService;
 import com.example.do_an_ttltweb.services.ContactService;
+import com.example.do_an_ttltweb.helper.email.EmailUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -60,7 +61,7 @@ public class ForgotPasswordServlet extends HttpServlet {
                         "<p>Mật khẩu mới của bạn là: <strong style='font-size: 18px;'>" + newPasswordRaw + "</strong></p>" +
                         "<p>Vui lòng đăng nhập và đổi lại mật khẩu ngay để bảo mật thông tin.</p>";
 
-                ContactService.sendEmail(email, subject, body);
+                EmailUtil.sendEmail(email, subject, body);
 
                 requestCache.put(email, System.currentTimeMillis());
 

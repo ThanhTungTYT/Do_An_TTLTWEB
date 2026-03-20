@@ -467,6 +467,12 @@
     direction: rtl;
 }
 
+.star-rating-input {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
 .star-rating-input input[type="radio"] {
     display: none;
 }
@@ -475,27 +481,25 @@
     font-size: 28px;
     color: #ccc;
     cursor: pointer;
-    display: inline-block;
     margin: 0 2px;
-    transition: color 0.2s;
+    transition: color 0.2s ease-in-out;
 }
 
 .star-rating-input label::before {
     content: '★';
 }
 
-
-.star-rating-input input[type="radio"]:checked ~ label,
-.star-rating-input label:hover,
-.star-rating-input label:hover ~ label {
+.star-rating-input input[type="radio"]:checked ~ label {
     color: #f39c12;
 }
 
-.star-rating-input:hover input[type="radio"]:checked ~ label {
+.star-rating-input:hover label {
     color: #ccc;
 }
 
-.star-rating-input input[type="radio"]:checked:hover ~ label {
+
+.star-rating-input:hover label:hover,
+.star-rating-input:hover label:hover ~ label {
     color: #f39c12;
 }
 
