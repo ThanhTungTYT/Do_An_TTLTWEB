@@ -83,12 +83,13 @@
     </div>
 
     <div class="social-login-buttons">
-        <button type="button" class="btn-social btn-google" title="Đăng nhập bằng Google">
+        <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=682060554420-qs22m1250tphcaablu0m653jo1s59n7j.apps.googleusercontent.com&redirect_uri=http://localhost:8080/Do_An_TTLTWEB/login-google&response_type=code&scope=email%20profile&access_type=offline"
+           class="btn-social btn-google" title="Đăng nhập bằng Google">
             <i class="fab fa-google"></i>
-        </button>
-        <button type="button" class="btn-social btn-facebook" title="Đăng nhập bằng Facebook">
+        </a>
+        <a type="button" class="btn-social btn-facebook" title="Đăng nhập bằng Facebook">
             <i class="fab fa-facebook-f"></i>
-        </button>
+        </a>
     </div>
 
     <div class="register-link">
