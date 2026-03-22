@@ -87,7 +87,8 @@
            class="btn-social btn-google" title="Đăng nhập bằng Google">
             <i class="fab fa-google"></i>
         </a>
-        <a type="button" class="btn-social btn-facebook" title="Đăng nhập bằng Facebook">
+        <a href="https://www.facebook.com/v18.0/dialog/oauth?client_id=1254182139570503&redirect_uri=http://localhost:8080/Do_An_TTLTWEB/login-facebook&scope=public_profile"
+           class="btn-social btn-facebook">
             <i class="fab fa-facebook-f"></i>
         </a>
     </div>
