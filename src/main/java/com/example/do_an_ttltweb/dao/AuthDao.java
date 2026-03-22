@@ -34,7 +34,7 @@ public class AuthDao extends BaseDao {
                         .bind("fullname", user.getFull_name())
                         .bind("email", user.getEmail())
                         .bind("phone", user.getPhone())
-                        .bind("pass", user.getPassword_hash())
+                        .bind("pass", user.getPassword_hash() == null ? "" : user.getPassword_hash())
                         .execute() > 0
         );
     }
