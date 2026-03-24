@@ -85,3 +85,13 @@
     margin-bottom: 15px;
     text-align: center;
 }
+.container .password-wrapper{
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 8px;
+}
+.container .password-wrapper .lbtoggle{
+    margin-top:10px;
+}
+

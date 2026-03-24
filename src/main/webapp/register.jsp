@@ -77,6 +77,10 @@
         <input type="password" id="password" name="password" placeholder="Mật khẩu" required><br><br>
         <label class="lbcpw" for="confirmpassword">Xác nhận mật khẩu:</label>
         <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Xác nhận mật khẩu" required><br><br>
+        <div class="password-wrapper">
+            <input type="checkbox" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
+            <label class="lbtoggle" for="toggle-password">Hiển thị mật khẩu</label>
+        </div>
         <p class="error">${error}</p>
         <div class="bt_regis">
             <button type="button" id="clear-btn" onclick="location.href='${pageContext.request.contextPath}/login.jsp'">Quay lại</button>
@@ -118,5 +122,6 @@
 </footer>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/register.js"></script>
 </body>
 </html>
