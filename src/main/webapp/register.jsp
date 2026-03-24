@@ -68,15 +68,15 @@
     <h2 id="register">Đăng ký</h2>
     <form id="register-form" action="register" method="post">
         <label class="lbn" for="yourname">Họ và Tên</label>
-        <input type="text" id="yourname" name="fullname" placeholder="Họ và tên của bạn" required><br><br>
+        <input type="text" id="yourname" name="fullname" placeholder="Họ và tên của bạn" required>
         <label class="lbe" for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Email của bạn" required><br><br>
+        <input type="email" id="email" name="email" placeholder="Email của bạn" required>
         <label class="lbn" for="phone">Số điện thoại:</label>
-        <input type="text" id="phone" name="phone" placeholder="Số điện thoại" required><br><br>
+        <input type="text" id="phone" name="phone" placeholder="Số điện thoại" required>
         <label class="lbpw" for="password">Mật khẩu:</label>
-        <input type="password" id="password" name="password" placeholder="Mật khẩu" required><br><br>
+        <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
         <label class="lbcpw" for="confirmpassword">Xác nhận mật khẩu:</label>
-        <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Xác nhận mật khẩu" required><br><br>
+        <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Xác nhận mật khẩu" required>
         <div class="password-wrapper">
             <input type="checkbox" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
             <label class="lbtoggle" for="toggle-password">Hiển thị mật khẩu</label>
