@@ -155,3 +155,24 @@
 .btn-facebook {
     background-color: #1877f2;
 }
+.password-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+#toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #888;
+    line-height: 0;
+}
+
+#toggle-password:hover {
+    color: #333;
+}

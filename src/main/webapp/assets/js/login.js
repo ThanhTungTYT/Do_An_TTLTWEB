@@ -1,3 +1,18 @@
+function togglePassword() {
+    const input = document.getElementById('password');
+    const iconEye = document.getElementById('icon-eye');
+    const iconEyeOff = document.getElementById('icon-eye-off');
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        iconEye.style.display = 'none';
+        iconEyeOff.style.display = 'block';
+    } else {
+        input.type = 'password';
+        iconEye.style.display = 'block';
+        iconEyeOff.style.display = 'none';
+    }
+}
 document.addEventListener('DOMContentLoaded', function () {
     const loginButton = document.getElementById('b-login'); // Nút Đăng nhập (button)
     const usernameInput = document.getElementById('username');

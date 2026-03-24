@@ -69,7 +69,14 @@
         <input type="text" id="username" name="email" placeholder="Email" required><br><br>
 
         <label class="lbpw" for="password">Mật khẩu:</label>
-        <input type="password" id="password" name="password" placeholder="Mật khẩu" required><br><br>
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
+            <button type="button" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
+                <i id="icon-eye" class="fa-regular fa-eye"></i>
+                <i id="icon-eye-off" class="fa-regular fa-eye-slash" style="display:none;"></i>
+            </button>
+        </div><br><br>
+
         <p class="error-msg" style="color: red; font-style: italic; font-size: 12px">${error}</p>
         <div class="forgot-password">
             <p>Quên mật khẩu? <a href="${pageContext.request.contextPath}/forgot-password">Click vào đây</a></p>
