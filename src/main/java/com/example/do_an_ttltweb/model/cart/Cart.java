@@ -4,10 +4,8 @@ import com.example.do_an_ttltweb.model.Product;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class Cart implements Serializable {
-    Map<Integer, CartItem> data;
+    private Map<Integer, CartItem> data;
 
     public Cart(){
         data = new HashMap<>();
@@ -40,22 +38,17 @@ public class Cart implements Serializable {
         return data.remove(pid) != null;
     }
 
-    public List<CartItem> deleteAll(){
-        Collection<CartItem> values = data.values();
+    public void deleteAll() {
         data.clear();
-        return new ArrayList<>(values);
     }
 
     public List<CartItem> getList(){
         return new ArrayList<>(data.values());
     }
 
-    public int getTotalQuantity(){
-        AtomicInteger total = new AtomicInteger();
-        data.values().forEach(p -> total.addAndGet(p.getQuantity()));
-        return total.get();
+    public int getTotalQuantity() {
+        return data.values().stream().mapToInt(CartItem::getQuantity).sum();
     }
-
     public double getTotal(){
         return data.values().stream()
                 .mapToDouble(p -> p.getPrice() * p.getQuantity())
@@ -64,8 +57,8 @@ public class Cart implements Serializable {
     public void updateQuantity(int pid, int quantity) {
         CartItem item = data.get(pid);
         if (item != null) {
-            if (quantity <= 0) {
-                data.remove(pid);
+            if (quantity < 1) {
+                item.setQuantity(1);
             } else {
                 item.setQuantity(quantity);
             }

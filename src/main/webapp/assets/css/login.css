@@ -1,15 +1,13 @@
-/* container */
 .container {
     margin: 40px auto;
     padding: 20px;
     background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* thêm bóng mờ */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     min-height: 420px;
     width: 400px;
 }
 
-/* Tiêu đề đăng nhập */
 .container h2 {
     text-align: center;
     margin-bottom: 20px;
@@ -17,14 +15,12 @@
     font-size: 24px;
 }
 
-/*Chỉnh sửa các label */
 .container label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-/* các input trong container */
 .container input[type="text"], .container input[type="password"] {
     width: 100%;
     padding: 10px;
@@ -34,7 +30,6 @@
     box-sizing: border-box;
 }
 
-/* Quên mật khẩu */
 .container .forgot-password {
     margin-bottom: 15px;
     text-align: left;
@@ -175,4 +170,8 @@
 
 #toggle-password:hover {
     color: #333;
+}
+
+.container .social-login-buttons a {
+    text-decoration: none;
 }
