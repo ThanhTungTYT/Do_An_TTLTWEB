@@ -137,7 +137,7 @@
         <div class="foot-content left">
             <h3>Aroma Café</h3>
             <p>Địa chỉ: Trường đại học Nông Lâm TPHCM.</p>
-            <p>Điện thoại: 0933652267.</p>
+            <p>Điện thoại: 0933652267</p>
             <p>Email: nguyenhuybaolegit@gmail.com</p>
         </div>
 

@@ -79,9 +79,9 @@
     <h1>Aroma Café - Cà phê rang số 1 Việt Nam</h1>
 
     <div class="address">
-        <div><i class="fa-solid fa-location-dot"></i> Địa chỉ: xxx , xxx, xxx.</div>
-        <div><i class="fa-solid fa-phone"></i> Điện thoại: xxx-xxx-xxxx.</div>
-        <div><i class="fa-solid fa-envelope"></i> Email: aromacafe@gmail.com</div>
+        <div><i class="fa-solid fa-location-dot"></i> Địa chỉ: Trường đại học Nông Lâm TPHCM.</div>
+        <div><i class="fa-solid fa-phone"></i> Điện thoại: 0933652267.</div>
+        <div><i class="fa-solid fa-envelope"></i> Email: nguyenhuybaolegit@gmail.com</div>
     </div>
 
     <div class="main-content">
@@ -110,7 +110,7 @@
         <div class="foot-content left">
             <h3>Aroma Café</h3>
             <p>Địa chỉ: Trường đại học Nông Lâm TPHCM.</p>
-            <p>Điện thoại: 0933652267.</p>
+            <p>Điện thoại: 0933652267</p>
             <p>Email: nguyenhuybaolegit@gmail.com</p>
         </div>
 
