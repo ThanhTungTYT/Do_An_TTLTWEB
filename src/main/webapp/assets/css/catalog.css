@@ -38,11 +38,18 @@
 .catalog-list .list-catalog {
     list-style: none;
     display: flex;
-    flex-direction: row;
-    gap: 50px;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 0;
+    justify-content: center;
+}
+.catalog-list .list-catalog li {
+    display: block;
 }
 
 .catalog-list .list-catalog .catalog-item {
+    display: inline-block;
+    white-space: nowrap;
     font-size: 18px;
     font-weight: 400;
     text-decoration: none;
