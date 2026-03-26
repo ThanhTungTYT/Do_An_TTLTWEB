@@ -18,7 +18,7 @@ public class PolicyController extends HttpServlet {
         String type = request.getParameter("type");
 
         if (type == null) {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect(request.getContextPath() + "/");
             return;
         }
 

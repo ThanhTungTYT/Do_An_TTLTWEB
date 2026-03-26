@@ -94,4 +94,7 @@
 .container .password-wrapper .lbtoggle{
     margin-top:10px;
 }
+.container .error-msg{
+    margin-bottom: 20px;
+}
 

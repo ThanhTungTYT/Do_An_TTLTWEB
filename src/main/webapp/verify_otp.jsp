@@ -100,7 +100,8 @@
     </p>
 
     <c:if test="${not empty error}">
-        <div class="alert alert-error">${error}</div>
+        <div class="alert alert-error" style="color: red; font-style: italic; font-size: 12px">${error}</div>
+
     </c:if>
     <c:if test="${not empty message}">
         <div class="alert alert-success">${message}</div>

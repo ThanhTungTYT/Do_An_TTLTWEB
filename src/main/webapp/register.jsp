@@ -81,7 +81,7 @@
             <input type="checkbox" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
             <label class="lbtoggle" for="toggle-password">Hiển thị mật khẩu</label>
         </div>
-        <p class="error">${error}</p>
+        <p class="error-msg" style="color: red; font-style: italic; font-size: 12px">${error}</p>
         <div class="bt_regis">
             <button type="button" id="clear-btn" onclick="location.href='${pageContext.request.contextPath}/login.jsp'">Quay lại</button>
             <button type="submit" id="register-btn">Đăng ký</button>
