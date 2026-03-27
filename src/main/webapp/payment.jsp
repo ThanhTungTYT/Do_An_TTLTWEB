@@ -147,28 +147,29 @@
                 <h3>Sản phẩm thanh toán</h3>
                 <div id="cart-list">
                     <c:forEach items="${requestScope.cart.list}" var="item">
-                        <div class="cart-item" data-price="${item.price}">
-                            <c:choose>
-                                <c:when test="${not empty item.product.image_url}">
-                                    <img src="${item.product.image_url}"
-                                         alt="${item.product.name}">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="${pageContext.request.contextPath}/assets/img/about04.png"
-                                         alt="Default Image">
-                                </c:otherwise>
-                            </c:choose>
-                            <div class="cart-info">
+                        <div class="cart-item">
+                            <!-- Hàng 1: Ảnh và Tên nằm ngang nhau -->
+                            <div class="item-top">
+                                <div class="product-img">
+                                    <c:choose>
+                                        <c:when test="${not empty item.product.image_url}">
+                                            <img src="${item.product.image_url}" alt="${item.product.name}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="${pageContext.request.contextPath}/assets/img/about04.png" alt="Default">
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
                                 <p class="product-name">${item.product.name}</p>
-                                <p class="price"> Giá:
-                                    <fmt:formatNumber value="${item.price}" type="number" maxFractionDigits="0"/> VND
-                                </p>
                             </div>
-                            <div class="quantity-box">
-                                <p>Số lượng: ${item.quantity}</p>
-                            </div>
-                            <div style="margin-left:auto; font-weight: bold; font-size: 0.9em; color: #555;">
-                                <fmt:formatNumber value="${item.price * item.quantity}" type="number" maxFractionDigits="0"/> VND
+                            <div class="item-bottom">
+                                <div class="quantity">
+                                    Số lượng: <strong>${item.quantity}</strong>
+                                </div>
+                                <div class="price-total">
+                                    <fmt:formatNumber value="${item.price * item.quantity}" type="number" maxFractionDigits="0" />
+                                    <span class="currency">VND</span>
+                                </div>
                             </div>
                         </div>
                     </c:forEach>
