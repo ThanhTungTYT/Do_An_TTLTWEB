@@ -59,11 +59,11 @@
         </form>
         <form class="main-menu-date" action="${pageContext.request.contextPath}/admin/orders" method="get">
             <div class="start">
-                <label>Start date</label>
+                <label>Từ ngày</label>
                 <input type="date" name="startDate" value="${startDate}">
             </div>
             <div class="end">
-                <label>End date</label>
+                <label>Đến ngày</label>
                 <input type="date" name="endDate" value="${endDate}">
             </div>
 

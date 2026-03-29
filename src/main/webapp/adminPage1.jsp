@@ -40,11 +40,11 @@
     <div class="top-bar">
         <form method="post" action="${pageContext.request.contextPath}/admin/dashboard" class="main-menu-date">
             <div class="start">
-                <label>Start date</label>
+                <label>Từ ngày</label>
                 <input type="date" name="startDate" value="${startDate}">
             </div>
             <div class="end">
-                <label>End date</label>
+                <label>Đến ngày</label>
                 <input type="date" name="endDate" value="${endDate}">
             </div>
             <button>Xác nhận</button>

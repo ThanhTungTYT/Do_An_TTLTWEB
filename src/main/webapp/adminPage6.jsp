@@ -47,11 +47,11 @@
     <div class="main-content">
         <form class="main-menu-date" method="get" action="${pageContext.request.contextPath}/filter-review">
             <div class="start">
-                <label>Start date</label>
+                <label>Từ ngày</label>
                 <input name="start" type="date">
             </div>
             <div class="end">
-                <label>End date</label>
+                <label>Đến ngày</label>
                 <input name="end" type="date">
             </div>
             <button>Xác nhận</button>

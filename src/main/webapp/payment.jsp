@@ -199,7 +199,7 @@
                 </div>
                 <div class="summary-row">
                     <span>Phí vận chuyển</span>
-                    <span id="shipping-fee" data-fee="30000">30,000 VND</span>
+                    <span id="shipping-fee" data-fee="30000">30.000 VND</span>
                 </div>
 
                 <div class="summary-row">
