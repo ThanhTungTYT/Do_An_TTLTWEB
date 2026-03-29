@@ -79,24 +79,24 @@
         <h2>SẢN PHẨM NỔI BẬT <i class="fa-solid fa-fire"></i></h2>
         <span class="line"></span>
     </div>
-
-    <div class="product-list" id="product-list">
-        <c:forEach items="${listProduct}" var="p">
-            <a class="product" href="product?pid=${p.id}" data-name="${p.name}"
-               data-price="<fmt:formatNumber value='${p.price}' type='number' maxFractionDigits='0'/> VND"
-               data-image="${p.image_url}"
-               data-sold="${p.sold}"
-               data-des="${p.description}"
-               data-avgr = "${p.avg_rating}">
-                <img src="${p.image_url}" alt="${p.name}">
-
-                <p>${p.name}</p>
-
-                <span><fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0"/> VND</span>
-
-                <label><i class="fa-solid fa-fire"></i> ${p.sold}</label>
-            </a>
-        </c:forEach>
+    <div class="product-slider">
+        <button class="nav left" onclick="scrollProduct(-1)">❮</button>
+        <div class="product-list" id="product-list">
+            <c:forEach items="${listProduct}" var="p">
+                <a class="product" href="product?pid=${p.id}" data-name="${p.name}"
+                    data-price="<fmt:formatNumber value='${p.price}' type='number' maxFractionDigits='0'/> VND"
+                    data-image="${p.image_url}"
+                    data-sold="${p.sold}"
+                    data-des="${p.description}"
+                    data-avgr = "${p.avg_rating}">
+                    <img src="${p.image_url}" alt="${p.name}">
+                    <p>${p.name}</p>
+                    <span><fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0"/> VND</span>
+                    <label><i class="fa-solid fa-fire"></i> ${p.sold}</label>
+                </a>
+            </c:forEach>
+        </div>
+        <button class="nav right" onclick="scrollProduct(1)">❯</button>
     </div>
     <div class="product-preview" id="productPreview">
         <img id="previewImg">
