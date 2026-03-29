@@ -44,7 +44,6 @@ public class FacebookLoginServlet extends HttpServlet {
                 user = authDao.findByEmail(email);
             }
 
-            // 🆕 nếu chưa có → tạo
             if (user == null) {
                 user = new User();
                 user.setFull_name(name);
@@ -68,7 +67,6 @@ public class FacebookLoginServlet extends HttpServlet {
         }
     }
 
-    // ================= TOKEN =================
     private String getAccessToken(String code) throws IOException {
         String urlStr = "https://graph.facebook.com/v18.0/oauth/access_token"
                 + "?client_id=" + APP_ID
@@ -87,8 +85,7 @@ public class FacebookLoginServlet extends HttpServlet {
         JsonObject json = JsonParser.parseString(response).getAsJsonObject();
         return json.get("access_token").getAsString();
     }
-
-    // ================= USER INFO =================
+    
     private JsonObject getUserInfo(String accessToken) throws IOException {
         String urlStr = "https://graph.facebook.com/me?fields=id,name,email&access_token=" + accessToken;
 

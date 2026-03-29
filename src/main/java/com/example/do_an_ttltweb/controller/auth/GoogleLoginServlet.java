@@ -33,18 +33,14 @@ public class GoogleLoginServlet extends HttpServlet {
         }
 
         try {
-            // 🔥 Lấy JSON token
             JsonObject tokenJson = getTokenJson(code);
 
-            // 🔥 Lấy user từ id_token
             GoogleUser ggUser = parseUserFromIdToken(tokenJson.get("id_token").getAsString());
 
             AuthDao authDao = new AuthDao();
 
-            // 🔍 tìm user trong DB
             User user = authDao.findByEmail(ggUser.getEmail());
 
-            // 🆕 nếu chưa có → tạo mới
             if (user == null) {
                 user = new User();
                 user.setFull_name(ggUser.getName());
@@ -54,11 +50,9 @@ public class GoogleLoginServlet extends HttpServlet {
 
                 authDao.register(user);
 
-                // lấy lại user
                 user = authDao.findByEmail(ggUser.getEmail());
             }
 
-            // ✅ lưu session
             request.getSession().setAttribute("user", user);
 
             response.sendRedirect("http://localhost:8080/Do_An_TTLTWEB/");
@@ -69,7 +63,6 @@ public class GoogleLoginServlet extends HttpServlet {
         }
     }
 
-    // ================== LẤY TOKEN ==================
     private JsonObject getTokenJson(String code) throws IOException {
 
         URL url = new URL("https://oauth2.googleapis.com/token");
@@ -114,8 +107,6 @@ public class GoogleLoginServlet extends HttpServlet {
 
         return json;
     }
-
-    // ================== PARSE USER ==================
     private GoogleUser parseUserFromIdToken(String idToken) {
 
         String[] parts = idToken.split("\\.");
@@ -124,7 +115,6 @@ public class GoogleLoginServlet extends HttpServlet {
             throw new RuntimeException("id_token không hợp lệ");
         }
 
-        // decode payload
         String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
 
         JsonObject json = JsonParser.parseString(payload).getAsJsonObject();
