@@ -91,16 +91,6 @@
     transform: scale(1.05);
 }
 
-.fade-in {
-    opacity: 0;
-    transform: translateY(50px);
-}
-
-.fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .slide-up {
     opacity: 0;
     transform: translateY(100px);

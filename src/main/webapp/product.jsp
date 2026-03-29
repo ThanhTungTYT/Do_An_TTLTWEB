@@ -115,8 +115,8 @@
                     <p><i class="fab fa-facebook-f"></i> Facebook: <a href="#">AromaCafe</a></p>
                     <p><i class="fab fa-twitter"></i>Twitter: <a href="#">AromaCafe</a></p>
                     <p><i class="fab fa-instagram"></i>Instagram: <a href="#">AromaCafe</a></p>
-                    <p><i class="fab fa-linkedin-in"></i>Linkedin: <a href="#">AromaCafe</a></p>
-                    <p><i class="fa-solid fa-phone"></i>Số hotline: XXXXXXXXXX</p>
+                    <p><i class="fa-brands fa-youtube"></i>Youtube: <a href="https://www.youtube.com/@nguyenlechannel4855/featured">AromaCafe</a></p>
+                    <p><i class="fa-solid fa-phone"></i>Số hotline: 0933652267</p>
                 </div>
             </div>
         </div>

@@ -86,7 +86,7 @@
         </div>
     </section>
 
-    <section class="about-section fade-in">
+    <section class="about-section slide-up">
         <h2>ĐỒNG HÀNH ĐỂ ĐI XA</h2>
         <p>
             Trong hành trình phát triển của mình, Aroma Café luôn xem trọng mối quan hệ hợp tác bền vững cùng đối tác,
@@ -117,7 +117,7 @@
     </section>
 
 
-    <section class="about-section fade-in">
+    <section class="about-section slide-up">
         <div class="about-content">
             <div class="about-imgs">
                 <img src="${pageContext.request.contextPath}/assets/img/about04.png" alt="Hình ảnh 3"/>
