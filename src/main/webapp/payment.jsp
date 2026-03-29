@@ -148,7 +148,6 @@
                 <div id="cart-list">
                     <c:forEach items="${requestScope.cart.list}" var="item">
                         <div class="cart-item">
-                            <!-- Hàng 1: Ảnh và Tên nằm ngang nhau -->
                             <div class="item-top">
                                 <div class="product-img">
                                     <c:choose>

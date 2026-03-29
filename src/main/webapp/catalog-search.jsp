@@ -76,9 +76,9 @@
 
 <div class="search-results-header">
   <div class="breadcrumb">
-    <a href="index.html">Trang chủ</a>
+    <a href="${pageContext.request.contextPath}/">Trang chủ</a>
     <span class="separator">/</span>
-    <a href="catalog.html">Sản phẩm</a>
+    <a href="${pageContext.request.contextPath}/catalog">Sản phẩm</a>
     <span class="separator">/</span>
   </div>
   <h1 class="search-title">Kết quả tìm kiếm cho "${keyword}"</h1>

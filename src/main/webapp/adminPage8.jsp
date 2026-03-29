@@ -104,7 +104,7 @@
                                 data-start="<fmt:formatDate value='${p.startDate}' pattern='yyyy-MM-dd'/>"
                                 data-end="<fmt:formatDate value='${p.endDate}' pattern='yyyy-MM-dd'/>"
                                 data-state="${p.state}">
-                            <i class="fa-solid fa-pen-to-square"></i>
+                            <i class="fa-solid fa-pen"></i>
                         </button>
 
                         <a href="${pageContext.request.contextPath}/admin/promotion/delete?id=${p.id}"

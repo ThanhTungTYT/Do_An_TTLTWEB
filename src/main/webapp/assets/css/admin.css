@@ -1077,7 +1077,7 @@
     }
 
     .list-discount td a.btn-action.btn-delete {
-        background-color: red;
+        background-color: #c76739;
     }
 
     .list-discount td a.btn-action.btn-edit {
