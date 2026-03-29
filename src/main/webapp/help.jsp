@@ -80,8 +80,8 @@
 
     <div class="address">
         <div><i class="fa-solid fa-location-dot"></i> Địa chỉ: Trường đại học Nông Lâm TPHCM.</div>
-        <div><i class="fa-solid fa-phone"></i> Điện thoại: 0933652267.</div>
-        <div><i class="fa-solid fa-envelope"></i> Email: nguyenhuybaolegit@gmail.com</div>
+        <div><i class="fa-solid fa-phone"></i>Điện thoại: 0933652267.</div>
+        <div><i class="fa-solid fa-envelope"></i>Email: nguyenhuybaolegit@gmail.com</div>
     </div>
 
     <div class="main-content">

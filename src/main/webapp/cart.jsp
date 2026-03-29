@@ -150,7 +150,7 @@
                         </div>
 
                         <div class="product-subtotal">
-                            <fmt:formatNumber value="${item.price * item.quantity}" type="number" maxFractionDigits="0"/> VND
+                            <fmt:formatNumber value="${item.price * item.quantity}" type="number"/> VND
                         </div>
                     </div>
                 </c:forEach>
