@@ -70,7 +70,7 @@
 }
 .product-slider {
     position: relative;
-    max-width: 1600px;
+    max-width: 85%;
     margin: 0 auto;
     display: flex;
     align-items: center;

@@ -59,7 +59,7 @@ public class FacebookLoginServlet extends HttpServlet {
             }
 
             request.getSession().setAttribute("user", user);
-            response.sendRedirect("http://localhost:8080/Do_An_TTLTWEB/");
+            response.sendRedirect(request.getContextPath() + "/");
 
         } catch (Exception e) {
             e.printStackTrace();
