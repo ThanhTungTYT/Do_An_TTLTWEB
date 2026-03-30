@@ -154,10 +154,9 @@
         <div class="foot-content right">
             <h3>Kết nối với chúng tôi</h3>
             <div class="social">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://www.facebook.com/atnguyen.75640/"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com/@nguyenlechannel4855/featured"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://www.instagram.com/nguyendat6159/"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </div>
