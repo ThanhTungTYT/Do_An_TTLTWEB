@@ -159,7 +159,7 @@
             <label>Role</label>
             <select name="up_role">
                 <option>admin</option>
-                <option>customer</option>
+                <option>Customer</option>
             </select>
         </div>
         <button class="submit" type="submit">Lưu Thay Đổi</button>
