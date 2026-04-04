@@ -184,3 +184,44 @@
     background: deepskyblue;
     color: white;
 }
+.password-wrapper {
+    position: relative;
+    display: block;
+    width: 95%;
+    margin-bottom: 15px;
+}
+
+.content-area .password-wrapper input {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 10px;
+    padding-right: 40px !important;
+    margin-bottom: 0 !important;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.content-area .password-wrapper button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 16px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    z-index: 10;
+}
+
+
+.content-area .password-wrapper button:hover {
+    color: #333;
+    background: transparent;
+}
+.content-area .password-wrapper button:focus {
+    outline: none;
+}
