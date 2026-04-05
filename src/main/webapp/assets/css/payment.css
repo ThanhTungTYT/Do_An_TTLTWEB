@@ -82,6 +82,21 @@ section {
     color: #fff;
 }
 
+.shipping-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    background-color: #fff;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+.shipping-form select:focus {
+    border-color: #c76739;
+}
 .shipping-form input,
 .note-box textarea {
     width: 100%;

@@ -108,16 +108,19 @@
                            value="${sessionScope.user.phone}" required>
                     <small class="error"></small>
 
-                    <input type="text" id="country" name="country" placeholder="Quốc gia"
-                           value="${not empty requestScope.userAddress.country ? requestScope.userAddress.country : 'Việt Nam'}" required>
+                    <input type="hidden" name="country" value="Việt Nam">
+
+                    <input type="hidden" id="hidden_province" name="province" value="${requestScope.userAddress.province}">
+                    <input type="hidden" id="hidden_ward" name="ward" value="${requestScope.userAddress.ward}">
+
+                    <select id="citySelect" required>
+                        <option value="">-- Chọn Tỉnh/Thành phố --</option>
+                    </select>
                     <small class="error"></small>
 
-                    <input type="text" id="province" name="province" placeholder="Tỉnh/TP"
-                           value="${requestScope.userAddress.province}" required>
-                    <small class="error"></small>
-
-                    <input type="text" id="ward" name="ward" placeholder="Quận/Huyện, Phường/Xã"
-                           value="${requestScope.userAddress.ward}" required>
+                    <select id="wardSelect" required>
+                        <option value="">-- Chọn Phường/Xã --</option>
+                    </select>
                     <small class="error"></small>
 
                     <input type="text" id="address" name="address" placeholder="Đường, Số nhà"
