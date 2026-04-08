@@ -63,6 +63,20 @@
     .btn-update:hover {
         background-color: #a0522d;
     }
+
+    /* CSS MỚI CHO VALIDATION */
+    .error-msg {
+        color: #dc3545;
+        font-size: 13px;
+        display: block;
+        margin-top: -10px;
+        margin-bottom: 15px;
+        font-style: italic;
+    }
+    .input-error {
+        border-color: #dc3545 !important;
+        background-color: #fff8f8 !important;
+    }
 </style>
 
 <div class="info-container">
@@ -83,29 +97,34 @@
         <input type="hidden" name="id" value="${user.id}">
 
         <label>Họ và tên:</label>
-        <input type="text" name="fullname" class="editable input-fixed" value="${user.full_name}" readonly required>
+        <input type="text" id="fullname" name="fullname" class="editable input-fixed" value="${user.full_name}" readonly required>
+        <small class="error-msg" id="err-fullname"></small>
 
         <label>Email (Không thể thay đổi):</label>
         <input type="email" name="email" class="input-fixed" value="${user.email}" readonly>
 
         <label>Số điện thoại:</label>
-        <input type="text" name="phone" class="editable input-fixed" value="${user.phone}" readonly required placeholder="Nhập số điện thoại">
+        <input type="text" id="phone" name="phone" class="editable input-fixed" value="${user.phone}" readonly required placeholder="Nhập số điện thoại">
+        <small class="error-msg" id="err-phone"></small>
 
         <input type="hidden" name="city" id="hidden_city" value="${addr != null ? addr.province : ''}">
         <input type="hidden" name="district" id="hidden_district" value="${addr != null ? addr.ward : ''}">
 
         <label>Tỉnh/Thành phố:</label>
-        <select id="citySelect" class="editable input-fixed" disabled required>
+        <select id="citySelect" class="editable input-fixed" disabled>
             <option value="">${addr != null && not empty addr.province ? addr.province : '-- Chọn Tỉnh/Thành phố --'}</option>
         </select>
+        <small class="error-msg" id="err-city"></small>
 
         <label>Phường/Xã:</label>
-        <select id="wardSelect" class="editable input-fixed" disabled required>
+        <select id="wardSelect" class="editable input-fixed" disabled>
             <option value="">${addr != null && not empty addr.ward ? addr.ward : '-- Chọn Phường/Xã --'}</option>
         </select>
+        <small class="error-msg" id="err-ward"></small>
 
         <label>Đường, Số nhà:</label>
-        <input type="text" name="address" class="editable input-fixed" placeholder="Số nhà, tên đường" value="${addr != null ? addr.address : ''}" readonly required>
+        <input type="text" id="address" name="address" class="editable input-fixed" placeholder="Số nhà, tên đường" value="${addr != null ? addr.address : ''}" readonly required>
+        <small class="error-msg" id="err-address"></small>
 
         <input type="hidden" name="addressId" value="${addr != null ? addr.id : 0}">
 
