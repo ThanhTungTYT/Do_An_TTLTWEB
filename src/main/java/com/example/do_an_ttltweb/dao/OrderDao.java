@@ -321,7 +321,7 @@ public class OrderDao extends BaseDao {
         );
     }
 
-    public int countOrdersWithFilter(String startDate, String endDate) {
+    public int countOrdersWithFilter(String startDate, String endDate, String status) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM orders WHERE 1=1 ");
 
         if (startDate != null && !startDate.isEmpty()) {
@@ -330,16 +330,20 @@ public class OrderDao extends BaseDao {
         if (endDate != null && !endDate.isEmpty()) {
             sql.append("AND DATE(created_at) <= :end ");
         }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND status = :status ");
+        }
 
         return getJdbi().withHandle(h -> {
             var query = h.createQuery(sql.toString());
             if (startDate != null && !startDate.isEmpty()) query.bind("start", startDate);
             if (endDate != null && !endDate.isEmpty()) query.bind("end", endDate);
+            if (status != null && !status.isEmpty()) query.bind("status", status);
             return query.mapTo(Integer.class).one();
         });
     }
 
-    public List<Order> getOrdersWithFilter(String startDate, String endDate, int limit, int offset) {
+    public List<Order> getOrdersWithFilter(String startDate, String endDate,String status, int limit, int offset) {
         StringBuilder sql = new StringBuilder(
                 "SELECT id, user_id, payment_method_id, promo_id, " +
                         "receiver_name, receiver_phone, note, " +
@@ -354,6 +358,9 @@ public class OrderDao extends BaseDao {
         if (endDate != null && !endDate.isEmpty()) {
             sql.append("AND DATE(created_at) <= :end ");
         }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND status = :status ");
+        }
 
         sql.append("ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
 
@@ -361,6 +368,7 @@ public class OrderDao extends BaseDao {
             var query = h.createQuery(sql.toString());
             if (startDate != null && !startDate.isEmpty()) query.bind("start", startDate);
             if (endDate != null && !endDate.isEmpty()) query.bind("end", endDate);
+            if (status != null && !status.isEmpty()) query.bind("status", status);
 
             query.bind("limit", limit);
             query.bind("offset", offset);

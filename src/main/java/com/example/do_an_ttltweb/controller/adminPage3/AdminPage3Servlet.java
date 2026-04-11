@@ -31,6 +31,7 @@ public class AdminPage3Servlet extends HttpServlet {
 
         String startDate = req.getParameter("startDate");
         String endDate = req.getParameter("endDate");
+        String status = req.getParameter("status");
 
         int page = 1;
         int pageSize = 25;
@@ -44,11 +45,11 @@ public class AdminPage3Servlet extends HttpServlet {
             }
         }
 
-        int totalOrders = orderService.countOrders(startDate, endDate);
+        int totalOrders = orderService.countOrders(startDate, endDate, status);
         int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
         if (totalPages < 1) totalPages = 1;
 
-        List<Order> orders = orderService.getOrdersPagination(startDate, endDate, page, pageSize);
+        List<Order> orders = orderService.getOrdersPagination(startDate, endDate, status, page, pageSize);
         List<User> users = accountService.getAllUser();
         Map<Integer, User> userMap = users.stream()
                 .collect(Collectors.toMap(User::getId, u -> u, (existing, replacement) -> existing));
@@ -68,6 +69,7 @@ public class AdminPage3Servlet extends HttpServlet {
         req.setAttribute("totalPages", totalPages);
         req.setAttribute("startDate", startDate);
         req.setAttribute("endDate", endDate);
+        req.setAttribute("status", status);
 
         req.getRequestDispatcher("/adminPage3.jsp").forward(req, resp);
     }

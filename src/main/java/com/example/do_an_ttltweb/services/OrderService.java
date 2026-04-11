@@ -38,13 +38,13 @@ public class OrderService {
         return dao.cancelOrder(order);
     }
 
-    public int countOrders(String start, String end) {
-        return dao.countOrdersWithFilter(start, end);
+    public int countOrders(String start, String end,String status) {
+        return dao.countOrdersWithFilter(start, end,status);
     }
 
-    public List<Order> getOrdersPagination(String start, String end, int page, int pageSize) {
+    public List<Order> getOrdersPagination(String start, String end,String status, int page, int pageSize ) {
         int offset = (page - 1) * pageSize;
-        return dao.getOrdersWithFilter(start, end, pageSize, offset);
+        return dao.getOrdersWithFilter(start, end,status, pageSize, offset);
     }
 
     public List<Order> searchOrders(String keyword) {
