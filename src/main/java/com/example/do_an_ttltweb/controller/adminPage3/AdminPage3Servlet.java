@@ -49,7 +49,6 @@ public class AdminPage3Servlet extends HttpServlet {
         if (totalPages < 1) totalPages = 1;
 
         List<Order> orders = orderService.getOrdersPagination(startDate, endDate, page, pageSize);
-
         List<User> users = accountService.getAllUser();
         Map<Integer, User> userMap = users.stream()
                 .collect(Collectors.toMap(User::getId, u -> u, (existing, replacement) -> existing));

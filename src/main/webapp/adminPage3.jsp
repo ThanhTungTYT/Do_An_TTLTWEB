@@ -72,6 +72,37 @@
                 <a href="${pageContext.request.contextPath}/admin/orders" class="btn-reset">Đặt lại</a>
             </div>
         </form>
+        <div class="status-list">
+            <p class="head-status">Trạng thái đơn hàng</p>
+            <ul class="list-status">
+                <li>
+                    <a href="${pageContext.request.contextPath}/admin/orders?startDate=${startDate}&endDate=${endDate}"
+                       class="status-item ${empty status ? 'active' : ''}">
+                        Tất cả
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/admin/orders?status=Đang xử lý&startDate=${startDate}&endDate=${endDate}"
+                       class="status-item ${status == 'Đang xử lý' ? 'active' : ''}">
+                        Đang xử lý
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/admin/orders?status=Đã giao&startDate=${startDate}&endDate=${endDate}"
+                       class="status-item ${status == 'Đã giao' ? 'active' : ''}">
+                        Đã giao
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/admin/orders?status=Đã hủy&startDate=${startDate}&endDate=${endDate}"
+                       class="status-item ${status == 'Đã hủy' ? 'active' : ''}">
+                        Đã huỷ
+                    </a>
+                </li>
+
+            </ul>
+            <hr>
+        </div>
         <div class="list-order">
             <h3>DANH SÁCH ĐƠN HÀNG</h3>
             <table>
