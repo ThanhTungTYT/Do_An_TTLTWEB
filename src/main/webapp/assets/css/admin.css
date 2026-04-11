@@ -1159,3 +1159,59 @@
         margin-bottom: 15px;
         font-size: 16px;
     }
+    .status-list {
+        width: 100%;
+        height: fit-content;
+        padding: 0 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .status-list .head-status {
+        font-size: 30px;
+        font-weight: 600;
+        color: #c76739;
+        display: flex;
+        align-items: center;
+    }
+    .status-list .head-status:after {
+        content: "";
+        flex-grow: 1;
+        margin-left: 15px;
+        height: 3px;
+        background-color: #c76739;
+    }
+    .status-list .list-status {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 80px;
+        padding: 0;
+        justify-content: center;
+    }
+    .status-list .list-status li {
+        display: block;
+    }
+    .status-list .list-status .status-item {
+        display: inline-block;
+        white-space: nowrap;
+        font-size: 18px;
+        font-weight: 400;
+        text-decoration: none;
+        color: #040404;
+        border: 2px darkgray solid;
+        padding: 15px 25px;
+        border-radius: 50px;
+        transition: all 0.3s ease-in-out;
+    }
+    .status-list .list-status .status-item.active {
+        border-color: #8c4827;
+        background-color: #c76739;
+        color: #fff;
+    }
+
+    .status-list .list-status .status-item:hover {
+        border-color: #8c4827;
+        background-color: #c76739;
+        color: #fff;
+    }

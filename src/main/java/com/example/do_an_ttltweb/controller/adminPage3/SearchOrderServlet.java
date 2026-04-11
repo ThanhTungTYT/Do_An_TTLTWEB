@@ -31,7 +31,7 @@ public class SearchOrderServlet extends HttpServlet {
         if (keyword != null && !keyword.trim().isEmpty()) {
             orders = orderService.searchOrders(keyword.trim());
         } else {
-            orders = orderService.getOrdersPagination(null, null, 1, 25);
+            orders = orderService.getOrdersPagination(null, null,null, 1, 25);
         }
 
         List<User> users = accountService.getAllUser();
