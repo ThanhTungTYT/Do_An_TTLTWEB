@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Gson
+    implementation 'com.google.code.gson:gson:2.10'
+
+    // Servlet (Tomcat 10+)
+    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+
+    // JDBI
+    implementation 'org.jdbi:jdbi3-core:3.50.0'
+
+    // MySQL
+    implementation 'com.mysql:mysql-connector-j:9.5.0'
+
+    // JSTL API
+    // JSTL API
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+
+    // JSTL Implementation
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
+    // JetBrains annotations
+    implementation 'org.jetbrains:annotations:24.1.0'
+
+    // Jakarta Mail
+    implementation 'org.eclipse.angus:jakarta.mail:2.0.3'
+
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.2'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}
