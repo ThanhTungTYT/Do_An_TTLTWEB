@@ -38,4 +38,7 @@ build/
 .DS_Store
 
 ### Gradle ###
-.gradle/
+.gradle/8.10/
+.gradle/buildOutputCleanup/
+.gradle/vcs-1/
+.gradle/file-system.probe

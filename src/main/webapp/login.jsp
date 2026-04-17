@@ -65,19 +65,29 @@
     <h2 id="Login">Đăng nhập</h2>
 
     <form id="f-login" action="login" method="post">
-        <label class="lbu" for="username">Nhập email:</label>
-        <input type="text" id="username" name="email" placeholder="Email" required><br><br>
 
-        <label class="lbpw" for="password">Mật khẩu:</label>
-        <div class="password-wrapper">
-            <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
-            <button type="button" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
-                <i id="icon-eye" class="fa-regular fa-eye"></i>
-                <i id="icon-eye-off" class="fa-regular fa-eye-slash" style="display:none;"></i>
-            </button>
-        </div><br><br>
+        <div class="form-group">
+            <label class="lbu" for="username">Nhập email:</label>
+            <input type="text" id="username" name="email" placeholder="Email">
+            <small class="error-msg" id="err-email"></small>
+        </div>
 
-        <p class="error-msg" style="color: red; font-style: italic; font-size: 12px">${error}</p>
+        <div class="form-group">
+            <label class="lbpw" for="password">Mật khẩu:</label>
+            <div class="password-wrapper">
+                <input type="password" id="password" name="password" placeholder="Mật khẩu">
+                <button type="button" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
+                    <i id="icon-eye" class="fa-regular fa-eye"></i>
+                    <i id="icon-eye-off" class="fa-regular fa-eye-slash" style="display:none;"></i>
+                </button>
+            </div>
+            <small class="error-msg" id="err-password"></small>
+        </div>
+
+        <c:if test="${not empty error}">
+            <p style="color: red; font-style: italic; font-size: 13px; margin-bottom: 15px;">${error}</p>
+        </c:if>
+
         <div class="forgot-password">
             <p>Quên mật khẩu? <a href="${pageContext.request.contextPath}/forgot-password">Click vào đây</a></p>
         </div>

@@ -1,3 +1,4 @@
+// Hàm ẩn / hiện mật khẩu
 function togglePassword() {
     const input = document.getElementById('password');
     const iconEye = document.getElementById('icon-eye');
@@ -13,28 +14,64 @@ function togglePassword() {
         iconEyeOff.style.display = 'none';
     }
 }
+
 document.addEventListener('DOMContentLoaded', function () {
-    const loginButton = document.getElementById('b-login'); // Nút Đăng nhập (button)
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password'); // Thêm để kiểm tra mật khẩu
+    const form = document.getElementById('f-login');
+    const emailInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errEmail = document.getElementById('err-email');
+    const errPassword = document.getElementById('err-password');
 
-    if (loginButton && usernameInput && passwordInput) {
-        loginButton.addEventListener('click', function (event) {
-            if (usernameInput.value.trim() === '' || passwordInput.value.trim() === '') {
-                alert('Vui lòng điền đầy đủ Tên đăng nhập và Mật khẩu.');
-                return; // Dừng nếu chưa điền đủ
-            }
-
-            const username = usernameInput.value.trim().toLowerCase();
-
-            // 2. Logic kiểm tra TÊN ĐĂNG NHẬP
-            if (username === 'admin@gmail.com') {
-                // Chuyển hướng đến trang quản trị
-                window.location.href = 'adminPage1.html';
-            } else {
-                // Chuyển hướng đến trang tài khoản người dùng hoặc trang chủ
-                window.location.href = 'account.html';
-            }
-        });
+    function showError(input, errLabel, message) {
+        input.classList.add('input-error');
+        errLabel.textContent = message;
+        errLabel.style.display = 'block';
     }
+
+    function clearError(input, errLabel) {
+        input.classList.remove('input-error');
+        errLabel.textContent = '';
+        errLabel.style.display = 'none';
+    }
+
+    function validateEmail() {
+        const val = emailInput.value.trim();
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (val === '') {
+            showError(emailInput, errEmail, 'Email không được để trống!');
+            return false;
+        } else if (!regexEmail.test(val)) {
+            showError(emailInput, errEmail, 'Email không đúng định dạng (VD: abc@gmail.com)!');
+            return false;
+        }
+        clearError(emailInput, errEmail);
+        return true;
+    }
+
+    function validatePassword() {
+        const val = passwordInput.value;
+
+        if (val === '') {
+            showError(passwordInput, errPassword, 'Mật khẩu không được để trống!');
+            return false;
+        } else if (val.length < 8) {
+            showError(passwordInput, errPassword, 'Mật khẩu phải chứa ít nhất 8 ký tự!');
+            return false;
+        }
+        clearError(passwordInput, errPassword);
+        return true;
+    }
+
+    emailInput.addEventListener('input', validateEmail);
+    passwordInput.addEventListener('input', validatePassword);
+
+    form.addEventListener('submit', function (event) {
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
+
+        if (!isEmailValid || !isPasswordValid) {
+            event.preventDefault();
+        }
+    });
 });
