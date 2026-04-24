@@ -37,6 +37,93 @@ document.addEventListener("DOMContentLoaded", function() {
         promotionSelect.addEventListener("change", calculateTotal);
     }
 
+    const checkoutForm = document.getElementById('checkout-form');
+    const fullnameInput = document.getElementById('fullname');
+    const phoneInput = document.getElementById('phone');
+    const addressInput = document.getElementById('address');
+
+    function showError(input, message) {
+        input.classList.add('input-error');
+        let errLabel = input.nextElementSibling;
+        if (errLabel && errLabel.classList.contains('error')) {
+            errLabel.textContent = message;
+            errLabel.style.display = 'block';
+        }
+    }
+
+    function clearError(input) {
+        input.classList.remove('input-error');
+        let errLabel = input.nextElementSibling;
+        if (errLabel && errLabel.classList.contains('error')) {
+            errLabel.textContent = '';
+            errLabel.style.display = 'none';
+        }
+    }
+
+    function validateFullName() {
+        const val = fullnameInput.value.trim();
+        const regexName = /^[\p{L}\s]+$/u;
+        if (val === '') {
+            showError(fullnameInput, 'Họ và tên không được để trống!');
+            return false;
+        } else if (!regexName.test(val)) {
+            showError(fullnameInput, 'Họ tên không được chứa số hay kí tự đặc biệt!');
+            return false;
+        }
+        clearError(fullnameInput);
+        return true;
+    }
+
+    function validatePhone() {
+        const val = phoneInput.value.trim();
+        const regexPhone = /^(03|05|07|08|09)\d{8}$/;
+        if (val === '') {
+            showError(phoneInput, 'Số điện thoại không được để trống!');
+            return false;
+        } else if (!regexPhone.test(val)) {
+            showError(phoneInput, 'Số điện thoại không hợp lệ (Gồm 10 số, bắt đầu bằng 03,05,07,08,09)!');
+            return false;
+        }
+        clearError(phoneInput);
+        return true;
+    }
+
+    function validateAddress() {
+        const val = addressInput.value.trim();
+        const regexAddress = /^[\p{L}0-9\s,.\-\/]+$/u;
+        if (val === '') {
+            showError(addressInput, 'Địa chỉ không được để trống!');
+            return false;
+        } else if (!regexAddress.test(val)) {
+            showError(addressInput, 'Địa chỉ chứa kí tự đặc biệt không hợp lệ!');
+            return false;
+        }
+        clearError(addressInput);
+        return true;
+    }
+
+    function validateLocation() {
+        let isValid = true;
+        if (citySelect.value === '') {
+            showError(citySelect, 'Vui lòng chọn Tỉnh/Thành phố!');
+            isValid = false;
+        } else {
+            clearError(citySelect);
+        }
+
+        if (wardSelect.value === '') {
+            showError(wardSelect, 'Vui lòng chọn Phường/Xã!');
+            isValid = false;
+        } else {
+            clearError(wardSelect);
+        }
+        return isValid;
+    }
+
+    fullnameInput.addEventListener('input', validateFullName);
+    phoneInput.addEventListener('input', validatePhone);
+    addressInput.addEventListener('input', validateAddress);
+
     const host = "https://provinces.open-api.vn/api/v2/";
 
     const citySelect = document.getElementById("citySelect");
@@ -111,6 +198,8 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
             }
+
+            validateLocation();
         });
     }
 
@@ -122,10 +211,28 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 hiddenWard.value = "";
             }
+
+            validateLocation();
         });
     }
 
     if (citySelect) {
         loadProvinces();
     }
+
+    checkoutForm.addEventListener('submit', function(event) {
+        const isNameValid = validateFullName();
+        const isPhoneValid = validatePhone();
+        const isAddrValid = validateAddress();
+        const isLocValid = validateLocation();
+
+        if (!isNameValid || !isPhoneValid || !isAddrValid || !isLocValid) {
+            event.preventDefault();
+
+            const firstError = document.querySelector('.input-error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
 });

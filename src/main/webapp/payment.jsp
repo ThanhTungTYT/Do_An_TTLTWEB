@@ -101,11 +101,11 @@
                 <h3>Thông tin giao hàng</h3>
                 <div class="shipping-form">
                     <input type="text" id="fullname" name="fullname" placeholder="Họ và tên"
-                           value="${sessionScope.user.full_name}" required>
+                           value="${sessionScope.user.full_name}">
                     <small class="error"></small>
 
                     <input type="text" id="phone" name="phone" placeholder="Số điện thoại"
-                           value="${sessionScope.user.phone}" required>
+                           value="${sessionScope.user.phone}">
                     <small class="error"></small>
 
                     <input type="hidden" name="country" value="Việt Nam">
@@ -113,18 +113,18 @@
                     <input type="hidden" id="hidden_province" name="province" value="${requestScope.userAddress.province}">
                     <input type="hidden" id="hidden_ward" name="ward" value="${requestScope.userAddress.ward}">
 
-                    <select id="citySelect" required>
+                    <select id="citySelect">
                         <option value="">-- Chọn Tỉnh/Thành phố --</option>
                     </select>
                     <small class="error"></small>
 
-                    <select id="wardSelect" required>
+                    <select id="wardSelect">
                         <option value="">-- Chọn Phường/Xã --</option>
                     </select>
                     <small class="error"></small>
 
                     <input type="text" id="address" name="address" placeholder="Đường, Số nhà"
-                           value="${requestScope.userAddress.address}" required>
+                           value="${requestScope.userAddress.address}">
                     <small class="error"></small>
                 </div>
             </section>
