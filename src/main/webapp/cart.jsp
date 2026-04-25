@@ -101,6 +101,7 @@
                     <div class="cart-item">
                         <input type="checkbox"
                                class="product-select item-checkbox"
+                               id="checkbox-${item.product.id}"
                                name="selectedIds"
                                value="${item.product.id}"
                                checked
@@ -112,7 +113,6 @@
 
                         <div class="product-thumbnail">
                             <c:choose>
-                                <%-- Nếu có link ảnh thì hiện ảnh --%>
                                 <c:when test="${not empty item.product.image_url}">
                                     <img src="${item.product.image_url}" alt="${item.product.name}"/>
                                 </c:when>
@@ -135,21 +135,14 @@
                         </div>
 
                         <div class="product-quantity">
-                            <button type="button" class="btn-decrease"
-                                    onclick="location.href='${pageContext.request.contextPath}/update-cart?pid=${item.product.id}&q=${item.quantity - 1}'">
-                                -
-                            </button>
+                            <button type="button" class="btn-decrease" data-pid="${item.product.id}">-</button>
 
-                            <input type="number" value="${item.quantity}" min="1"
-                                   onchange="location.href='${pageContext.request.contextPath}/update-cart?pid=${item.product.id}&q='+this.value"/>
+                            <input type="number" class="qty-input" data-pid="${item.product.id}" value="${item.quantity}" min="1"/>
 
-                            <button type="button" class="btn-increase"
-                                    onclick="location.href='${pageContext.request.contextPath}/update-cart?pid=${item.product.id}&q=${item.quantity + 1}'">
-                                +
-                            </button>
+                            <button type="button" class="btn-increase" data-pid="${item.product.id}">+</button>
                         </div>
 
-                        <div class="product-subtotal">
+                        <div class="product-subtotal" id="subtotal-${item.product.id}">
                             <fmt:formatNumber value="${item.price * item.quantity}" type="number" maxFractionDigits="0"/> VND
                         </div>
                     </div>
