@@ -93,7 +93,8 @@
 
             <div class="clear-all-container" style="display: flex; justify-content: space-between;">
                 <a href="#" class="select-all-cart">Chọn tất cả</a>
-                <a href="${pageContext.request.contextPath}/remove-all" class="clear-all-cart">Xóa tất cả</a>
+                <a href="#" class="clear-all-cart" id="clear-all-btn"
+                   data-href="${pageContext.request.contextPath}/remove-all">Xóa tất cả</a>
             </div>
 
             <div id="cart-list">
