@@ -159,5 +159,34 @@ document.addEventListener("DOMContentLoaded", function () {
             updateCartAjax(pid, qty, this);
         });
     });
+    const clearAllBtn = document.getElementById("clear-all-btn");
+    if (clearAllBtn) {
+        clearAllBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            const removeAllUrl = this.dataset.href || "${pageContext.request.contextPath}/remove-all";
 
+            const overlay = document.createElement("div");
+            overlay.className = "confirm-overlay";
+            overlay.innerHTML = `
+            <div class="confirm-box">
+                <div class="confirm-box-icon"><i class="fas fa-trash-alt"></i></div>
+                <h3>Xóa toàn bộ giỏ hàng?</h3>
+                <p>Tất cả sản phẩm trong giỏ sẽ bị xóa.<br>Bạn có chắc chắn muốn tiếp tục không?</p>
+                <div class="confirm-box-actions">
+                    <button class="confirm-btn-cancel">Hủy</button>
+                    <button class="confirm-btn-confirm">Xóa tất cả</button>
+                </div>
+            </div>
+        `;
+
+            document.body.appendChild(overlay);
+
+            overlay.querySelector(".confirm-btn-cancel").addEventListener("click", () => overlay.remove());
+            overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.remove(); });
+
+            overlay.querySelector(".confirm-btn-confirm").addEventListener("click", () => {
+                window.location.href = clearAllBtn.dataset.href;
+            });
+        });
+    }
 });
