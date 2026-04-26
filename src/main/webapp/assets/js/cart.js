@@ -1,41 +1,100 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const checkboxes = document.querySelectorAll(".item-checkbox");
-    const totalDisplay = document.getElementById("cart-total");
-    const selectAllBtn = document.querySelector(".select-all-cart");
-    const cartBadge = document.getElementById("num-cart-label");
+    const checkboxes      = document.querySelectorAll(".item-checkbox");
+    const totalDisplay    = document.getElementById("cart-total");        // ẩn, giữ tương thích
+    const selectAllBtn    = document.querySelector(".select-all-cart");   // link "Chọn tất cả" trên list
+    const cartBadge       = document.getElementById("num-cart-label");
+
+    const stickyBar          = document.getElementById("sticky-checkout-bar");
+    const stickyTotal        = document.getElementById("sticky-total");
+    const stickySelectAllCb  = document.getElementById("sticky-select-all-cb");
+    const stickySelectedCount = document.getElementById("sticky-selected-count");
+    const stickyCountBtn     = document.getElementById("sticky-count-btn");
+    const stickyCheckoutBtn  = document.getElementById("sticky-checkout-btn");
+
 
     function formatVND(amount) {
         return amount.toLocaleString("vi-VN") + " VND";
     }
 
-    function updateDisplayTotal() {
-        let total = 0;
-        document.querySelectorAll(".item-checkbox:checked").forEach(box => {
-            total += parseFloat(box.dataset.subtotal);
-        });
-        totalDisplay.textContent = formatVND(total);
+    function bumpTotal() {
+        if (!stickyTotal) return;
+        stickyTotal.classList.remove("bump");
+        void stickyTotal.offsetWidth;
+        stickyTotal.classList.add("bump");
+        setTimeout(() => stickyTotal.classList.remove("bump"), 200);
     }
+
+
+    function updateDisplayTotal() {
+        let total        = 0;
+        let checkedCount = 0;
+        const allBoxes   = document.querySelectorAll(".item-checkbox");
+
+        allBoxes.forEach(box => {
+            if (box.checked) {
+                total += parseFloat(box.dataset.subtotal) || 0;
+                checkedCount++;
+            }
+        });
+
+        if (totalDisplay) totalDisplay.textContent = formatVND(total);
+
+        if (stickyTotal) {
+            stickyTotal.textContent = formatVND(total);
+            bumpTotal();
+        }
+        if (stickySelectedCount) {
+            stickySelectedCount.textContent = checkedCount + " sản phẩm";
+        }
+        if (stickyCountBtn) {
+            stickyCountBtn.textContent = "(" + checkedCount + ")";
+        }
+        if (stickyCheckoutBtn) {
+            stickyCheckoutBtn.disabled = (checkedCount === 0);
+        }
+
+        if (stickySelectAllCb) {
+            const allChecked = checkedCount === allBoxes.length && allBoxes.length > 0;
+            stickySelectAllCb.checked       = allChecked;
+            stickySelectAllCb.indeterminate = checkedCount > 0 && !allChecked;
+        }
+
+        if (selectAllBtn) {
+            const allChecked = checkedCount === allBoxes.length && allBoxes.length > 0;
+            selectAllBtn.textContent = allChecked ? "Bỏ chọn tất cả" : "Chọn tất cả";
+        }
+    }
+
 
     checkboxes.forEach(cb => {
         cb.addEventListener("change", updateDisplayTotal);
     });
 
+
     if (selectAllBtn) {
         selectAllBtn.addEventListener("click", function (e) {
             e.preventDefault();
-            const allChecked = [...document.querySelectorAll(".item-checkbox")].every(cb => cb.checked);
-            document.querySelectorAll(".item-checkbox").forEach(cb => cb.checked = !allChecked);
-            this.textContent = !allChecked ? "Bỏ chọn tất cả" : "Chọn tất cả";
+            const allBoxes   = document.querySelectorAll(".item-checkbox");
+            const allChecked = [...allBoxes].every(cb => cb.checked);
+            allBoxes.forEach(cb => cb.checked = !allChecked);
             updateDisplayTotal();
         });
     }
 
+
+    if (stickySelectAllCb) {
+        stickySelectAllCb.addEventListener("change", function () {
+            document.querySelectorAll(".item-checkbox").forEach(cb => {
+                cb.checked = this.checked;
+            });
+            updateDisplayTotal();
+        });
+    }
+
+
     updateDisplayTotal();
 
-    const btnDecreases = document.querySelectorAll(".btn-decrease");
-    const btnIncreases = document.querySelectorAll(".btn-increase");
-    const qtyInputs = document.querySelectorAll(".qty-input");
 
     function updateCartAjax(pid, quantity, inputEl) {
         if (quantity < 1) {
@@ -69,35 +128,36 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Lỗi AJAX:", error));
     }
 
-    btnDecreases.forEach(btn => {
-        btn.addEventListener("click", function() {
-            const pid = this.dataset.pid;
-            const inputEl = this.nextElementSibling;
-            let currentQty = parseInt(inputEl.value);
+
+    document.querySelectorAll(".btn-decrease").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const pid       = this.dataset.pid;
+            const inputEl   = this.nextElementSibling;
+            const currentQty = parseInt(inputEl.value);
             if (currentQty > 1) {
                 updateCartAjax(pid, currentQty - 1, inputEl);
             }
         });
     });
 
-    // Bắt sự kiện nút tăng
-    btnIncreases.forEach(btn => {
-        btn.addEventListener("click", function() {
-            const pid = this.dataset.pid;
-            const inputEl = this.previousElementSibling;
-            let currentQty = parseInt(inputEl.value);
+
+    document.querySelectorAll(".btn-increase").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const pid       = this.dataset.pid;
+            const inputEl   = this.previousElementSibling;
+            const currentQty = parseInt(inputEl.value);
             updateCartAjax(pid, currentQty + 1, inputEl);
         });
     });
 
-    qtyInputs.forEach(input => {
-        input.addEventListener("change", function() {
+
+    document.querySelectorAll(".qty-input").forEach(input => {
+        input.addEventListener("change", function () {
             const pid = this.dataset.pid;
-            let currentQty = parseInt(this.value);
-            if (isNaN(currentQty) || currentQty < 1) {
-                currentQty = 1;
-            }
-            updateCartAjax(pid, currentQty, this);
+            let qty   = parseInt(this.value);
+            if (isNaN(qty) || qty < 1) qty = 1;
+            updateCartAjax(pid, qty, this);
         });
     });
+
 });

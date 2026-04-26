@@ -10,6 +10,8 @@ input[type=number]::-webkit-outer-spin-button {
     max-width: 900px;
     margin: 40px auto;
     padding: 0 20px;
+    /* Đẩy nội dung lên để không bị sticky bar che */
+    padding-bottom: 100px;
 }
 
 /* Tiêu đề giỏ hàng */
@@ -17,7 +19,7 @@ input[type=number]::-webkit-outer-spin-button {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 20px;
-    color:  #c76739;
+    color: #c76739;
 }
 
 /* Xoá tất cả sản phẩm */
@@ -32,8 +34,6 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight: 600;
     text-decoration: none;
 }
-
-/* Hover giống nút xoá tất cả */
 .select-all-cart:hover {
     text-decoration: underline;
 }
@@ -44,8 +44,6 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight: 600;
     text-decoration: none;
 }
-
-/* Hiệu ứng hover cho nút xoá tất cả sản phẩm */
 .clear-all-cart:hover {
     text-decoration: underline;
 }
@@ -65,7 +63,7 @@ input[type=number]::-webkit-outer-spin-button {
     color: #c76739;
     font-size: 22px;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 15px;
 }
 
 /* Chi tiết sản phẩm */
@@ -131,10 +129,10 @@ input[type=number]::-webkit-outer-spin-button {
     cursor: pointer;
     font-size: 18px;
 }
-/* Hiệu ứng hover cho nút tăng giảm số lượng */
 .product-quantity button:hover {
     background: #ddd;
 }
+
 /* Input số lượng sản phẩm */
 .product-quantity input {
     width: 40px;
@@ -144,58 +142,12 @@ input[type=number]::-webkit-outer-spin-button {
     font-size: 16px;
 }
 
-/* Tổng tiền giỏ hàng */
-.cart-totals{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: bold;
-    margin-bottom: 20px;
-    margin-top: 10px;
-}
-/* Tiêu đề tổng tiền giỏ hàng */
-.cart-totals h3{
-    font-size: 25px;
-    color:  #c76739;
-}
-
-/* Số tổng tiền giỏ hàng */
-.cart-totals span{
-    font-size: 30px;
-    font-weight: bold;
-    color:  #c76739;
-    margin: auto;
-}
-
-/* VAT */
-.cart-totals p {
-    font-size: 13px;
-    font-weight: 400;
-    color: #555;
-    margin-left: 10px;
-
-}
-
-/* Nút Thanh toán */
-.checkout-button {
-    text-decoration:none;
-    text-align: center;
-    display: block;
-    width: 100%;
-    background-color: #c76739;
-    color: white ;
-    border: none;
-    padding: 18px 0;
-    font-size: 22px;
-    font-weight: 700;
+/* Checkbox chọn sản phẩm */
+.product-select {
+    margin-right: 15px;
+    transform: scale(1.3);
     cursor: pointer;
-    margin-bottom: 25px;
-}
-
-/* Hiệu ứng hover cho nút Thanh toán */
-.checkout-button:hover {
-    background-color: #8c4828;
-    color: #fff3e0;
+    accent-color: #c76739;
 }
 
 /* Phương thức thanh toán */
@@ -204,35 +156,188 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight: bold;
     margin-bottom: 60px;
 }
-
-/* Tiêu đề phương thức thanh toán */
 .payment-methods h4 {
     font-size: 25px;
     margin-bottom: 20px;
 }
-
-/* Biểu tượng các thức thanh toán */
 .payment-methods i {
     font-size: 18px;
     margin-right: 15px;
     padding-left: 15px;
 }
-
-/* Chữ các phương thức thanh toán */
 .payment-methods span {
     margin-right: 20px;
     font-size: 18px;
     padding-right: 15px;
 }
 
-/* Checkbox chọn sản phẩm */
-.product-select {
-    margin-right: 15px;
-    transform: scale(1.3);
-    cursor: pointer;
+
+/* ================================================
+   STICKY CHECKOUT BAR
+   ================================================ */
+.sticky-checkout-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 2px solid #c76739;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.13);
+    z-index: 1000;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    animation: slideUpBar 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Đảm bảo nút X không dính sát */
-.product-remove {
-    margin-right: 15px;
+@keyframes slideUpBar {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Bên trái: checkbox chọn tất cả + đếm */
+.sticky-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.sticky-select-all-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.sticky-select-all-label input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    accent-color: #c76739;
+    flex-shrink: 0;
+}
+
+.sticky-bar-selected-count {
+    font-size: 13px;
+    color: #999;
+    white-space: nowrap;
+}
+
+/* Giữa: đẩy tổng tiền sang phải */
+.sticky-bar-spacer {
+    flex: 1;
+}
+
+/* Tổng tiền */
+.sticky-bar-total-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex: 1;
+    justify-content: center;
+}
+
+.sticky-bar-total-label {
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+}
+
+.sticky-bar-total-amount {
+    font-size: 24px;
+    font-weight: 800;
+    color: #c76739;
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+    transition: transform 0.15s ease;
+}
+
+.sticky-bar-total-amount.bump {
+    transform: scale(1.08);
+}
+
+/* Nút thanh toán */
+.sticky-bar-btn {
+    background-color: #c76739;
+    color: #fff;
+    border: none;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background-color 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+}
+.sticky-bar-btn:hover:not(:disabled) {
+    background-color: #8c4828;
+    transform: translateY(-1px);
+}
+.sticky-bar-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+.sticky-bar-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    color: #fff;
+}
+
+.sticky-btn-count {
+    font-weight: 400;
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 640px) {
+    .sticky-checkout-bar {
+        flex-wrap: wrap;
+        padding: 12px 16px 16px;
+        gap: 10px;
+    }
+
+    .sticky-bar-left {
+        flex: 1 1 100%;
+        justify-content: space-between;
+    }
+
+    .sticky-bar-total-wrap {
+        flex: 1;
+        justify-content: flex-start;
+        margin-left: 0;
+    }
+
+    .sticky-bar-total-amount {
+        font-size: 20px;
+    }
+
+    .sticky-bar-btn {
+        flex: 1;
+        text-align: center;
+        padding: 13px 16px;
+        font-size: 15px;
+    }
+
+    .cart-container {
+        padding-bottom: 140px;
+    }
 }

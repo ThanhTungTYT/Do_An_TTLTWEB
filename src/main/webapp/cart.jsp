@@ -149,13 +149,12 @@
                 </c:forEach>
             </div>
 
-            <div class="cart-totals">
+                <%-- Tổng cộng inline (ẩn, chỉ giữ cho tương thích nếu cần) --%>
+            <div class="cart-totals" style="display:none;">
                 <h3>TỔNG CỘNG</h3>
                 <span id="cart-total">0đ</span>
                 <p>(Chỉ tính các sản phẩm được chọn)</p>
             </div>
-
-            <button type="submit" class="checkout-button">Thanh Toán Các Mục Đã Chọn</button>
 
         </form>
     </c:if>
@@ -168,6 +167,27 @@
         <span>Chuyển Khoản Ngân Hàng</span>
     </div>
 </div>
+
+<%-- STICKY CHECKOUT BAR --%>
+<c:if test="${not empty sessionScope.cart and not empty sessionScope.cart.list}">
+    <div class="sticky-checkout-bar" id="sticky-checkout-bar">
+        <div class="sticky-bar-left">
+            <label class="sticky-select-all-label">
+                <input type="checkbox" id="sticky-select-all-cb">
+                <span>Chọn tất cả</span>
+            </label>
+            <span class="sticky-bar-selected-count" id="sticky-selected-count">0 sản phẩm</span>
+        </div>
+        <div class="sticky-bar-total-wrap">
+            <span class="sticky-bar-total-label">Tạm tính:</span>
+            <span class="sticky-bar-total-amount" id="sticky-total">0 VND</span>
+        </div>
+        <button class="sticky-bar-btn" id="sticky-checkout-btn" disabled
+                onclick="document.getElementById('cart-form').submit()">
+            Thanh toán&nbsp;<span class="sticky-btn-count" id="sticky-count-btn">(0)</span>
+        </button>
+    </div>
+</c:if>
 
 <footer class="footer">
     <div class="footer-top">
@@ -200,6 +220,7 @@
         <p>&copy; 2024 Aroma Café. All rights reserved.</p>
     </div>
 </footer>
+
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 <script src="${pageContext.request.contextPath}/assets/js/cart.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
