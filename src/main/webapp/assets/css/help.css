@@ -64,3 +64,43 @@ h2 {
 .main-content button:hover {
     background-color: #8c4828;
 }
+
+.error {
+    display: none;
+    font-size: 13px;
+    font-weight: normal;
+    font-style: italic;
+    color: #dc3545;
+    margin-top: -2px;
+    margin-bottom: 10px;
+}
+
+.input-error {
+    border-color: #dc3545 !important;
+    background-color: #fff8f8 !important;
+}
+
+.textarea-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: -2px;
+    margin-bottom: 10px;
+    min-height: 20px;
+}
+
+.textarea-bottom .error {
+    margin: 0;
+}
+
+.textarea-bottom .char-counter {
+    font-size: 12px;
+    color: #666;
+    transition: color 0.3s ease;
+    margin: 0;
+}
+
+.char-counter.limit-exceeded {
+    color: #dc3545;
+    font-weight: bold;
+}

@@ -93,13 +93,20 @@
             </p>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/contact" method="post">
-            <input type="text" name="name" placeholder="Họ và tên của bạn" required>
-            <input type="email" name="email" placeholder="Email của bạn" required>
+        <form action="${pageContext.request.contextPath}/contact" method="post" id="f-contact">
+            <input type="text" id="name" name="name" placeholder="Họ và tên của bạn">
+            <small class="error"></small>
+
+            <input type="email" id="email" name="email" placeholder="Email của bạn">
+            <small class="error"></small>
 
             <label for="message">Tin nhắn:</label>
-            <textarea name="message" rows="5"
-                      placeholder="Viết tin nhắn của bạn ở đây..." required></textarea>
+            <textarea id="message" name="message" rows="5" placeholder="Viết tin nhắn của bạn ở đây..."></textarea>
+
+            <div class="textarea-bottom">
+                <small class="error"></small>
+                <div class="char-counter" id="char-counter">0/500</div>
+            </div>
 
             <button type="submit">Liên hệ ngay</button>
         </form>
@@ -137,7 +144,7 @@
     </div>
 </footer>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
-
+<script src="${pageContext.request.contextPath}/assets/js/help.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>
