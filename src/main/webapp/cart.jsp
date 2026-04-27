@@ -108,9 +108,6 @@
                                checked
                                data-subtotal="${item.price * item.quantity}">
 
-                        <a href="${pageContext.request.contextPath}/remove-item?pid=${item.product.id}" class="product-remove" title="Xóa sản phẩm" onclick="return confirm('Xóa sản phẩm này?');">
-                            <i class="fas fa-times"></i>
-                        </a>
 
                         <div class="product-thumbnail">
                             <c:choose>
@@ -146,6 +143,9 @@
                         <div class="product-subtotal" id="subtotal-${item.product.id}">
                             <fmt:formatNumber value="${item.price * item.quantity}" type="number" maxFractionDigits="0"/> VND
                         </div>
+                        <a href="${pageContext.request.contextPath}/remove-item?pid=${item.product.id}" class="product-remove" title="Xóa sản phẩm" onclick="return">
+                            <i class="fas fa-times"></i>
+                        </a>
                     </div>
                 </c:forEach>
             </div>

@@ -189,4 +189,30 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+    const footer = document.querySelector("footer.footer");
+
+    function updateStickyPosition() {
+        if (!stickyBar || !footer) return;
+
+        const footerTop    = footer.getBoundingClientRect().top;
+        const barHeight    = stickyBar.offsetHeight;
+        const windowHeight = window.innerHeight;
+
+        if (footerTop <= windowHeight) {
+            // Footer đã vào viewport → chuyển sang absolute, dừng ngay trên footer
+            const scrollY      = window.scrollY || window.pageYOffset;
+            const absTop       = scrollY + footerTop - barHeight;
+            stickyBar.style.position = "absolute";
+            stickyBar.style.top      = absTop + "px";
+            stickyBar.style.bottom   = "auto";
+        } else {
+            // Footer chưa vào viewport → bám dưới màn hình như bình thường
+            stickyBar.style.position = "fixed";
+            stickyBar.style.top      = "auto";
+            stickyBar.style.bottom   = "0";
+        }
+    }
+
+    window.addEventListener("scroll", updateStickyPosition);
+    updateStickyPosition();
 });
