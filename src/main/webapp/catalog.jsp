@@ -124,22 +124,63 @@
 
             <c:set var="displayTotal" value="${totalPages > 0 ? totalPages : 1}" />
 
-            <button onclick="changePage(${currentPage - 1})"
-            ${currentPage <= 1 ? 'disabled' : ''}>
-                <i class="fas fa-chevron-left"></i>
-            </button>
+            <c:set var="startPage" value="${currentPage - 1}" />
+            <c:set var="endPage" value="${currentPage + 1}" />
 
-            <c:forEach begin="1" end="${displayTotal}" var="i">
-                <button class="${currentPage == i ? 'active' : ''}"
-                        onclick="changePage(${i})"
-                    ${currentPage == i ? 'disabled' : ''}> ${i}
+            <c:if test="${startPage < 1}">
+                <c:set var="startPage" value="1" />
+                <c:set var="endPage" value="3" />
+            </c:if>
+
+            <c:if test="${endPage > displayTotal}">
+                <c:set var="endPage" value="${displayTotal}" />
+                <c:set var="startPage" value="${displayTotal - 2}" />
+                <c:if test="${startPage < 1}">
+                    <c:set var="startPage" value="1" />
+                </c:if>
+            </c:if>
+
+            <c:if test="${currentPage > 1}">
+                <button onclick="changePage(1)" title="Trang đầu tiên">
+                    <i class="fas fa-angle-double-left"></i>
                 </button>
+            </c:if>
+
+            <c:if test="${currentPage > 1}">
+                <button onclick="changePage(${currentPage - 1})" title="Trang trước">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+            </c:if>
+
+            <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                <c:choose>
+                    <c:when test="${currentPage == i}">
+                        <input type="number"
+                               id="page-input"
+                               min = '1'
+                               max = '100'
+                               value="${i}"
+                               data-max="${displayTotal}"
+                               oninput="if(this.value.length > 3) this.value = this.value.slice(0, 3);"
+                               title="Nhập số trang và nhấn Enter" />
+                    </c:when>
+                    <c:otherwise>
+                        <button onclick="changePage(${i})">${i}</button>
+                    </c:otherwise>
+                </c:choose>
             </c:forEach>
 
-            <button onclick="changePage(${currentPage + 1})"
-            ${currentPage >= displayTotal ? 'disabled' : ''}>
-                <i class="fas fa-chevron-right"></i>
-            </button>
+            <c:if test="${currentPage < displayTotal}">
+                <button onclick="changePage(${currentPage + 1})" title="Trang tiếp theo">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+            </c:if>
+
+            <c:if test="${currentPage < displayTotal}">
+                <button onclick="changePage(${displayTotal})" title="Trang cuối cùng">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
+            </c:if>
 
         </div>
     </div>
