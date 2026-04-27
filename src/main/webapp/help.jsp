@@ -88,12 +88,14 @@
         <div class="main-content">
             <h2>Liên hệ với chúng tôi</h2>
 
-            <c:if test="${not empty success}">
-                <p style="color: green; margin-bottom: 15px;">${success}</p>
+            <c:if test="${not empty success or not empty error}">
+                <div id="toast-notification" class="toast ${not empty success ? 'toast-success' : 'toast-error'}">
+                    <i class="${not empty success ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'}"></i>
+                    <span>${not empty success ? success : error}</span>
+                </div>
             </c:if>
 
-            <form action="${pageContext.request.contextPath}/contact" method="post" id="f-contact">
-                <input type="text" id="name" name="name" placeholder="Họ và tên của bạn">
+            <form action="${pageContext.request.contextPath}/contact" method="post" id="f-contact" novalidate>                <input type="text" id="name" name="name" placeholder="Họ và tên của bạn">
                 <small class="error"></small>
 
                 <input type="email" id="email" name="email" placeholder="Email của bạn">

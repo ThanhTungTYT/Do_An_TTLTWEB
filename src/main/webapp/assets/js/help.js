@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const emailInput = document.getElementById('email');
     const messageInput = document.getElementById('message');
     const charCounter = document.getElementById('char-counter');
+    const toast = document.getElementById('toast-notification');
+    if (toast) {
+        setTimeout(function() {
+            toast.remove();
+        }, 3000);
+    }
 
     function showError(input, message) {
         input.classList.add('input-error');
