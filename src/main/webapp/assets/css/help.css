@@ -1,13 +1,12 @@
 
 .container {
-    width: 40%;
-    margin: auto;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    overflow: hidden;
-    padding: 20px;
+    width: 80%;
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 30px 40px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
 }
 
 .container h1 {
@@ -103,4 +102,47 @@ h2 {
 .char-counter.limit-exceeded {
     color: #dc3545;
     font-weight: bold;
+}
+/* Layout 2 cột: form trái, map phải */
+.contact-layout {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.contact-map {
+    flex: 1;
+    min-width: 0;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-map h2 {
+    margin-bottom: 10px;
+}
+
+.contact-map iframe {
+    flex: 1;
+    min-height: 380px;
+}
+
+@media (max-width: 768px) {
+    .contact-layout {
+        flex-direction: column;
+    }
+    .contact-map {
+        min-height: 300px;
+    }
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
 }
