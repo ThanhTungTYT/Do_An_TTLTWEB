@@ -84,30 +84,35 @@
                 </div>
             </div>
             <div class="content">
-                <p><fmt:formatNumber value="${product.price}" type="number" maxFractionDigits="0"/> VND</p>
+                <div class="rating">
+                    <div class="stars" style="--rating: ${avg}"></div>
+                    <span>${avg}/5</span>
+                </div>
 
-                <div class="sub-content">
-                    <p>Thương hiệu: <span>Aroma Cafe</span></p>
+                <p class="price">
+                    <fmt:formatNumber value="${product.price}" type="number" maxFractionDigits="0"/> VND
+                </p>
+                <div class="quick-info">
+                    <span>☕ ${product.category_name}</span>
+                    <span>📦 ${product.weight_grams}g</span>
                 </div>
                 <form method="post" action="${pageContext.request.contextPath}/add-to-cart">
                     <input type="hidden" name="pid" value="${product.id}">
-                    <div class="weight">
-                        <label>Khối lượng</label>
-                        <p>${product.weight_grams} gram</p>
-                    </div>
-                    <div class="type">
-                        <label>Loại</label>
-                        <p>${product.category_name}</p>
-                    </div>
-                    <div class="count-num">
-                        <label>Số lượng</label>
-                        <button id="count-minus" type="button">-</button>
-                        <input type="hidden" name="q" id="q" value="1">
+                    <div class="quantity">
+                        <label>Số lượng: </label>
+                        <button type="button" id="count-minus">-</button>
                         <span id="num-count">1</span>
-                        <button id="count-add" type="button">+</button>
+                        <input type="hidden" name="q" id="q" value="1">
+                        <button type="button" id="count-add">+</button>
                     </div>
-                    <button type="submit">Thêm vào giỏ hàng</button>
+                    <div class="cta">
+                        <button type="submit" class="btn-cart">Thêm vào giỏ</button>
+                    </div>
                 </form>
+                <div class="trust">
+                    <p>🚚 Giao nhanh 2-3 ngày</p>
+                    <p>🔄 Đổi trả 7 ngày</p>
+                </div>
             </div>
             <div class="des-right">
                 <p class="title">Thông tin liên hệ tư vấn</p>
