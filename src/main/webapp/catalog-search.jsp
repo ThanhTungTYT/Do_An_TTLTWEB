@@ -19,112 +19,153 @@
 </head>
 <body>
 <header>
-  <div class="top">
-    <div class="logo">
-      <img src="${pageContext.request.contextPath}/assets/img/logo.png"
-           onclick="location.href='${pageContext.request.contextPath}/'"
-           width="300px" height="100px" alt="Logo">
-    </div>
-    <form class="search-bar" method="get" action="${pageContext.request.contextPath}/search-product">
-      <input type="text" name="search" id="search-input" placeholder="Tìm kiếm..." value="${keyword}">
-      <button type="submit" id="search-button"><i class="fas fa-search"></i></button>
-    </form>
-    <div class="mini-menu">
-      <div class="cart">
-        <a href="${pageContext.request.contextPath}/cart"><i class="fas fa-shopping-cart"></i></a>
-        <span id="num-cart-label">${sessionScope.cart.totalQuantity}</span>
-      </div>
-      <c:choose>
-        <c:when test="${not empty sessionScope.user}">
-          <c:choose>
-            <c:when test="${sessionScope.user.role eq 'admin'}">
-              <a href="${pageContext.request.contextPath}/admin/dashboard">
-                <i class="fas fa-user-shield"></i>
-                <span style="font-size: 14px; margin-left: 5px">
+    <div class="top">
+        <div class="logo">
+            <img src="${pageContext.request.contextPath}/assets/img/logo.png"
+                 onclick="location.href='${pageContext.request.contextPath}/'"
+                 width="300px" height="100px" alt="Logo">
+        </div>
+        <form class="search-bar" method="get" action="${pageContext.request.contextPath}/search-product">
+            <input type="text" name="search" id="search-input" placeholder="Tìm kiếm..." value="${keyword}">
+            <button type="submit" id="search-button"><i class="fas fa-search"></i></button>
+        </form>
+        <div class="mini-menu">
+            <div class="cart">
+                <a href="${pageContext.request.contextPath}/cart"><i class="fas fa-shopping-cart"></i></a>
+                <span id="num-cart-label">${sessionScope.cart.totalQuantity}</span>
+            </div>
+            <c:choose>
+                <c:when test="${not empty sessionScope.user}">
+                    <c:choose>
+                        <c:when test="${sessionScope.user.role eq 'admin'}">
+                            <a href="${pageContext.request.contextPath}/admin/dashboard">
+                                <i class="fas fa-user-shield"></i>
+                                <span style="font-size: 14px; margin-left: 5px">
                                     <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
                                     Hi, ${nameParts[fn:length(nameParts) - 1]}!
                                 </span>
-              </a>
-            </c:when>
-            <c:otherwise>
-              <a href="${pageContext.request.contextPath}/account">
-                <i class="fas fa-user"></i>
-                <span style="font-size: 14px; margin-left: 5px">
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/account">
+                                <i class="fas fa-user"></i>
+                                <span style="font-size: 14px; margin-left: 5px">
                                     <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
                                     Hi, ${nameParts[fn:length(nameParts) - 1]}!
                                 </span>
-              </a>
-            </c:otherwise>
-          </c:choose>
-        </c:when>
-        <c:otherwise>
-          <a href="${pageContext.request.contextPath}/login">
-            <i class="fas fa-user"></i>
-          </a>
-        </c:otherwise>
-      </c:choose>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/login">
+                        <i class="fas fa-user"></i>
+                    </a>
+                </c:otherwise>
+            </c:choose>
+        </div>
     </div>
-  </div>
 
-  <div class="bottom">
-    <a href="${pageContext.request.contextPath}/">Trang chủ</a>
-    <a href="${pageContext.request.contextPath}/catalog">Sản phẩm</a>
-    <a href="${pageContext.request.contextPath}/contact">Liên hệ</a>
-    <a href="${pageContext.request.contextPath}/about">Giới thiệu</a>
-  </div>
+    <div class="bottom">
+        <a href="${pageContext.request.contextPath}/">Trang chủ</a>
+        <a href="${pageContext.request.contextPath}/catalog">Sản phẩm</a>
+        <a href="${pageContext.request.contextPath}/contact">Liên hệ</a>
+        <a href="${pageContext.request.contextPath}/about">Giới thiệu</a>
+    </div>
 </header>
 
+<input type="hidden" id="currentKeyword" value="${keyword}">
+<input type="hidden" id="currentSort" value="${currentSort}">
+
 <div class="search-results-header">
-  <div class="breadcrumb">
-    <a href="${pageContext.request.contextPath}/">Trang chủ</a>
-    <span class="separator">/</span>
-    <a href="${pageContext.request.contextPath}/catalog">Sản phẩm</a>
-    <span class="separator">/</span>
-  </div>
-  <h1 class="search-title">Kết quả tìm kiếm cho "${keyword}"</h1>
+    <div class="breadcrumb">
+        <a href="${pageContext.request.contextPath}/">Trang chủ</a>
+        <span class="separator">/</span>
+        <a href="${pageContext.request.contextPath}/catalog">Sản phẩm</a>
+        <span class="separator">/</span>
+    </div>
+    <h1 class="search-title">Kết quả tìm kiếm cho "${keyword}"</h1>
 </div>
+
 <div class="catalog">
-  <div class="catalog-list" id="catalog-list">
-    <p class="head-catalog">Danh mục sản phẩm</p>
-  </div>
-  <div class="product-area" id="product-area">
-    <div class="product-list" id="product-list">
-      <c:if test="${empty listProducts}">
-        <p style="width:100%; text-align:center; padding: 20px;">Không có sản phẩm nào.</p>
-      </c:if>
-
-      <c:forEach items="${listProducts}" var="p">
-        <a href="product?pid=${p.id}" class="product">
-          <img src="${p.image_url}" alt="${p.name}">
-          <p>${p.name}</p>
-          <span><fmt:formatNumber value="${p.price}" type="number"/> đ</span>
-          <label>Loại: ${p.category_name}</label>
-
-          <div style="font-size: 12px; color: #666; margin-top: 5px;">
-            <span><i class="fas fa-star" style="color:gold"></i> ${String.format("%.1f", p.avg_rating)}</span>
-            <span style="margin-left: 10px;">Đã bán: ${p.sold}</span>
-          </div>
-        </a>
-      </c:forEach>
+    <div class="catalog-list" id="catalog-list">
+        <p class="head-catalog">Danh mục sản phẩm</p>
     </div>
-    <div class="product-page" id="pagination" style="margin-top: 20px; text-align: center;">
-      <c:set var="displayTotal" value="${totalPages > 0 ? totalPages : 1}" />
-      <button onclick="changePage(${currentPage - 1})"
-      ${currentPage <= 1 ? 'disabled' : ''}>
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <c:forEach begin="1" end="${displayTotal}" var="i">
-        <button class="${currentPage == i ? 'active' : ''}"
-                onclick="changePage(${i})"
-          ${currentPage == i ? 'disabled' : ''}> ${i}
-        </button>
-      </c:forEach>
-      <button onclick="changePage(${currentPage + 1})"
-      ${currentPage >= displayTotal ? 'disabled' : ''}>
-        <i class="fas fa-chevron-right"></i>
-      </button>
+    <div class="product-area" id="product-area">
+
+        <div class="product-list" id="product-list">
+            <c:if test="${empty listProducts}">
+                <p style="width:100%; text-align:center; padding: 20px;">Không có sản phẩm nào.</p>
+            </c:if>
+
+            <c:forEach items="${listProducts}" var="p">
+                <a href="product?pid=${p.id}" class="product">
+                    <img src="${p.image_url}" alt="${p.name}">
+                    <p>${p.name}</p>
+                    <span><fmt:formatNumber value="${p.price}" type="number"/> VND</span>
+                    <label>Loại: ${p.category_name}</label>
+                    <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                        <span><i class="fas fa-star" style="color:gold"></i> ${String.format("%.1f", p.avg_rating)}</span>
+                        <span style="margin-left: 10px;">Đã bán: ${p.sold}</span>
+                    </div>
+                </a>
+            </c:forEach>
+        </div>
+
+        <div class="product-page" id="pagination" style="margin-top: 20px; text-align: center;">
+
+            <c:set var="displayTotal" value="${totalPages > 0 ? totalPages : 1}" />
+            <c:set var="startPage" value="${currentPage - 1}" />
+            <c:set var="endPage" value="${currentPage + 1}" />
+
+            <c:if test="${startPage < 1}">
+                <c:set var="startPage" value="1" />
+                <c:set var="endPage" value="3" />
+            </c:if>
+
+            <c:if test="${endPage > displayTotal}">
+                <c:set var="endPage" value="${displayTotal}" />
+                <c:set var="startPage" value="${displayTotal - 2}" />
+                <c:if test="${startPage < 1}">
+                    <c:set var="startPage" value="1" />
+                </c:if>
+            </c:if>
+
+            <c:if test="${currentPage > 1}">
+                <button onclick="changePage(1)" title="Trang đầu tiên">
+                    <i class="fas fa-angle-double-left"></i>
+                </button>
+                <button onclick="changePage(${currentPage - 1})" title="Trang trước">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+            </c:if>
+
+            <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                <c:choose>
+                    <c:when test="${currentPage == i}">
+                        <input type="number"
+                               id="page-input"
+                               value="${i}"
+                               data-max="${displayTotal}"
+                               title="Nhập số trang và nhấn Enter" />
+                    </c:when>
+                    <c:otherwise>
+                        <button onclick="changePage(${i})">${i}</button>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+
+            <c:if test="${currentPage < displayTotal}">
+                <button onclick="changePage(${currentPage + 1})" title="Trang tiếp theo">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                <button onclick="changePage(${displayTotal})" title="Trang cuối cùng">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
+            </c:if>
+
+        </div>
     </div>
-  </div>
 </div>
 
 <footer class="footer">
