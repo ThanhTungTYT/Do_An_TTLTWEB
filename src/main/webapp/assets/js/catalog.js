@@ -25,15 +25,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 function changePage(page) {
-    var cid = document.getElementById("currentCid").value;
-    var sort = document.getElementById("currentSort").value;
-    if (!sort) sort = "default";
-    if (!cid) cid = "0";
-    window.location.href = `catalog?cid=${cid}&sort=${sort}&page=${page}`;
+    var keywordEl = document.getElementById("currentKeyword");
+    var cidEl = document.getElementById("currentCid");
+    var sortEl = document.getElementById("currentSort");
+
+    var sort = (sortEl && sortEl.value) ? sortEl.value : "default";
+
+    if (keywordEl) {
+        var keyword = keywordEl.value;
+        window.location.href = `search-product?search=${encodeURIComponent(keyword)}&sort=${sort}&page=${page}`;
+    }
+    else {
+        var cid = (cidEl && cidEl.value) ? cidEl.value : "0";
+        window.location.href = `catalog?cid=${cid}&sort=${sort}&page=${page}`;
+    }
 }
 
 function changeSort(sortType) {
-    var cid = document.getElementById("currentCid").value;
-    if (!cid) cid = "0";
-    window.location.href = `catalog?cid=${cid}&sort=${sortType}&page=1`;
+    var keywordEl = document.getElementById("currentKeyword");
+    var cidEl = document.getElementById("currentCid");
+
+    if (keywordEl) {
+        var keyword = keywordEl.value;
+        window.location.href = `search-product?search=${encodeURIComponent(keyword)}&sort=${sortType}&page=1`;
+    } else {
+        var cid = (cidEl && cidEl.value) ? cidEl.value : "0";
+        window.location.href = `catalog?cid=${cid}&sort=${sortType}&page=1`;
+    }
 }
