@@ -86,44 +86,75 @@
             <div class="content">
                 <div class="rating">
                     <div class="stars" style="--rating: ${avg}"></div>
-                    <span>${avg}/5</span>
+                    <span>${avg}/5 (${count} đánh giá)</span>
                 </div>
-
-                <p class="price">
-                    <fmt:formatNumber value="${product.price}" type="number" maxFractionDigits="0"/> VND
-                </p>
+                <div class="price-box">
+                    <p class="price">
+                        <fmt:formatNumber value="${product.price}" type="number" maxFractionDigits="0"/> VND
+                    </p>
+                </div>
                 <div class="quick-info">
                     <span>☕ ${product.category_name}</span>
                     <span>📦 ${product.weight_grams}g</span>
+                    <span>🏷️ Hàng chính hãng</span>
                 </div>
                 <form method="post" action="${pageContext.request.contextPath}/add-to-cart">
                     <input type="hidden" name="pid" value="${product.id}">
-                    <div class="quantity">
-                        <label>Số lượng: </label>
-                        <button type="button" id="count-minus">-</button>
-                        <span id="num-count">1</span>
-                        <input type="hidden" name="q" id="q" value="1">
-                        <button type="button" id="count-add">+</button>
+                    <div class="quantity-box">
+                        <label>Số lượng</label>
+                        <div class="quantity">
+                            <button type="button" id="count-minus">−</button>
+                            <span id="num-count">1</span>
+                            <input type="hidden" name="q" id="q" value="1">
+                            <button type="button" id="count-add">+</button>
+                        </div>
                     </div>
                     <div class="cta">
-                        <button type="submit" class="btn-cart">Thêm vào giỏ</button>
+                        <button type="submit" class="btn-cart">
+                            🛒 Thêm vào giỏ hàng
+                        </button>
+                        <button type="button" class="btn-buy">
+                            ⚡ Mua ngay
+                        </button>
                     </div>
                 </form>
                 <div class="trust">
-                    <p>🚚 Giao nhanh 2-3 ngày</p>
-                    <p>🔄 Đổi trả 7 ngày</p>
+                    <p>🚚 Giao nhanh 2-3 ngày toàn quốc</p>
+                    <p>🔄 Đổi trả miễn phí 7 ngày</p>
+                    <p>💯 Cam kết chính hãng 100%</p>
                 </div>
+
             </div>
             <div class="des-right">
-                <p class="title">Thông tin liên hệ tư vấn</p>
-                <div class="list-call">
-                    <p><i class="fab fa-facebook-f"></i> Facebook: <a href="https://www.facebook.com/atnguyen.75640/">AromaCafe</a></p>
-                    <p><i class="fab fa-instagram"></i>Instagram: <a href="https://www.instagram.com/nguyendat6159/">AromaCafe</a></p>
-                    <p><i class="fa-brands fa-youtube"></i>Youtube: <a href="https://www.youtube.com/@nguyenlechannel4855/featured">AromaCafe</a></p>
-                    <p><i class="fa-solid fa-phone"></i>Số hotline: 0933652267</p>
+                <div class="box-title">
+                    💬 Hỗ trợ khách hàng
+                </div>
+                <div class="support-list">
+                    <a href="#" class="item facebook">
+                        <i class="fab fa-facebook"></i>
+                        <span>Facebook</span>
+                    </a>
+                    <a href="#" class="item insta">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="#" class="item youtube">
+                        <i class="fab fa-youtube"></i>
+                        <span>Youtube</span>
+                    </a>
+                    <div class="hotline">
+                        <i class="fa fa-phone"></i>
+                        <div>
+                            <p>Hotline</p>
+                            <strong>0933 652 267</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="support-footer">
+                    <button class="btn-chat">💬 Chat ngay</button>
+                    <button class="btn-call">📞 Gọi ngay</button>
                 </div>
             </div>
-        </div>
     </div>
     <div class="product-details">
         <div class="detail-main" id="productDescription">

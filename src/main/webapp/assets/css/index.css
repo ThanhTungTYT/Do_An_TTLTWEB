@@ -234,6 +234,8 @@
     align-items: center;
     box-shadow: 0 15px 35px rgba(0,0,0,0.2);
     opacity: 0;
+    flex: 1;
+    min-width: 0;
     transform: translateY(15px);
     transition: all 0.4s ease;
 }
@@ -269,7 +271,8 @@
 .product-preview .description {
     color: #333;
     margin-top: 10px;
-    line-height: 1.6;
+    white-space: normal;
+    word-break: break-word;
 }
 .product-preview .rating {
     margin-top: 10px;

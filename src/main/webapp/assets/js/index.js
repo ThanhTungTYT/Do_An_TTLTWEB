@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 name.textContent = p.dataset.name;
                 price.textContent = p.dataset.price;
                 sold.textContent = `🔥 Đã bán: ${p.dataset.sold}`;
-                des.textContent = p.dataset.des;
+                des.innerHTML = p.dataset.des.replace(/\n/g, "<br>");
                 rating.innerHTML = `<i class="fas fa-star" style="color:gold"></i><strong>${Number(p.dataset.avgr).toFixed(1)}</strong>/5`;
 
                 hoverTimer = setTimeout(() => {
