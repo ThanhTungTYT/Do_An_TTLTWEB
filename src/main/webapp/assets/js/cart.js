@@ -199,7 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const windowHeight = window.innerHeight;
 
         if (footerTop <= windowHeight) {
-            // Footer đã vào viewport → chuyển sang absolute, dừng ngay trên footer
             const scrollY      = window.scrollY || window.pageYOffset;
             const absTop       = scrollY + footerTop - barHeight;
             stickyBar.style.position = "absolute";

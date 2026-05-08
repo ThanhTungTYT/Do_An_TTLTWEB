@@ -62,4 +62,18 @@ public class ContactDao extends BaseDao {
             return query.mapToBean(Contact.class).list();
         });
     }
+
+    public int countContactsByUserToday(int userId) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery(
+                                "SELECT COUNT(*) " +
+                                        "FROM contacts " +
+                                        "WHERE user_id = :userId " +
+                                        "AND DATE(sent_at) = CURDATE()"
+                        )
+                        .bind("userId", userId)
+                        .mapTo(Integer.class)
+                        .one()
+        );
+    }
 }

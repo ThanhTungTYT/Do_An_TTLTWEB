@@ -150,7 +150,6 @@
                 </c:forEach>
             </div>
 
-                <%-- Tổng cộng inline (ẩn, chỉ giữ cho tương thích nếu cần) --%>
             <div class="cart-totals" style="display:none;">
                 <h3>TỔNG CỘNG</h3>
                 <span id="cart-total">0đ</span>

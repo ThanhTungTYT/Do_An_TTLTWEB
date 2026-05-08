@@ -50,6 +50,13 @@ public class ContactServlet extends HttpServlet {
             return;
         }
 
+        int countToday = contactService.countContactsByUserToday(authUser.getId());
+        if (countToday >= 3) {
+            request.setAttribute("error", "Bạn đã đạt giới hạn 3 lần gửi liên hệ trong ngày hôm nay. Vui lòng quay lại vào ngày mai!");
+            request.getRequestDispatcher("/help.jsp").forward(request, response);
+            return;
+        }
+
         String fullName = request.getParameter("name");
         String email = request.getParameter("email");
         String message = request.getParameter("message");
