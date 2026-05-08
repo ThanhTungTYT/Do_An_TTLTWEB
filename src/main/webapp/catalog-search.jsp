@@ -1,17 +1,10 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: admin
-  Date: 27/01/2026
-  Time: 7:50 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
-    <title>Tìm kiếm</title>
+    <title>Kết quả tìm kiếm | Aroma Café</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/catalog.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/catalog-search.css">
@@ -36,137 +29,168 @@
             </div>
             <c:choose>
                 <c:when test="${not empty sessionScope.user}">
-                    <c:choose>
-                        <c:when test="${sessionScope.user.role eq 'admin'}">
-                            <a href="${pageContext.request.contextPath}/admin/dashboard">
-                                <i class="fas fa-user-shield"></i>
-                                <span style="font-size: 14px; margin-left: 5px">
-                                    <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
-                                    Hi, ${nameParts[fn:length(nameParts) - 1]}!
-                                </span>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="${pageContext.request.contextPath}/account">
-                                <i class="fas fa-user"></i>
-                                <span style="font-size: 14px; margin-left: 5px">
-                                    <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
-                                    Hi, ${nameParts[fn:length(nameParts) - 1]}!
-                                </span>
-                            </a>
-                        </c:otherwise>
-                    </c:choose>
+                    <a href="${sessionScope.user.role eq 'admin' ? pageContext.request.contextPath.concat('/admin/dashboard') : pageContext.request.contextPath.concat('/account')}">
+                        <i class="fas fa-user"></i>
+                        <span style="font-size: 14px; margin-left: 5px">
+                            <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
+                            Hi, ${nameParts[fn:length(nameParts) - 1]}!
+                        </span>
+                    </a>
                 </c:when>
                 <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/login">
-                        <i class="fas fa-user"></i>
-                    </a>
+                    <a href="${pageContext.request.contextPath}/login"><i class="fas fa-user"></i></a>
                 </c:otherwise>
             </c:choose>
         </div>
     </div>
-
     <div class="bottom">
         <a href="${pageContext.request.contextPath}/">Trang chủ</a>
-        <a href="${pageContext.request.contextPath}/catalog">Sản phẩm</a>
+        <a href="${pageContext.request.contextPath}/catalog" class="active">Sản phẩm</a>
         <a href="${pageContext.request.contextPath}/contact">Liên hệ</a>
         <a href="${pageContext.request.contextPath}/about">Giới thiệu</a>
     </div>
 </header>
 
-<input type="hidden" id="currentKeyword" value="${keyword}">
-<input type="hidden" id="currentSort" value="${currentSort}">
+<main class="catalog-main">
+    <div class="container">
+        <div class="search-results-header">
+            <div class="breadcrumb">
+                <a href="${pageContext.request.contextPath}/">Trang chủ</a>
+                <span class="separator"><i class="fas fa-chevron-right"></i></span>
+                <span class="search-title">Kết quả cho: "${keyword}"</span>
+            </div>
+        </div>
 
-<div class="search-results-header">
-    <div class="breadcrumb">
-        <a href="${pageContext.request.contextPath}/">Trang chủ</a>
-        <span class="separator">/</span>
-        <a href="${pageContext.request.contextPath}/catalog">Sản phẩm</a>
-        <span class="separator">/</span>
-    </div>
-    <h1 class="search-title">Kết quả tìm kiếm cho "${keyword}"</h1>
-</div>
+        <div class="catalog-layout">
+            <aside class="sidebar">
+                <div class="filter-group">
+                    <h3 class="filter-title">Danh mục</h3>
+                    <ul class="list-catalog">
+                        <li>
+                            <a href="catalog?cid=0" class="catalog-item">Tất cả sản phẩm</a>
+                        </li>
+                        <c:forEach items="${listCategories}" var="c">
+                            <li>
+                                <a href="catalog?cid=${c.id}" class="catalog-item">${c.name}</a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <div class="filter-box">
+                    <h3 class="filter-title">Sắp xếp theo</h3>
+                    <select class="sort-dropdown" onchange="changeSort(this.value)">
+                        <option value="default" ${currentSort == 'default' ? 'selected' : ''}>Mặc định</option>
+                        <option value="price-desc" ${currentSort == 'price-desc' ? 'selected' : ''}>Giá cao đến thấp</option>
+                        <option value="price-asc" ${currentSort == 'price-asc' ? 'selected' : ''}>Giá thấp đến cao</option>
+                        <option value="sold" ${currentSort == 'sold' ? 'selected' : ''}>Bán chạy nhất</option>
+                    </select>
+                </div>
 
-<div class="catalog">
-    <div class="catalog-list" id="catalog-list">
-        <p class="head-catalog">Danh mục sản phẩm</p>
-    </div>
-    <div class="product-area" id="product-area">
-
-        <div class="product-list" id="product-list">
-            <c:if test="${empty listProducts}">
-                <p style="width:100%; text-align:center; padding: 20px;">Không có sản phẩm nào.</p>
-            </c:if>
-
-            <c:forEach items="${listProducts}" var="p">
-                <a href="product?pid=${p.id}" class="product">
-                    <img src="${p.image_url}" alt="${p.name}">
-                    <p>${p.name}</p>
-                    <span><fmt:formatNumber value="${p.price}" type="number"/> VND</span>
-                    <label>Loại: ${p.category_name}</label>
-                    <div style="font-size: 12px; color: #666; margin-top: 5px;">
-                        <span><i class="fas fa-star" style="color:gold"></i> ${String.format("%.1f", p.avg_rating)}</span>
-                        <span style="margin-left: 10px;">Đã bán: ${p.sold}</span>
+                <div class="filter-box">
+                    <h3 class="filter-title">Lọc theo giá</h3>
+                    <div class="price-radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="price" value="all" ${(empty param.price or param.price == 'all') ? 'checked' : ''} onclick="changePrice('all')">
+                            <span>Tất cả</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="price" value="0-50000" ${param.price == '0-50000' ? 'checked' : ''} onclick="changePrice('0-50000')">
+                            <span>Dưới 50.000đ</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="price" value="50000-150000" ${param.price == '50000-150000' ? 'checked' : ''} onclick="changePrice('50000-150000')">
+                            <span>50k - 150k</span>
+                        </label>
                     </div>
-                </a>
-            </c:forEach>
-        </div>
+                </div>
+            </aside>
 
-        <div class="product-page" id="pagination" style="margin-top: 20px; text-align: center;">
+            <section class="product-area">
+                <div class="product-grid">
+                    <c:if test="${empty listProducts}">
+                        <div class="no-product">
+                            <i class="fas fa-search-minus"></i>
+                            <p>Không tìm thấy sản phẩm nào khớp với từ khóa của bạn.</p>
+                        </div>
+                    </c:if>
 
-            <c:set var="displayTotal" value="${totalPages > 0 ? totalPages : 1}" />
-            <c:set var="startPage" value="${currentPage - 1}" />
-            <c:set var="endPage" value="${currentPage + 1}" />
+                    <c:forEach items="${listProducts}" var="p">
+                        <div class="product-card">
+                            <a href="product?pid=${p.id}">
+                                <div class="product-img">
+                                    <img src="${p.image_url}" alt="${p.name}">
+                                </div>
+                                <div class="product-info">
+                                    <p class="p-category">${p.category_name}</p>
+                                    <h3 class="p-name">${p.name}</h3>
+                                    <p class="p-price"><fmt:formatNumber value="${p.price}" type="number"/> VND</p>
+                                    <div class="p-meta">
+                                        <span>Đã bán: ${p.sold}</span>
+                                        <span><i class="fas fa-star" style="color: gold;"></i> ${p.avg_rating}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </c:forEach>
+                </div>
 
-            <c:if test="${startPage < 1}">
-                <c:set var="startPage" value="1" />
-                <c:set var="endPage" value="3" />
-            </c:if>
+                <div class="product-page" id="pagination" style="margin-top: 20px; text-align: center;">
 
-            <c:if test="${endPage > displayTotal}">
-                <c:set var="endPage" value="${displayTotal}" />
-                <c:set var="startPage" value="${displayTotal - 2}" />
-                <c:if test="${startPage < 1}">
-                    <c:set var="startPage" value="1" />
-                </c:if>
-            </c:if>
+                    <c:set var="displayTotal" value="${totalPages > 0 ? totalPages : 1}" />
+                    <c:set var="startPage" value="${currentPage - 1}" />
+                    <c:set var="endPage" value="${currentPage + 1}" />
 
-            <c:if test="${currentPage > 1}">
-                <button onclick="changePage(1)" title="Trang đầu tiên">
-                    <i class="fas fa-angle-double-left"></i>
-                </button>
-                <button onclick="changePage(${currentPage - 1})" title="Trang trước">
-                    <i class="fas fa-angle-left"></i>
-                </button>
-            </c:if>
+                    <c:if test="${startPage < 1}">
+                        <c:set var="startPage" value="1" />
+                        <c:set var="endPage" value="3" />
+                    </c:if>
 
-            <c:forEach begin="${startPage}" end="${endPage}" var="i">
-                <c:choose>
-                    <c:when test="${currentPage == i}">
-                        <input type="number"
-                               id="page-input"
-                               value="${i}"
-                               data-max="${displayTotal}"
-                               title="Nhập số trang và nhấn Enter" />
-                    </c:when>
-                    <c:otherwise>
-                        <button onclick="changePage(${i})">${i}</button>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
+                    <c:if test="${endPage > displayTotal}">
+                        <c:set var="endPage" value="${displayTotal}" />
+                        <c:set var="startPage" value="${displayTotal - 2}" />
+                        <c:if test="${startPage < 1}">
+                            <c:set var="startPage" value="1" />
+                        </c:if>
+                    </c:if>
 
-            <c:if test="${currentPage < displayTotal}">
-                <button onclick="changePage(${currentPage + 1})" title="Trang tiếp theo">
-                    <i class="fas fa-angle-right"></i>
-                </button>
-                <button onclick="changePage(${displayTotal})" title="Trang cuối cùng">
-                    <i class="fas fa-angle-double-right"></i>
-                </button>
-            </c:if>
+                    <c:if test="${currentPage > 1}">
+                        <button onclick="changePage(1)" title="Trang đầu tiên">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button onclick="changePage(${currentPage - 1})" title="Trang trước">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                    </c:if>
 
+                    <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                        <c:choose>
+                            <c:when test="${currentPage == i}">
+                                <input type="number"
+                                       id="page-input"
+                                       value="${i}"
+                                       data-max="${displayTotal}"
+                                       title="Nhập số trang và nhấn Enter" />
+                            </c:when>
+                            <c:otherwise>
+                                <button onclick="changePage(${i})">${i}</button>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+
+                    <c:if test="${currentPage < displayTotal}">
+                        <button onclick="changePage(${currentPage + 1})" title="Trang tiếp theo">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button onclick="changePage(${displayTotal})" title="Trang cuối cùng">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </c:if>
+
+                </div>
+            </section>
         </div>
     </div>
-</div>
+</main>
 
 <footer class="footer">
     <div class="footer-top">
@@ -199,7 +223,9 @@
         <p>&copy; 2024 Aroma Café. All rights reserved.</p>
     </div>
 </footer>
-<button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
+
+<input type="hidden" id="currentKeyword" value="${keyword}">
+<input type="hidden" id="currentSort" value="${currentSort}">
 
 <script src="${pageContext.request.contextPath}/assets/js/catalog.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
