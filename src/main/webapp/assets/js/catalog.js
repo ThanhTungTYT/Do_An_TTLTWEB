@@ -24,32 +24,48 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
 function changePage(page) {
-    var keywordEl = document.getElementById("currentKeyword");
-    var cidEl = document.getElementById("currentCid");
-    var sortEl = document.getElementById("currentSort");
+    const urlParams = new URLSearchParams(window.location.search);
 
-    var sort = (sortEl && sortEl.value) ? sortEl.value : "default";
+    const cid = document.getElementById("currentCid")?.value || urlParams.get('cid') || "0";
+    const sort = document.getElementById("currentSort")?.value || urlParams.get('sort') || "default";
+    const price = urlParams.get('price') || "all";
+    const search = urlParams.get('search') || "";
 
-    if (keywordEl) {
-        var keyword = keywordEl.value;
-        window.location.href = `search-product?search=${encodeURIComponent(keyword)}&sort=${sort}&page=${page}`;
+    let newUrl = `catalog?cid=${cid}&sort=${sort}&price=${price}&page=${page}`;
+
+    if (window.location.pathname.includes('search-product') || search !== "") {
+        newUrl = `search-product?search=${encodeURIComponent(search)}&sort=${sort}&price=${price}&page=${page}`;
     }
-    else {
-        var cid = (cidEl && cidEl.value) ? cidEl.value : "0";
-        window.location.href = `catalog?cid=${cid}&sort=${sort}&page=${page}`;
+
+    window.location.href = newUrl;
+}
+function changeSort(sortType) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const cid = document.getElementById("currentCid")?.value || "0";
+    const price = urlParams.get('price') || "all";
+    const search = urlParams.get('search') || "";
+
+    let newUrl = `catalog?cid=${cid}&sort=${sortType}&price=${price}&page=1`;
+
+    if (search !== "") {
+        newUrl = `search-product?search=${encodeURIComponent(search)}&sort=${sortType}&price=${price}&page=1`;
     }
+
+    window.location.href = newUrl;
 }
 
-function changeSort(sortType) {
-    var keywordEl = document.getElementById("currentKeyword");
-    var cidEl = document.getElementById("currentCid");
+function changePrice(priceRange) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const cid = document.getElementById("currentCid")?.value || "0";
+    const sort = document.getElementById("currentSort")?.value || "default";
+    const search = urlParams.get('search') || "";
 
-    if (keywordEl) {
-        var keyword = keywordEl.value;
-        window.location.href = `search-product?search=${encodeURIComponent(keyword)}&sort=${sortType}&page=1`;
-    } else {
-        var cid = (cidEl && cidEl.value) ? cidEl.value : "0";
-        window.location.href = `catalog?cid=${cid}&sort=${sortType}&page=1`;
+    let newUrl = `catalog?cid=${cid}&sort=${sort}&price=${priceRange}&page=1`;
+
+    if (search !== "") {
+        newUrl = `search-product?search=${encodeURIComponent(search)}&sort=${sort}&price=${priceRange}&page=1`;
     }
+    window.location.href = newUrl;
 }
