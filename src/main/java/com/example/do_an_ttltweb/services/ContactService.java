@@ -20,4 +20,8 @@ public class ContactService {
     public List<Contact> getContactList(String startDate, String endDate, int limit, int offset) {
         return contactDao.getContacts(startDate, endDate, limit, offset);
     }
+
+    public int countContactsByUserToday(int id) {
+        return contactDao.countContactsByUserToday(id);
+    }
 }
