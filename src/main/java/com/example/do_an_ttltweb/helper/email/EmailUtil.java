@@ -4,11 +4,27 @@ import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EmailUtil {
 
     private static final String FROM_EMAIL = "nguyenhuybaolegit@gmail.com";
     private static final String PASSWORD = "pdda juqw xdjw rdur"; // bí mật
+
+    private static final ExecutorService executor = Executors.newFixedThreadPool(5);
+
+    public static void sendEmailAsync(String toEmail, String subject, String body) {
+        executor.submit(() -> {
+            try {
+                sendEmail(toEmail, subject, body);
+                System.out.println("Gửi email thành công tới: " + toEmail);
+            } catch (MessagingException e) {
+                System.err.println("Lỗi khi gửi email tới " + toEmail + ": " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
 
     public static void sendEmail(String toEmail, String subject, String body) throws MessagingException {
         Properties props = new Properties();
