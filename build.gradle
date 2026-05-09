@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'war'
+    id 'maven-publish'
+    id "org.hidetake.ssh" version "2.11.2"
 }
 
 group = 'com.example'
@@ -30,7 +32,6 @@ dependencies {
     implementation 'com.mysql:mysql-connector-j:9.5.0'
 
     // JSTL API
-    // JSTL API
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
 
     // JSTL Implementation
@@ -53,4 +54,60 @@ tasks.withType(JavaCompile) {
 
 test {
     useJUnitPlatform()
+}
+
+// ==========================================
+// CẤU HÌNH DEPLOY LÊN SERVER BẰNG SSH
+// ==========================================
+apply plugin: 'org.hidetake.ssh'
+
+remotes {
+    host {
+        // Sửa IP và user lại cho khớp với MobaXterm
+        host = '192.168.124.128'
+        user = 'ubuntu'
+        password = '1'
+    }
+}
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+task docker_app_start {
+    doLast {
+        println 'begin docker_app_start'
+        ssh.run {
+            session(remotes.host) {
+                execute 'docker stop tomcat10', ignoreError: true
+                execute 'docker run -it --rm -d ' +
+                        '--name tomcat10 ' +
+                        '-v /usr/deploy:/usr/local/tomcat/webapps ' +
+                        '-p 80:8080 ' +
+                        'tomcat:10.1'
+            }
+        }
+    }
+}
+
+task docker_upload_file_to_server {
+    doLast {
+        println 'begin docker_upload_file_to_server'
+        ssh.run {
+            session(remotes.host) {
+                remove '/usr/deploy/lab.war'
+                remove '/usr/deploy/lab/'
+
+                put from: tasks.war.archiveFile.get().asFile.path,
+                        into: "/usr/deploy/lab.war"
+            }
+        }
+    }
+}
+
+task docker_deploy {
+    dependsOn build
+    dependsOn docker_upload_file_to_server
+    dependsOn docker_app_start
+    tasks.getByName('docker_app_start').mustRunAfter docker_upload_file_to_server
 }
