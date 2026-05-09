@@ -18,10 +18,10 @@
                  onclick="location.href='${pageContext.request.contextPath}/'"
                  width="300px" height="100px" alt="Logo">
         </div>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Tìm kiếm...">
-            <button id="search-button"><i class="fas fa-search"></i></button>
-        </div>
+        <form class="search-bar" method="get" action="${pageContext.request.contextPath}/search-product">
+            <input type="text" name="search" id="search-input" placeholder="Tìm kiếm..." value="${keyword}">
+            <button type="submit" id="search-button"><i class="fas fa-search"></i></button>
+        </form>
         <div class="mini-menu">
             <div class="cart">
                 <a href="${pageContext.request.contextPath}/cart"><i class="fas fa-shopping-cart"></i></a>
@@ -164,10 +164,42 @@
                 <span class="line"></span>
             </div>
             <div class="detail-content" id="contentToCollapse">
-                ${product.description}
+                <div class="desc-grid">
+                    <div class="desc-main">
+                        <h3><i class="fa-solid fa-mug-hot"></i> Thông tin sản phẩm</h3>
+                        <ul class="desc-list">
+                            <li><strong>Tên:</strong> ${product.name}</li>
+                            <li><strong>Thương hiệu:</strong> Aroma Café</li>
+                            <li><strong>Danh mục:</strong> ${product.category_name}</li>
+                            <li><strong>Khối lượng:</strong> ${product.weight_grams}g</li>
+                        </ul>
+                        <div class="desc-text">
+                            ${product.description}
+                        </div>
+                    </div>
+                    <div class="desc-highlight">
+                        <h3><i class="fa-solid fa-star"></i> Điểm nổi bật</h3>
+                        <div class="highlight-item">
+                            <i class="fa-solid fa-leaf"></i>
+                            <span>100% cà phê nguyên chất</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fa-solid fa-fire"></i>
+                            <span>Rang mộc giữ nguyên hương vị</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fa-solid fa-award"></i>
+                            <span>Đạt tiêu chuẩn chất lượng cao</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fa-solid fa-truck-fast"></i>
+                            <span>Giao hàng toàn quốc</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <button class="toggle-button" id="readMoreBtn">
-                Xem thêm <span class="arrow"></span>
+                Xem thêm<span class="arrow"></span>
             </button>
         </div>
     </div>
