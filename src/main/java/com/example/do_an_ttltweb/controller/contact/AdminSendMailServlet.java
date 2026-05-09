@@ -27,12 +27,12 @@ public class AdminSendMailServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
-            EmailUtil.sendEmail(toEmail, subject, htmlContent);
+            EmailUtil.sendEmailAsync(toEmail, subject, htmlContent);
 
-            session.setAttribute("msgSuccess", "Đã gửi phản hồi thành công tới " + toEmail);
+            session.setAttribute("msgSuccess", "Hệ thống đang tiến hành gửi phản hồi tới " + toEmail + ". Quá trình này sẽ hoàn tất trong giây lát.");
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("msgError", "Gửi thất bại: " + e.getMessage());
+            session.setAttribute("msgError", "Lỗi hệ thống khi thiết lập luồng gửi mail: " + e.getMessage());
         }
 
         response.sendRedirect(request.getContextPath() + "/admin/contact");
