@@ -60,7 +60,7 @@ public class ForgotPasswordServlet extends HttpServlet {
                 String body = "<h3>Xin chào,</h3>" +
                         "<p>Mật khẩu mới của bạn là: <strong style='font-size: 18px;'>" + newPasswordRaw + "</strong></p>" +
                         "<p>Vui lòng đăng nhập và đổi lại mật khẩu ngay để bảo mật thông tin.</p>";
-                EmailUtil.sendEmail(email, subject, body);
+                EmailUtil.sendEmailAsync(email, subject, body);
 
                 requestCache.put(email, System.currentTimeMillis());
 

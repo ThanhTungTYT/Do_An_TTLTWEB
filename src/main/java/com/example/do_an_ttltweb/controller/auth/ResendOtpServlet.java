@@ -47,7 +47,7 @@ public class ResendOtpServlet extends HttpServlet {
                     "<p>Mã OTP mới của bạn là: <strong style='color: #c76739; font-size: 18px;'>" + newOtp + "</strong></p>" +
                     "<p>Mã có hiệu lực trong 10 phút tới.</p>";
 
-            EmailUtil.sendEmail(email, subject, body);
+            EmailUtil.sendEmailAsync(email, subject, body);
 
             regData.put("otp", newOtp);
             regData.put("expireTime", currentTime + (10 * 60 * 1000));
