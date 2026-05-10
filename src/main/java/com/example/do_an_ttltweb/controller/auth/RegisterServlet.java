@@ -73,7 +73,7 @@ public class RegisterServlet extends HttpServlet {
                     "<p>Mã xác thực (OTP) của bạn là: <strong style='color: #c76739; font-size: 18px;'>" + otp + "</strong></p>" +
                     "<p>Mã có hiệu lực trong 10 phút.</p>";
 
-            EmailUtil.sendEmail(email, subject, body);
+            EmailUtil.sendEmailAsync(email,subject,body);
 
             Map<String, Object> regData = new HashMap<>();
             regData.put("fullname", fullname);
