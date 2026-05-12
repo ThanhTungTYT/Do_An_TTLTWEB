@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 public class EmailUtil {
 
     private static final String FROM_EMAIL = "nguyenhuybaolegit@gmail.com";
-    private static final String PASSWORD = "pdda juqw xdjw rdur"; // bí mật
+    private static final String PASSWORD = "deus bqxf hwqe jwol"; // bí mật
 
     private static final ExecutorService executor = Executors.newFixedThreadPool(5);
 
