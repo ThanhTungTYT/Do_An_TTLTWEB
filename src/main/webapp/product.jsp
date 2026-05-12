@@ -11,6 +11,14 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
 </head>
 <body>
+<c:if test="${not empty sessionScope.success or not empty sessionScope.error}">
+    <div id="toast-notification" class="toast ${not empty sessionScope.success ? 'toast-success' : 'toast-error'}">
+        <i class="${not empty sessionScope.success ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'}"></i>
+        <span>${not empty sessionScope.success ? sessionScope.success : sessionScope.error}</span>
+    </div>
+    <c:remove var="success" scope="session"/>
+    <c:remove var="error" scope="session"/>
+</c:if>
 <header>
     <div class="top">
         <div class="logo">
@@ -103,19 +111,25 @@
                     <div class="quantity-box">
                         <label>Số lượng</label>
                         <div class="quantity">
-                            <button type="button" id="count-minus">−</button>
+                            <button type="button" id="count-minus" ${product.stock <= 0 ? 'disabled' : ''}> − </button>
                             <span id="num-count">1</span>
                             <input type="hidden" name="q" id="q" value="1">
-                            <button type="button" id="count-add">+</button>
+                            <button type="button" id="count-add" ${product.stock <= 0 ? 'disabled' : ''}> + </button>
                         </div>
                     </div>
                     <div class="cta">
-                        <button type="submit" class="btn-cart">
-                            🛒 Thêm vào giỏ hàng
-                        </button>
-                        <button type="button" class="btn-buy">
-                            ⚡ Mua ngay
-                        </button>
+                        <c:choose>
+                            <c:when test="${product.stock > 0}">
+                                <button type="submit" class="btn-cart">
+                                    🛒 Thêm vào giỏ hàng
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button type="button" class="btn-cart out-stock" disabled>
+                                    Hết hàng
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </form>
                 <div class="trust">

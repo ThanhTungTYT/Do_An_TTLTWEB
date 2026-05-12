@@ -3,6 +3,7 @@ package com.example.do_an_ttltweb.services;
 import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.helper.hash.MD5Util;
+import java.util.*;
 
 public class AuthService {
     private final AuthDao authDao = new AuthDao();
@@ -38,5 +39,15 @@ public class AuthService {
         }
 
         return authDao.updatePasswordById(userId, MD5Util.md5(newPassRaw));
+    }
+
+    public void loadUserPermissions(User user) {
+        if (user == null) return;
+        AuthDao dao = new AuthDao();
+        List<String> perms = dao.getPermissionsByUserId(user.getId());
+
+        if (!perms.contains("shopping")) perms.add("shopping");
+
+        user.setPermissions(perms);
     }
 }

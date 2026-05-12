@@ -3,6 +3,7 @@ package com.example.do_an_ttltweb.servlet;
 import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.model.GoogleUser;
 import com.example.do_an_ttltweb.model.User;
+import com.example.do_an_ttltweb.services.AuthService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -38,6 +39,7 @@ public class GoogleLoginServlet extends HttpServlet {
             GoogleUser ggUser = parseUserFromIdToken(tokenJson.get("id_token").getAsString());
 
             AuthDao authDao = new AuthDao();
+            AuthService authService = new AuthService();
 
             User user = authDao.findByEmail(ggUser.getEmail());
 
@@ -53,8 +55,9 @@ public class GoogleLoginServlet extends HttpServlet {
                 user = authDao.findByEmail(ggUser.getEmail());
             }
 
-            request.getSession().setAttribute("user", user);
+            authService.loadUserPermissions(user);
 
+            request.getSession().setAttribute("user", user);
             response.sendRedirect(request.getContextPath() + "/");
 
         } catch (Exception e) {

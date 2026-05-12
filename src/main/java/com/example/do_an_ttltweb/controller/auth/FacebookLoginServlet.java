@@ -2,6 +2,7 @@ package com.example.do_an_ttltweb.servlet;
 
 import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.model.User;
+import com.example.do_an_ttltweb.services.AuthService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -38,6 +39,7 @@ public class FacebookLoginServlet extends HttpServlet {
             String name = fbUser.get("name").getAsString();
 
             AuthDao authDao = new AuthDao();
+            AuthService authService = new AuthService();
             User user = null;
 
             if (email != null) {
@@ -58,6 +60,9 @@ public class FacebookLoginServlet extends HttpServlet {
                 }
             }
 
+            if (user != null) {
+                authService.loadUserPermissions(user);
+            }
             request.getSession().setAttribute("user", user);
             response.sendRedirect(request.getContextPath() + "/");
 
