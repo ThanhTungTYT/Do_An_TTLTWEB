@@ -2,6 +2,7 @@ package com.example.do_an_ttltweb.dao;
 
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.helper.base.BaseDao;
+import java.util.*;
 
 public class AuthDao extends BaseDao {
 
@@ -65,5 +66,39 @@ public class AuthDao extends BaseDao {
                         .bind("id", userId)
                         .execute() > 0
         );
+    }
+
+    public List<String> getPermissionsByUserId(int userId) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT p.permission_key FROM permissions p " +
+                                "JOIN user_permissions up ON p.id = up.permission_id " +
+                                "WHERE up.user_id = :uid")
+                        .bind("uid", userId)
+                        .mapTo(String.class)
+                        .list()
+        );
+    }
+
+    public List<Map<String, Object>> getAllPermissions() {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT id, permission_name, permission_key FROM permissions")
+                        .mapToMap()
+                        .list()
+        );
+    }
+
+    public void updateUserPermissions(int userId, String[] permissionIds) {
+        getJdbi().useHandle(handle -> {
+            handle.useTransaction(h -> {
+                h.createUpdate("DELETE FROM user_permissions WHERE user_id = :uid")
+                        .bind("uid", userId).execute();
+                if (permissionIds != null) {
+                    for (String pId : permissionIds) {
+                        h.createUpdate("INSERT INTO user_permissions(user_id, permission_id) VALUES (:uid, :pid)")
+                                .bind("uid", userId).bind("pid", Integer.parseInt(pId)).execute();
+                    }
+                }
+            });
+        });
     }
 }

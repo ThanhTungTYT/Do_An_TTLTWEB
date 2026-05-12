@@ -1,5 +1,6 @@
 package com.example.do_an_ttltweb.model;
 import java.sql.Timestamp;
+import java.util.*;
 
 public class User {
     private int id;
@@ -10,6 +11,7 @@ public class User {
     private String role;
     private Timestamp createdAt;
     private String status;
+    private List<String> permissions = new ArrayList<>();
 
     public User(int id, String full_name, String email, String phone, String password_hash, String role, String status) {
         this.id = id;
@@ -77,6 +79,15 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<String> getPermissions() { return permissions; }
+
+    public void setPermissions(List<String> permissions) { this.permissions = permissions; }
+
+    public boolean hasPermission(String pKey) {
+        if ("admin".equalsIgnoreCase(this.role)) return true;
+        return permissions != null && permissions.contains(pKey);
     }
 }
 

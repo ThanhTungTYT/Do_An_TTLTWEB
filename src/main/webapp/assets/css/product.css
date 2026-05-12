@@ -173,6 +173,14 @@
     cursor: pointer;
 }
 
+.out-stock {
+    background: gray !important;
+    color: white !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+    border: none;
+}
+
 .btn-buy:hover {
     background: #a94e2b;
 }

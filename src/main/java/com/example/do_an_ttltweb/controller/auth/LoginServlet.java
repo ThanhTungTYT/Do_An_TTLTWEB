@@ -28,10 +28,12 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("error", "Sai email hoặc mật khẩu!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
+            authService.loadUserPermissions(user);
+
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
 
-            if ("admin".equals(user.getRole())) {
+            if (user.hasPermission("access_admin")) {
                 response.sendRedirect(request.getContextPath() + "/admin/dashboard");
             } else {
                 response.sendRedirect(request.getContextPath() + "/");

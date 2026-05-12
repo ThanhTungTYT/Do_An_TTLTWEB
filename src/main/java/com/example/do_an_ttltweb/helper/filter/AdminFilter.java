@@ -11,6 +11,10 @@ import java.io.IOException;
 public class AdminFilter implements Filter {
 
     @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
+
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
@@ -25,11 +29,33 @@ public class AdminFilter implements Filter {
             return;
         }
 
-        if (!"admin".equals(user.getRole())) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
+        String uri = req.getRequestURI();
+
+        boolean isAllowed = false;
+
+        if ("admin".equalsIgnoreCase(user.getRole())) {
+            isAllowed = true;
+        } else {
+            if (uri.contains("/admin/products") && user.hasPermission("manage_product")) isAllowed = true;
+            else if (uri.contains("/admin/orders") && user.hasPermission("manage_order")) isAllowed = true;
+            else if (uri.contains("/admin/users") && user.hasPermission("manage_user")) isAllowed = true;
+            else if (uri.contains("/admin/dashboard")) isAllowed = true;
         }
-        chain.doFilter(request, response);
+        if (isAllowed) {
+            chain.doFilter(request, response);
+        } else {
+            String referer = req.getHeader("Referer");
+            if (referer == null || referer.isEmpty()) {
+                referer = req.getContextPath() + "/admin/dashboard";
+            }
+
+            req.getSession().setAttribute("auth_error", "Bạn không có đủ thẩm quyền truy cập mục này!");
+            res.sendRedirect(referer);
+        }
+    }
+    
+    @Override
+    public void destroy() {
     }
 }
 
