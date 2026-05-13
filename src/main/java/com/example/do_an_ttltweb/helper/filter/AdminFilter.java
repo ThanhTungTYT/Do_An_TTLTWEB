@@ -48,8 +48,6 @@ public class AdminFilter implements Filter {
             if (referer == null || referer.isEmpty()) {
                 referer = req.getContextPath() + "/admin/dashboard";
             }
-
-            req.getSession().setAttribute("auth_error", "Bạn không có đủ thẩm quyền truy cập mục này!");
             res.sendRedirect(referer);
         }
     }

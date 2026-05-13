@@ -1,5 +1,6 @@
 package com.example.do_an_ttltweb.controller.adminPage4;
 
+import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.services.AccountService;
 import jakarta.servlet.ServletException;
@@ -15,27 +16,34 @@ import java.util.List;
 @WebServlet(name = "SearchUser", value = "/search-user")
 public class SearchUser extends HttpServlet {
 
-    private AccountService account = new AccountService();
+        private AccountService account = new AccountService();
+        private AuthDao authDao = new AuthDao();
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> listUsers = new ArrayList<>();
-        List<User> newUsers = account.getNewUser();
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
-        String key = request.getParameter("keyword");
-        request.setAttribute("listNew", newUsers);
+            String key = request.getParameter("keyword");
+            List<User> listUsers;
 
-        if(key.equals("") || key == null){
-            listUsers = account.getAllUser();
-        }else {
-            listUsers = account.getUserByKeyword(key);
-        }
+            if (key == null || key.equals("")) {
+                listUsers = account.getAllUser();
+            } else {
+                listUsers = account.getUserByKeyword(key);
+            }
 
-        request.setAttribute("listUsers", listUsers);
+            listUsers.forEach(u -> {
+                List<String> perms = authDao.getPermissionsByUserId(u.getId());
+                if (!perms.contains("shopping")) perms.add("shopping");
+                u.setPermissions(perms);
+            });
 
-        request.getRequestDispatcher("adminPage4.jsp").forward(request, response);
+            request.setAttribute("listUsers", listUsers);
+            request.setAttribute("listNew", account.getNewUser());
+            request.setAttribute("allPermissions", authDao.getAllPermissions());
+
+            request.getRequestDispatcher("adminPage4.jsp").forward(request, response);
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
