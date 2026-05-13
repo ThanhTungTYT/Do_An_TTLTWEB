@@ -1,7 +1,9 @@
 package com.example.do_an_ttltweb.controller.cart;
 
+import com.example.do_an_ttltweb.dao.CartDao;
+import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.model.cart.Cart;
-import com.example.do_an_ttltweb.model.cart.CartItem; // Import thêm CartItem
+import com.example.do_an_ttltweb.model.cart.CartItem;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,10 +12,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.io.PrintWriter; // Import PrintWriter
+import java.io.PrintWriter;
 
 @WebServlet(name = "UpdateCart", value = "/update-cart")
 public class UpdateCart extends HttpServlet {
+
+    private final CartDao cartDao = new CartDao();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         boolean isAjax = request.getParameter("ajax") != null;
@@ -28,6 +33,9 @@ public class UpdateCart extends HttpServlet {
             if (cart != null) {
                 cart.updateQuantity(pid, quantity);
                 session.setAttribute("cart", cart);
+
+                User user = (User) session.getAttribute("user");
+                if (user != null) cartDao.setQuantity(user.getId(), pid, quantity);
 
                 if (isAjax) {
                     CartItem item = cart.getItem(pid);

@@ -1,5 +1,6 @@
 package com.example.do_an_ttltweb.controller.cart;
 
+import com.example.do_an_ttltweb.dao.CartDao;
 import com.example.do_an_ttltweb.model.cart.Cart;
 import com.example.do_an_ttltweb.model.Product;
 import com.example.do_an_ttltweb.model.User;
@@ -15,6 +16,9 @@ import java.io.IOException;
 
 @WebServlet(name = "AddCart", value = "/add-to-cart")
 public class AddCart extends HttpServlet {
+
+    private final CartDao cartDao = new CartDao();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
@@ -39,6 +43,7 @@ public class AddCart extends HttpServlet {
         if(c == null) c = new Cart();
         c.addProduct(product, q);
         session.setAttribute("cart", c);
+        cartDao.addItem(user.getId(), id, q, product.getPrice());
         response.sendRedirect(request.getContextPath() + "/product?pid=" + id);
         return;
     }
