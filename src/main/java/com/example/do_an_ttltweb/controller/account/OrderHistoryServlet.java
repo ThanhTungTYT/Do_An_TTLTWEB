@@ -53,7 +53,7 @@ public class OrderHistoryServlet extends HttpServlet {
         if (orderIdStr != null && !orderIdStr.isEmpty()) {
             try {
                 int orderId = Integer.parseInt(orderIdStr);
-                orderService.cancelOrder(orderId);
+                orderService.cancelOrder(orderId, authUser.getId());
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }

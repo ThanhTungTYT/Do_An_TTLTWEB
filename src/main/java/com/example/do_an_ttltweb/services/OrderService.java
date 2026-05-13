@@ -31,11 +31,11 @@ public class OrderService {
         }
         return orders;
     }
-    public boolean cancelOrder(int orderId) {
+    public boolean cancelOrder(int orderId, int userId) {
         Order order = new Order();
         order.setId(orderId);
         order.setStatus("Đã hủy");
-        return dao.cancelOrder(order);
+        return dao.cancelOrder(order, userId);
     }
 
     public int countOrders(String start, String end,String status) {

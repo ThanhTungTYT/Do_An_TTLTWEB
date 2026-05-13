@@ -163,14 +163,15 @@ public class OrderDao extends BaseDao {
                         .execute() > 0
         );
     }
-    public boolean cancelOrder(Order order) {
+    public boolean cancelOrder(Order order, int userId) {
         return getJdbi().inTransaction(handle -> {
 
             int updateOrder = handle.createUpdate(
-                            "UPDATE orders SET status = :status WHERE id = :id"
+                            "UPDATE orders SET status = :status WHERE id = :id AND user_id = :userId"
                     )
                     .bind("status", "Đã hủy")
                     .bind("id", order.getId())
+                    .bind("userId", userId)
                     .execute();
 
             if (updateOrder == 0) {
@@ -186,8 +187,8 @@ public class OrderDao extends BaseDao {
 
             for (OrderItem item : items) {
                 handle.createUpdate("UPDATE products " +
-                                        "SET stock = stock + :qty, sold = sold - :qty " +
-                                        "WHERE id = :pid"
+                                "SET stock = stock + :qty, sold = sold - :qty " +
+                                "WHERE id = :pid"
                         )
                         .bind("qty", item.getQuantity())
                         .bind("pid", item.getProductId())
@@ -313,11 +314,11 @@ public class OrderDao extends BaseDao {
 
     public List<Order> getOrderByCondition(int pid, int uid){
         return getJdbi().withHandle(handle ->
-            handle.createQuery("SELECT o.* FROM orders o JOIN order_items oi ON o.id = oi.order_id WHERE o.user_id = :uid AND oi.product_id = :pid ")
-                    .bind("uid", uid)
-                    .bind("pid", pid)
-                    .mapToBean(Order.class)
-                    .list()
+                handle.createQuery("SELECT o.* FROM orders o JOIN order_items oi ON o.id = oi.order_id WHERE o.user_id = :uid AND oi.product_id = :pid ")
+                        .bind("uid", uid)
+                        .bind("pid", pid)
+                        .mapToBean(Order.class)
+                        .list()
         );
     }
 
