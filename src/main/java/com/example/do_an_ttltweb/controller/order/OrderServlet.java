@@ -1,5 +1,6 @@
 package com.example.do_an_ttltweb.controller.order;
 
+import com.example.do_an_ttltweb.dao.CartDao;
 import com.example.do_an_ttltweb.model.cart.Cart;
 import com.example.do_an_ttltweb.model.cart.CartItem;
 import com.example.do_an_ttltweb.model.*;
@@ -22,6 +23,7 @@ public class OrderServlet extends HttpServlet {
 
     private final OrderService orderService = new OrderService();
     private final AccountService accountService = new AccountService();
+    private final CartDao cartDao = new CartDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -159,6 +161,7 @@ public class OrderServlet extends HttpServlet {
             if (success) {
                 for (CartItem boughtItem : checkoutCart.getList()) {
                     mainCart.remove(boughtItem.getProduct().getId());
+                    cartDao.removeItem(user.getId(), boughtItem.getProduct().getId());
                 }
 
                 s.setAttribute("cart", mainCart);
