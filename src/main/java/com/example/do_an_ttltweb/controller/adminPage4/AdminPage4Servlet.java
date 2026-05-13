@@ -1,5 +1,6 @@
 package com.example.do_an_ttltweb.controller.adminPage4;
 
+import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.services.AccountService;
 import jakarta.servlet.ServletException;
@@ -15,18 +16,26 @@ import java.util.List;
 public class AdminPage4Servlet extends HttpServlet {
 
     private AccountService a = new AccountService();
+    private AuthDao authDao = new AuthDao();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         List<User> listUsers = a.getAllUser();
-        List<User> newUsers = a.getNewUser();
+
+        listUsers.forEach(u -> {
+            List<String> perms = authDao.getPermissionsByUserId(u.getId());
+            if (!perms.contains("shopping")) perms.add("shopping");
+            u.setPermissions(perms);
+        });
 
         request.setAttribute("listUsers", listUsers);
-        request.setAttribute("listNew", newUsers);
+        request.setAttribute("listNew", a.getNewUser());
+        request.setAttribute("allPermissions", authDao.getAllPermissions());
 
         request.getRequestDispatcher("/adminPage4.jsp").forward(request, response);
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 

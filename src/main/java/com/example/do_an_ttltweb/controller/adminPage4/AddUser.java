@@ -1,5 +1,6 @@
 package com.example.do_an_ttltweb.controller.adminPage4;
 
+import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.services.AccountService;
 import jakarta.servlet.ServletException;
@@ -14,21 +15,29 @@ import java.io.IOException;
 public class AddUser extends HttpServlet {
 
     private AccountService account = new AccountService();
+    private AuthDao authDao = new AuthDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         User user = new User();
         user.setFull_name(request.getParameter("name"));
         user.setEmail(request.getParameter("email"));
         user.setPassword_hash(request.getParameter("pass"));
         user.setPhone(request.getParameter("phone"));
-        user.setRole(request.getParameter("role"));
+        user.setRole("customer");
 
-        if(account.addUser(user)){
+        if (account.addUser(user)) {
+            User newUser = authDao.findByEmail(user.getEmail());
+            if (newUser != null) {
+                String[] permissionIds = request.getParameterValues("permissions");
+                authDao.updateUserPermissions(newUser.getId(), permissionIds);
+            }
             response.sendRedirect(request.getContextPath() + "/admin/users");
         }
     }

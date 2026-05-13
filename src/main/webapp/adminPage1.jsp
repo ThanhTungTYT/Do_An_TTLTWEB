@@ -11,6 +11,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { display: flex; flex-direction: row; }
+        .right-content { width: 80%; transition: width 0.3s ease; }
+        .permission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .permission-item { font-size: 0.9em; cursor: pointer; }
+    </style>
 </head>
 <body>
 <div class="left-menu" id="left-menu">
@@ -19,13 +33,35 @@
     </div>
     <div class="menu">
         <a href="${pageContext.request.contextPath}/admin/dashboard" class="menu-item active">Tổng quan</a>
-        <a href="${pageContext.request.contextPath}/admin/products" class="menu-item">Quản lí sản phẩm</a>
-        <a href="${pageContext.request.contextPath}/admin/orders" class="menu-item">Quản lí đơn hàng</a>
-        <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
-        <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item">Quản lí đánh giá</a>
-        <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
-        <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
-        <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_product')}">
+            <a href="${pageContext.request.contextPath}/admin/products" class="menu-item">Quản lí sản phẩm</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_order')}">
+            <a href="${pageContext.request.contextPath}/admin/orders" class="menu-item">Quản lí đơn hàng</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_user')}">
+            <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_review')}">
+            <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item">Quản lí đánh giá</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_banner')}">
+            <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_promotion')}">
+            <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_contact')}">
+            <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
+        </c:if>
+
         <a href="#" class="menu-item" onclick="location.href='${pageContext.request.contextPath}/logout'">Đăng xuất</a>
     </div>
     <div class="footer">

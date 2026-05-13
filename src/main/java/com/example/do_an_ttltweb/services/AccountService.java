@@ -1,12 +1,14 @@
 package com.example.do_an_ttltweb.services;
 
 import com.example.do_an_ttltweb.dao.AccountDao;
+import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.dao.OrderDao;
 import com.example.do_an_ttltweb.helper.hash.MD5Util;
 import com.example.do_an_ttltweb.model.Address;
 import com.example.do_an_ttltweb.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public class AccountService {
     private AccountDao accountDao = new AccountDao();
@@ -51,5 +53,8 @@ public class AccountService {
     }
     public boolean updateUser(int uid, User user){
         return accountDao.updateUser(uid, user);
+    }
+    public List<Map<String, Object>> getAllPermissions() {
+        return new AuthDao().getAllPermissions();
     }
 }
