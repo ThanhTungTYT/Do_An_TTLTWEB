@@ -113,7 +113,7 @@ public class OrderServlet extends HttpServlet {
         OrderAddress address = buildAddress(req);
 
         String paymentMethodName = req.getParameter("paymentMethod");
-        boolean isBankTransfer   = "Chuyển khoản ngân hàng".equals(paymentMethodName);
+        boolean isBankTransfer   = "bank".equals(paymentMethodName);
         if (isBankTransfer) {
             order.setStatus("Chờ thanh toán");
         }
@@ -145,6 +145,7 @@ public class OrderServlet extends HttpServlet {
         }
 
         String orderIdStr = req.getParameter("orderId");
+        String payment_method_id = req.getParameter("paymentMethod");
         if (orderIdStr == null || orderIdStr.isBlank()) {
             resp.sendRedirect(req.getContextPath() + "/account?error=noOrder");
             return;
@@ -152,14 +153,14 @@ public class OrderServlet extends HttpServlet {
 
         try {
             int orderId = Integer.parseInt(orderIdStr);
-
+            int payment_method = Integer.parseInt(payment_method_id);
             Order orderToUpdate = new Order();
             orderToUpdate.setId(orderId);
             orderToUpdate.setStatus("Đã thanh toán");
             boolean updated = orderService.updateOrder(orderToUpdate);
 
             if (updated) {
-                orderService.saveTransactionHistory(orderId, "Chuyển khoản ngân hàng",
+                orderService.saveTransactionHistory(orderId, payment_method,
                         "Người dùng xác nhận đã chuyển khoản", new Timestamp(System.currentTimeMillis()));
 
                 s.removeAttribute("pendingOrderId");
