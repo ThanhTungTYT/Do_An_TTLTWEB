@@ -31,6 +31,7 @@ public class OrderDao extends BaseDao {
                         .executeAndReturnGeneratedKeys("id")
                         .mapTo(Integer.class).one();
 
+                order.setId(orderId);
                 h.createUpdate("INSERT INTO order_addresses (order_id, country, province, ward, address) " +
                                 "VALUES (:orderId, :country, :province, :ward, :address)")
                         .bind("orderId", orderId)
@@ -43,7 +44,6 @@ public class OrderDao extends BaseDao {
                 );
 
                 for (CartItem i : checkoutCart.getList()) {
-
                     batch.bind("orderId", orderId)
                             .bind("productId", i.getProduct().getId())
                             .bind("price", i.getPrice())
@@ -391,6 +391,20 @@ public class OrderDao extends BaseDao {
                         .bind("key", "%" + keyword + "%")
                         .mapToBean(Order.class)
                         .list()
+        );
+    }
+    public void saveTransactionHistory(int orderId, String paymentMethod,
+                                       String note, Timestamp createdAt) {
+        getJdbi().useHandle(h ->
+                h.createUpdate(
+                                "INSERT INTO transaction_history (order_id, payment_method, note, created_at) " +
+                                        "VALUES (:orderId, :paymentMethod, :note, :createdAt)"
+                        )
+                        .bind("orderId",       orderId)
+                        .bind("paymentMethod", paymentMethod)
+                        .bind("note",          note)
+                        .bind("createdAt",     createdAt)
+                        .execute()
         );
     }
 }
