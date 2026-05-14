@@ -35,7 +35,7 @@ public class OrderServlet extends HttpServlet {
 
         if (s == null || s.getAttribute("checkoutCart") == null) {
             System.out.println("DEBUG: Missing checkoutCart, redirecting to cart.jsp");
-            resp.sendRedirect("cart.jsp");
+            resp.sendRedirect(      "cart.jsp");
             return;
         }
         User user = (User) s.getAttribute("user");

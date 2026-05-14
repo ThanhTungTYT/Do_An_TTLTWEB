@@ -1,3 +1,4 @@
+/* ===== EXISTING STYLES (giữ nguyên) ===== */
 .back-link {
     margin-bottom: 10px;
 }
@@ -85,9 +86,11 @@ section {
     transition: border-color 0.3s;
     box-sizing: border-box;
 }
+
 .shipping-form select:focus {
     border-color: #c76739;
 }
+
 .shipping-form input,
 .note-box textarea {
     width: 100%;
@@ -183,40 +186,12 @@ input[type="radio"] {
     margin-left: 2px;
 }
 
-
 .discount-box select {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ddd;
     margin-bottom: 10px;
-}
-
-.discount-box input {
-    width: 73%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-}
-
-.apply-row {
-    display: flex;
-    gap: 10px;
-}
-
-.apply-row input[type='text'] {
-    height: 40px;
-    margin-top: 10px;
-}
-
-.apply-row .apply-btn {
-    padding: 10px 16px;
-    background: #c76739;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
 }
 
 .summary-row {
@@ -260,4 +235,437 @@ input[type="radio"] {
 .input-error {
     border-color: #dc3545 !important;
     background-color: #fff8f8 !important;
+}
+
+/* ===== PAYMENT METHOD OPTIONS ===== */
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s;
+}
+
+.payment-option:hover {
+    border-color: #c76739;
+    background: #fff8f4;
+}
+
+.payment-option input[type="radio"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.payment-option input[type="radio"]:checked + .payment-label {
+    color: #c76739;
+    font-weight: 600;
+}
+
+.payment-label {
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.payment-icon {
+    font-size: 16px;
+    color: #c76739;
+    width: 20px;
+    text-align: center;
+}
+
+/* ===== BANK INFO PANEL (inline dưới radio) ===== */
+.bank-info-panel {
+    margin-top: 4px;
+    margin-bottom: 6px;
+    border: 1.5px solid #f0c4a8;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fffaf7;
+}
+
+.bank-info-header {
+    background: #c76739;
+    color: #fff;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.ewallet-header {
+    background: #5a4fcf;
+}
+
+.ewallet-panel {
+    border-color: #c3bdf7;
+    background: #f9f8ff;
+}
+
+.bank-info-body {
+    padding: 12px 14px;
+}
+
+.bank-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.bank-info-label {
+    color: #777;
+    min-width: 110px;
+}
+
+.bank-info-value {
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ===== COPY BUTTON ===== */
+.copy-btn {
+    background: none;
+    border: 1px solid #c76739;
+    color: #c76739;
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.copy-btn:hover, .copy-btn.copied {
+    background: #c76739;
+    color: #fff;
+}
+
+/* ===== QR SECTION ===== */
+.qr-section {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.qr-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.qr-img {
+    width: 180px;
+    height: 180px;
+    border: 2px solid #f0c4a8;
+    border-radius: 10px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.qr-note {
+    font-size: 12px;
+    color: #999;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ===== MODAL BOX ===== */
+.modal-box {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #c76739;
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 16px 16px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.85;
+}
+
+.modal-close-btn:hover { opacity: 1; }
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-order-summary {
+    background: #fff8f4;
+    border: 1.5px dashed #f0c4a8;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.modal-label {
+    font-size: 12px;
+    color: #999;
+    margin: 0 0 4px;
+}
+
+.modal-order-id {
+    font-size: 15px;
+    font-weight: 700;
+    color: #c76739;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.modal-bank-details {
+    border: 1.5px solid #f0e0d6;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.modal-bank-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid #f5ece6;
+}
+
+.modal-bank-row:last-child { border-bottom: none; }
+
+.modal-bank-row span {
+    color: #777;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.modal-bank-row strong {
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.modal-amount {
+    color: #c76739 !important;
+    font-size: 15px;
+}
+
+.modal-qr-section {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.modal-qr-img {
+    width: 200px;
+    height: 200px;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-confirm-btn {
+    margin-top: 0 !important;
+}
+
+.cancel-btn {
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    color: #888;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.cancel-btn:hover {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c2c7;
+}
+
+/* ===== SUCCESS MODAL ===== */
+.success-modal-box {
+    max-width: 400px;
+    text-align: center;
+    padding: 40px 30px;
+}
+
+.success-icon-wrap {
+    margin-bottom: 16px;
+}
+
+.success-icon {
+    font-size: 64px;
+    color: #28a745;
+}
+
+.success-title {
+    color: #28a745;
+    margin: 0 0 10px;
+    font-size: 22px;
+}
+
+.success-desc {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+/* ===== QR ZOOM BUTTON ===== */
+.qr-img-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.qr-zoom-btn {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.qr-zoom-btn:hover {
+    background: #c76739;
+}
+
+/* ===== QR ZOOM MODAL ===== */
+.qr-zoom-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px 24px 16px;
+    text-align: center;
+    position: relative;
+    max-width: 340px;
+    width: 90%;
+    animation: slideUp 0.22s ease;
+}
+
+.qr-zoom-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    color: #555 !important;
+    font-size: 26px;
+}
+
+.qr-zoom-img {
+    width: 280px;
+    height: 280px;
+    object-fit: contain;
+    border: 2px solid #f0c4a8;
+    border-radius: 12px;
+    display: block;
+    margin: 0 auto 12px;
+}
+
+.qr-zoom-note {
+    font-size: 13px;
+    color: #777;
+    margin: 0;
+}
+
+.btn-loading {
+    opacity: 0.7;
+    pointer-events: none;
+    cursor: not-allowed !important;
+}
+
+.spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.5);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
