@@ -131,13 +131,84 @@
 
             <section class="payment-method">
                 <h3>Phương thức thanh toán</h3>
-                <label class="radio-item">
-                    <input type="radio" name="paymentMethod" value="cod" checked> Thanh toán khi nhận hàng
+
+                <label class="radio-item payment-option">
+                    <input type="radio" name="paymentMethod" value="COD" checked>
+                    <span class="payment-label">
+                        <i class="fas fa-truck payment-icon"></i> Thanh toán khi nhận hàng (COD)
+                    </span>
                 </label>
-                <label class="radio-item">
-                    <input type="radio" name="paymentMethod" value="bank"> Chuyển khoản ngân hàng
+
+                <label class="radio-item payment-option">
+                    <input type="radio" name="paymentMethod" value="Chuyển khoản ngân hàng">
+                    <span class="payment-label">
+                        <i class="fas fa-university payment-icon"></i> Chuyển khoản / QR Banking
+                    </span>
                 </label>
-            </section>
+
+                    <label class="radio-item payment-option">
+                        <input type="radio" name="paymentMethod" value="Ví điện tử">
+                        <span class="payment-label">
+                            <i class="fas fa-wallet payment-icon"></i> Ví điện tử (Momo, ZaloPay)
+                        </span>
+                    </label>
+
+                    <div id="bank-info-panel" class="bank-info-panel" style="display:none;">
+                        <div class="bank-info-header">
+                            <i class="fas fa-info-circle"></i> Thông tin chuyển khoản
+                        </div>
+                        <div class="bank-info-body">
+                            <div class="bank-info-row">
+                                <span class="bank-info-label">Ngân hàng:</span>
+                                <span class="bank-info-value">BIDV</span>
+                            </div>
+                            <div class="bank-info-row">
+                                <span class="bank-info-label">Số tài khoản:</span>
+                                <span class="bank-info-value" id="bank-account-number">
+                                    8800273817
+                                    <button type="button" class="copy-btn" onclick="copyText('8800273817', this)">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <div class="bank-info-row">
+                                <span class="bank-info-label">Chủ tài khoản:</span>
+                                <span class="bank-info-value">AROMA CAFE</span>
+                            </div>
+                            <div class="bank-info-row">
+                                <span class="bank-info-label">Nội dung CK:</span>
+                                <span class="bank-info-value" id="transfer-content">
+                                    <span id="transfer-content-text">AROMACAFE ${sessionScope.user.id} ${sessionScope.user.full_name}</span>
+                                    <button type="button" class="copy-btn" id="copy-content-btn"
+                                            onclick="copyTransferContent()">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <div id="qr-section" class="qr-section">
+                                <p class="qr-label">Quét mã QR để thanh toán:</p>
+                                <img id="qr-image"
+                                     src="https://img.vietqr.io/image/BIDV-8800273817-compact2.png?amount=0&addInfo=AROMACAFE+${sessionScope.user.id}&accountName=AROMA+CAFE"
+                                     alt="QR Code thanh toán"
+                                     class="qr-img">
+                                <p class="qr-note"><i class="fas fa-exclamation-circle"></i> QR sẽ tự động cập nhật số tiền khi đặt hàng</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="ewallet-info-panel" class="bank-info-panel ewallet-panel" style="display:none;">
+                        <div class="bank-info-header ewallet-header">
+                            <i class="fas fa-wallet"></i> Ví điện tử (Mô phỏng)
+                        </div>
+                        <div class="bank-info-body">
+                            <p style="color:#555; font-size:14px; margin:0;">
+                                <i class="fas fa-info-circle" style="color:#c76739"></i>
+                                Chức năng thanh toán qua ví điện tử đang được tích hợp.
+                                Hiện tại hệ thống sẽ ghi nhận đơn hàng và liên hệ xác nhận qua số điện thoại.
+                            </p>
+                        </div>
+                    </div>
+                </section>
 
             <section class="note-box">
                 <h3>Ghi chú</h3>
@@ -180,12 +251,10 @@
 
             <section class="discount-box">
                 <h3>Mã khuyến mãi</h3>
-
                 <select name="promotionId" id="promotionSelect">
                     <option value="" data-discount="0">-- Chọn mã --</option>
                     <c:forEach var="p" items="${promotions}">
-                        <option value="${p.id}"
-                                data-discount="${p.discountPercent}">
+                        <option value="${p.id}" data-discount="${p.discountPercent}">
                                 ${p.code} - Giảm ${p.discountPercent}%
                         </option>
                     </c:forEach>
@@ -204,10 +273,10 @@
                     <span>Phí vận chuyển</span>
                     <span id="shipping-fee" data-fee="30000">30.000 VND</span>
                 </div>
-
                 <div class="summary-row">
                     <span>Giảm giá</span>
-                    <span id="discount-amount">0 VND</span> </div>
+                    <span id="discount-amount">0 VND</span>
+                </div>
                 <hr>
                 <div class="summary-row total">
                     <span>Tổng thanh toán</span>
@@ -215,11 +284,101 @@
                         <fmt:formatNumber value="${requestScope.cart.total + 30000}" type="number" maxFractionDigits="0"/> VND
                     </span>
                 </div>
-                <button type="submit" class="checkout-btn">Đặt hàng</button>
+
+                <button type="button" id="place-order-btn" class="checkout-btn">
+                    <i class="fas fa-check-circle"></i> Đặt hàng
+                </button>
+
+                <button type="button" id="open-bank-modal-btn" class="checkout-btn" style="display:none;">
+                    <i class="fas fa-check-circle"></i> Đặt hàng
+                </button>
             </section>
         </div>
     </div>
 </form>
+
+<div id="bank-payment-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fas fa-university"></i> Xác nhận thanh toán chuyển khoản</h3>
+            <button type="button" class="modal-close-btn" id="modal-close-x">&times;</button>
+        </div>
+        <div class="modal-body">
+
+            <div class="modal-order-summary">
+                <p class="modal-label">Mã đơn hàng (tạm thời)</p>
+                <p class="modal-order-id" id="modal-order-ref">AROMACAFE-${sessionScope.user.id}-<span id="modal-timestamp"></span></p>
+            </div>
+
+            <div class="modal-bank-details">
+                <div class="modal-bank-row">
+                    <span><i class="fas fa-university"></i> Ngân hàng</span>
+                    <strong>BIDV</strong>
+                </div>
+                <div class="modal-bank-row">
+                    <span><i class="fas fa-credit-card"></i> Số tài khoản</span>
+                    <strong>
+                        8800273817
+                        <button type="button" class="copy-btn" onclick="copyText('8800273817', this)">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </strong>
+                </div>
+                <div class="modal-bank-row">
+                    <span><i class="fas fa-user"></i> Chủ tài khoản</span>
+                    <strong>AROMA CAFE</strong>
+                </div>
+                <div class="modal-bank-row">
+                    <span><i class="fas fa-money-bill-wave"></i> Số tiền</span>
+                    <strong class="modal-amount" id="modal-amount-display">0 VND</strong>
+                </div>
+                <div class="modal-bank-row">
+                    <span><i class="fas fa-comment-dots"></i> Nội dung CK</span>
+                    <strong>
+                        <span id="modal-transfer-content">AROMACAFE ${sessionScope.user.id} ${sessionScope.user.full_name}</span>
+                        <button type="button" class="copy-btn" onclick="copyModalContent()">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </strong>
+                </div>
+            </div>
+
+            <div class="modal-qr-section">
+                <p class="qr-label"><i class="fas fa-qrcode"></i> Quét mã QR thanh toán:</p>
+                <img id="modal-qr-image"
+                     src="https://img.vietqr.io/image/BIDV-8800273817-compact2.png?amount=0&addInfo=AROMACAFE+${sessionScope.user.id}&accountName=AROMA+CAFE"
+                     alt="QR Code"
+                     class="qr-img modal-qr-img">
+                <p class="qr-note">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Vui lòng chuyển khoản đúng số tiền và nội dung, sau đó nhấn "Xác nhận đã chuyển khoản".
+                </p>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" id="confirm-payment-btn" class="checkout-btn modal-confirm-btn">
+                    <i class="fas fa-check"></i> Xác nhận đã chuyển khoản
+                </button>
+                <button type="button" id="cancel-payment-btn" class="cancel-btn">
+                    <i class="fas fa-times"></i> Hủy giao dịch
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="success-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box success-modal-box">
+        <div class="success-icon-wrap">
+            <i class="fas fa-check-circle success-icon"></i>
+        </div>
+        <h3 class="success-title">Đặt hàng thành công!</h3>
+        <p class="success-desc">Đơn hàng của bạn đã được ghi nhận. Chúng tôi sẽ xác nhận và liên hệ với bạn sớm nhất.</p>
+        <a href="${pageContext.request.contextPath}/account" class="checkout-btn" style="display:inline-block; text-decoration:none; text-align:center; margin-top:10px;">
+            <i class="fas fa-list-alt"></i> Xem đơn hàng của tôi
+        </a>
+    </div>
+</div>
 
 <footer class="footer">
     <div class="footer-top">
@@ -229,7 +388,6 @@
             <p>Điện thoại: 0933652267</p>
             <p>Email: nguyenhuybaolegit@gmail.com</p>
         </div>
-
         <div class="foot-content footer-links">
             <h3>Quy định & Chính sách</h3>
             <ul>
@@ -238,7 +396,6 @@
                 <li><a href="${pageContext.request.contextPath}/policy?type=terms">Điều khoản sử dụng</a></li>
             </ul>
         </div>
-
         <div class="foot-content right">
             <h3>Kết nối với chúng tôi</h3>
             <div class="social">
@@ -255,7 +412,7 @@
 
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 
-<script src="assets/js/payment.js?v=2"></script>
+<script src="assets/js/payment.js?v=3"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>
