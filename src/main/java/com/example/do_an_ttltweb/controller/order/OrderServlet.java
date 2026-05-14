@@ -35,7 +35,7 @@ public class OrderServlet extends HttpServlet {
 
         if (s == null || s.getAttribute("checkoutCart") == null) {
             System.out.println("DEBUG: Missing checkoutCart, redirecting to cart.jsp");
-            resp.sendRedirect(      "cart.jsp");
+            resp.sendRedirect("cart.jsp");
             return;
         }
         User user = (User) s.getAttribute("user");
@@ -53,11 +53,14 @@ public class OrderServlet extends HttpServlet {
 
         String action = req.getParameter("action");
 
-        if ("prepare".equals(action)) {
-            handlePrepareCheckout(req, resp);
-            return;
+        switch (action == null ? "" : action) {
+            case "prepare": handlePrepareCheckout(req, resp);
+                break;
+            case "confirmPayment":
+                handleConfirmBankPayment(req, resp);
+                break;
+            default: handleProcessPayment(req, resp);
         }
-        handleProcessPayment(req, resp);
     }
 
     private void handlePrepareCheckout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -106,40 +109,108 @@ public class OrderServlet extends HttpServlet {
         Cart checkoutCart = (Cart) s.getAttribute("checkoutCart");
         Cart mainCart = (Cart) s.getAttribute("cart");
 
+        Order       order   = buildOrder(req, user, checkoutCart);
+        OrderAddress address = buildAddress(req);
+
+        String paymentMethodName = req.getParameter("paymentMethod");
+        boolean isBankTransfer   = "Chuyển khoản ngân hàng".equals(paymentMethodName);
+        if (isBankTransfer) {
+            order.setStatus("Chờ thanh toán");
+        }
+
+        try {
+            if (orderService.create(order, address, checkoutCart)) {
+                cleanupAfterOrder(s, mainCart, checkoutCart, user);
+
+                if (isBankTransfer) {
+                    s.setAttribute("pendingOrderId", order.getId());
+                    resp.sendRedirect(req.getContextPath() + "/account?pending=1");
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/account?success=1");
+                }
+            } else {
+                forwardWithError(req, resp, s, "Đặt hàng thất bại. Vui lòng thử lại.");
+            }
+        } catch (RuntimeException e) {
+            forwardWithError(req, resp, s, e.getMessage());
+        }
+    }
+    private void handleConfirmBankPayment(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException, ServletException {
+
+        HttpSession s = req.getSession(false);
+        if (s == null || s.getAttribute("user") == null) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+
+        String orderIdStr = req.getParameter("orderId");
+        if (orderIdStr == null || orderIdStr.isBlank()) {
+            resp.sendRedirect(req.getContextPath() + "/account?error=noOrder");
+            return;
+        }
+
+        try {
+            int orderId = Integer.parseInt(orderIdStr);
+
+            Order orderToUpdate = new Order();
+            orderToUpdate.setId(orderId);
+            orderToUpdate.setStatus("Đã thanh toán");
+            boolean updated = orderService.updateOrder(orderToUpdate);
+
+            if (updated) {
+                orderService.saveTransactionHistory(orderId, "Chuyển khoản ngân hàng",
+                        "Người dùng xác nhận đã chuyển khoản", new Timestamp(System.currentTimeMillis()));
+
+                s.removeAttribute("pendingOrderId");
+                resp.sendRedirect(req.getContextPath() + "/account?paymentConfirmed=1");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/account?error=updateFailed");
+            }
+
+        } catch (NumberFormatException e) {
+            resp.sendRedirect(req.getContextPath() + "/account?error=invalidOrder");
+        }
+    }
+    private Order buildOrder(HttpServletRequest req, User user, Cart checkoutCart) {
         double total = checkoutCart.getTotal();
         double shippingFee = 30000;
-        double discountPercent = 0;
 
         Promotion promotion = null;
+        double discountPercent = 0;
         String pid = req.getParameter("promotionId");
+
         if (pid != null && !pid.isBlank()) {
             try {
                 promotion = PromotionService.getInstance().getPromotionById(Integer.parseInt(pid));
-                if (promotion != null && "active".equals(promotion.getState()) && promotion.getQuantity() > 0 && total >= promotion.getMinOrderValue()) {
-                    discountPercent = promotion.getDiscountPercent();
-                    if (discountPercent > 100) discountPercent = 100;
+                if (promotion != null
+                        && "active".equals(promotion.getState())
+                        && promotion.getQuantity() > 0
+                        && total >= promotion.getMinOrderValue()) {
+                    discountPercent = Math.min(promotion.getDiscountPercent(), 100);
                 } else {
                     promotion = null;
                 }
-            } catch (Exception e) { promotion = null; }
+            } catch (Exception e) {
+                promotion = null;
+            }
         }
         if (promotion == null) {
             promotion = PromotionService.getInstance().getNoPromo();
         }
 
         double discountAmount = total * discountPercent / 100;
-        double finalAmount = total - discountAmount + shippingFee;
+        double finalAmount    = total - discountAmount + shippingFee;
+
+        String paymentName    = req.getParameter("paymentMethod");
+        int    paymentMethodId = PaymentMethodService.getInstance().getPaymentMethodId(paymentName);
 
         Order order = new Order();
         order.setUserId(user.getId());
         order.setReceiverName(req.getParameter("fullname"));
         order.setReceiverPhone(req.getParameter("phone"));
         order.setNote(req.getParameter("note") == null ? "" : req.getParameter("note"));
-
-        String paymentName = req.getParameter("paymentMethod");
-        int paymentMethodId = PaymentMethodService.getInstance().getPaymentMethodId(paymentName);
         order.setPaymentMethodId(paymentMethodId);
-
         order.setPromoId(promotion.getId());
         order.setTotalAmount(total);
         order.setShippingFee(shippingFee);
@@ -147,35 +218,33 @@ public class OrderServlet extends HttpServlet {
         order.setFinalAmount(finalAmount);
         order.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         order.setStatus("Đang xử lý");
+        return order;
+    }
 
+    private OrderAddress buildAddress(HttpServletRequest req) {
         OrderAddress address = new OrderAddress();
         address.setCountry(req.getParameter("country"));
         address.setProvince(req.getParameter("province"));
         address.setWard(req.getParameter("ward"));
         address.setAddress(req.getParameter("address"));
+        return address;
+    }
 
-        try {
-            boolean success;
-            if (orderService.create(order, address, checkoutCart)) success = true;
-            else success = false;
-            if (success) {
-                for (CartItem boughtItem : checkoutCart.getList()) {
-                    mainCart.remove(boughtItem.getProduct().getId());
-                    cartDao.removeItem(user.getId(), boughtItem.getProduct().getId());
-                }
-
-                s.setAttribute("cart", mainCart);
-
-                s.removeAttribute("checkoutCart");
-
-                resp.sendRedirect(req.getContextPath() + "/account?success=1");
-            } else {
-                req.setAttribute("error", "Đặt hàng thất bại. Vui lòng thử lại.");
-                req.getRequestDispatcher("payment.jsp").forward(req, resp);
-            }
-        } catch (RuntimeException e) {
-            req.setAttribute("error", e.getMessage());
-            req.getRequestDispatcher("payment.jsp").forward(req, resp);
+    private void cleanupAfterOrder(HttpSession s, Cart mainCart, Cart checkoutCart, User user) {
+        for (CartItem boughtItem : checkoutCart.getList()) {
+            mainCart.remove(boughtItem.getProduct().getId());
+            cartDao.removeItem(user.getId(), boughtItem.getProduct().getId());
         }
+        s.setAttribute("cart", mainCart);
+        s.removeAttribute("checkoutCart");
+    }
+
+    private void forwardWithError(HttpServletRequest req, HttpServletResponse resp,
+                                  HttpSession s, String errorMsg)
+            throws ServletException, IOException {
+        req.setAttribute("error", errorMsg);
+        req.setAttribute("cart",       s.getAttribute("checkoutCart"));
+        req.setAttribute("promotions", PromotionService.getInstance().getAvailablePromotions());
+        req.getRequestDispatcher("payment.jsp").forward(req, resp);
     }
 }
