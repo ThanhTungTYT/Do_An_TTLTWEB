@@ -140,7 +140,7 @@
                 </label>
 
                 <label class="radio-item payment-option">
-                    <input type="radio" name="paymentMethod" value="Chuyển khoản ngân hàng">
+                    <input type="radio" name="paymentMethod" value="bank">
                     <span class="payment-label">
                         <i class="fas fa-university payment-icon"></i> Chuyển khoản / QR Banking
                     </span>

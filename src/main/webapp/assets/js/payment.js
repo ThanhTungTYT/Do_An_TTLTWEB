@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const placeOrderBtn     = document.getElementById("place-order-btn");
     const openBankModalBtn  = document.getElementById("open-bank-modal-btn");
 
-    const BANK_METHODS = ["Chuyển khoản ngân hàng"];
+    const BANK_METHODS = ["bank"];
     const EWALLET_METHODS = ["Ví điện tử"];
 
     function onPaymentMethodChange() {
@@ -226,7 +226,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ===== NÚT ĐẶT HÀNG (COD / Ví điện tử) =====
     placeOrderBtn.addEventListener("click", function () {
         if (!validateAll()) {
             const firstError = document.querySelector('.input-error');
@@ -291,7 +290,6 @@ document.addEventListener("DOMContentLoaded", function () {
         checkoutForm.submit();
     });
 
-    // ===== NÚT HỦY → ĐÓNG MODAL =====
     function setButtonLoading(btn, loading) {
         if (loading) {
             btn.dataset.originalHtml = btn.innerHTML;

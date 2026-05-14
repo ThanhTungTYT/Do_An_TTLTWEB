@@ -54,10 +54,8 @@ public class OrderServlet extends HttpServlet {
         String action = req.getParameter("action");
 
         switch (action == null ? "" : action) {
-            case "prepare": handlePrepareCheckout(req, resp);
-                break;
-            case "confirmPayment":
-                handleConfirmBankPayment(req, resp);
+            case "prepare":
+                handlePrepareCheckout(req, resp);
                 break;
             default: handleProcessPayment(req, resp);
         }
@@ -115,7 +113,7 @@ public class OrderServlet extends HttpServlet {
         String paymentMethodName = req.getParameter("paymentMethod");
         boolean isBankTransfer   = "bank".equals(paymentMethodName);
         if (isBankTransfer) {
-            order.setStatus("Chờ thanh toán");
+            order.setStatus("Đang xử lý");
         }
 
         try {
@@ -135,44 +133,7 @@ public class OrderServlet extends HttpServlet {
             forwardWithError(req, resp, s, e.getMessage());
         }
     }
-    private void handleConfirmBankPayment(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException, ServletException {
 
-        HttpSession s = req.getSession(false);
-        if (s == null || s.getAttribute("user") == null) {
-            resp.sendRedirect("login.jsp");
-            return;
-        }
-
-        String orderIdStr = req.getParameter("orderId");
-        String payment_method_id = req.getParameter("paymentMethod");
-        if (orderIdStr == null || orderIdStr.isBlank()) {
-            resp.sendRedirect(req.getContextPath() + "/account?error=noOrder");
-            return;
-        }
-
-        try {
-            int orderId = Integer.parseInt(orderIdStr);
-            int payment_method = Integer.parseInt(payment_method_id);
-            Order orderToUpdate = new Order();
-            orderToUpdate.setId(orderId);
-            orderToUpdate.setStatus("Đã thanh toán");
-            boolean updated = orderService.updateOrder(orderToUpdate);
-
-            if (updated) {
-                orderService.saveTransactionHistory(orderId, payment_method,
-                        "Người dùng xác nhận đã chuyển khoản", new Timestamp(System.currentTimeMillis()));
-
-                s.removeAttribute("pendingOrderId");
-                resp.sendRedirect(req.getContextPath() + "/account?paymentConfirmed=1");
-            } else {
-                resp.sendRedirect(req.getContextPath() + "/account?error=updateFailed");
-            }
-
-        } catch (NumberFormatException e) {
-            resp.sendRedirect(req.getContextPath() + "/account?error=invalidOrder");
-        }
-    }
     private Order buildOrder(HttpServletRequest req, User user, Cart checkoutCart) {
         double total = checkoutCart.getTotal();
         double shippingFee = 30000;

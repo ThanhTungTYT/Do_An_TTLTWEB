@@ -6,7 +6,6 @@ import com.example.do_an_ttltweb.model.Order;
 import com.example.do_an_ttltweb.model.OrderAddress;
 import com.example.do_an_ttltweb.model.OrderItem;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 public class OrderService {
@@ -50,8 +49,5 @@ public class OrderService {
 
     public List<Order> searchOrders(String keyword) {
         return dao.searchOrders(keyword);
-    }
-    public void saveTransactionHistory(int orderId, int paymentMethod, String note, Timestamp createdAt) {
-        dao.saveTransactionHistory(orderId, paymentMethod, note, createdAt);
     }
 }

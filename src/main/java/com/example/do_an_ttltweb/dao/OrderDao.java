@@ -393,18 +393,4 @@ public class OrderDao extends BaseDao {
                         .list()
         );
     }
-    public void saveTransactionHistory(int orderId, int paymentMethod,
-                                       String note, Timestamp createdAt) {
-        getJdbi().useHandle(h ->
-                h.createUpdate(
-                                "INSERT INTO transaction_history (order_id, payment_method_id, note, created_at) " +
-                                        "VALUES (:orderId, :paymentMethod, :note, :createdAt)"
-                        )
-                        .bind("orderId",       orderId)
-                        .bind("paymentMethod", paymentMethod)
-                        .bind("note",          note)
-                        .bind("createdAt",     createdAt)
-                        .execute()
-        );
-    }
 }
