@@ -27,22 +27,13 @@
             </div>
             <c:choose>
                 <c:when test="${not empty sessionScope.user}">
-                    <c:choose>
-                        <c:when test="${sessionScope.user.role eq 'admin'}">
-                            <a href="${pageContext.request.contextPath}/adminPage1.jsp">
-                                <i class="fas fa-user-shield"></i>
-                                <span style="font-size: 14px; margin-left: 5px">
-                                        ${sessionScope.user.full_name}
-                                </span>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="${pageContext.request.contextPath}/account">
-                                <i class="fas fa-user"></i>
-                                <span style="font-size: 14px; margin-left: 5px">${sessionScope.user.full_name}</span>
-                            </a>
-                        </c:otherwise>
-                    </c:choose>
+                    <a href="${pageContext.request.contextPath}/account">
+                        <i class="fas fa-user"></i>
+                        <span style="font-size: 14px; margin-left: 5px">
+                <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
+                Hi, ${nameParts[fn:length(nameParts) - 1]}!
+            </span>
+                    </a>
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/login">
