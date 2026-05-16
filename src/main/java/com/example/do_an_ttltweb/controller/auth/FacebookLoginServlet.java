@@ -30,46 +30,43 @@ public class FacebookLoginServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
+            try {
+                String accessToken = getAccessToken(code);
+                JsonObject fbUser = getUserInfo(accessToken);
 
-        try {
-            String accessToken = getAccessToken(code);
-            JsonObject fbUser = getUserInfo(accessToken);
+                String email = fbUser.has("email") ? fbUser.get("email").getAsString() : null;
+                String name = fbUser.get("name").getAsString();
+                String fbId = fbUser.get("id").getAsString();
 
-            String email = fbUser.has("email") ? fbUser.get("email").getAsString() : null;
-            String name = fbUser.get("name").getAsString();
+                String identifier = (email != null) ? email : "fb_" + fbId + "@facebook.com";
 
-            AuthDao authDao = new AuthDao();
-            AuthService authService = new AuthService();
-            User user = null;
+                AuthDao authDao = new AuthDao();
+                AuthService authService = new AuthService();
 
-            if (email != null) {
-                user = authDao.findByEmail(email);
-            }
+                User user = authDao.findByEmail(identifier);
 
-            if (user == null) {
-                user = new User();
-                user.setFull_name(name);
-                user.setEmail(email);
-                user.setPhone("");
-                user.setPassword_hash(null);
+                if (user == null) {
+                    user = new User();
+                    user.setFull_name(name);
+                    user.setEmail(identifier);
+                    user.setPhone("");
+                    user.setPassword_hash(null);
 
-                authDao.register(user);
-
-                if (email != null) {
-                    user = authDao.findByEmail(email);
+                    authDao.register(user);
+                    user = authDao.findByEmail(identifier);
                 }
-            }
 
-            if (user != null) {
-                authService.loadUserPermissions(user);
-            }
-            request.getSession().setAttribute("user", user);
-            response.sendRedirect(request.getContextPath() + "/");
+                if (user != null) {
+                    authService.loadUserPermissions(user);
+                }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.getWriter().println("Login Facebook thất bại: " + e.getMessage());
-        }
+                request.getSession().setAttribute("user", user);
+                response.sendRedirect(request.getContextPath() + "/");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.getWriter().println("Login Facebook thất bại: " + e.getMessage());
+            }
     }
 
     private String getAccessToken(String code) throws IOException {
