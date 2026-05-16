@@ -233,28 +233,64 @@
             </div>
 
             <div class="review-list">
-                <div class="review-item">
                     <c:forEach items="${review}" var="r">
-                        <div class="review-item">
-                            <div class="review-author">${r.username} - <span class="review-date"><fomt:formatDate value="${r.created_at}" pattern="dd/MM/yyyy"/></span></div>
-                            <div class="review-meta">
-                                <div class="stars" style="--rating: ${r.rating};" aria-label="Đánh giá ${r.rating}/5 sao"></div>
+                        <div class="review-item ${r.userId eq currentUserId ? 'my-review' : ''}">
+                            <div class="review-header" style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                    <span class="review-author" style="font-weight:bold;">
+                        ${r.username}
+                        <c:if test="${r.userId eq currentUserId}">
+                            <span style="background:#c76739; color:white; font-size:0.75em; padding:2px 7px; border-radius:10px; margin-left:6px;">Bạn</span>
+                        </c:if>
+                    </span>
+                                    <span class="review-date" style="color:#aaa; font-size:0.85em; margin-left:8px;">
+                        <fmt:formatDate value="${r.created_at}" pattern="dd/MM/yyyy"/>
+                    </span>
+                                </div>
+
+                                <c:if test="${r.userId eq currentUserId}">
+                                    <button onclick="confirmDelete(${r.id}, ${r.productId})"
+                                            style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:0.9em;">
+                                        <i class="fas fa-trash-alt"></i> Xóa
+                                    </button>
+                                </c:if>
                             </div>
-                            <p class="review-body">
-                                ${r.comment}
-                            </p>
-                            <div class="review-images">
+
+                            <div class="review-meta" style="margin:6px 0;">
+                                <div class="stars" style="--rating: ${r.rating};"></div>
                             </div>
+
+                            <p class="review-body">${r.comment}</p>
                         </div>
                     </c:forEach>
-                </div>
+
+                    <form id="delete-review-form" method="post"
+                          action="${pageContext.request.contextPath}/deleteReview" style="display:none;">
+                        <input type="hidden" name="rid" id="delete-rid">
+                        <input type="hidden" name="pid" id="delete-pid">
+                    </form>
+
+                    <div id="confirm-delete-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+                        <div style="background:white; border-radius:12px; padding:30px; width:350px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+                            <i class="fas fa-exclamation-triangle" style="font-size:2.5em; color:#e74c3c; margin-bottom:15px;"></i>
+                            <h3 style="margin-bottom:10px;">Xóa đánh giá?</h3>
+                            <p style="color:#666; margin-bottom:20px;">Bạn có chắc chắn muốn xóa đánh giá này không? Hành động này không thể hoàn tác.</p>
+                            <div style="display:flex; gap:10px; justify-content:center;">
+                                <button onclick="closeConfirm()"
+                                        style="padding:10px 24px; border:1px solid #ddd; border-radius:8px; background:white; cursor:pointer; font-size:0.95em;">
+                                    Hủy
+                                </button>
+                                <button onclick="submitDelete()"
+                                        style="padding:10px 24px; background:#e74c3c; color:white; border:none; border-radius:8px; cursor:pointer; font-size:0.95em; font-weight:bold;">
+                                    Xác nhận xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 <form class="review-form" method="post"
                       action="${pageContext.request.contextPath}/addReview">
-
                     <input type="hidden" name="pid" value="${product.id}">
-
                     <h4>Viết đánh giá của bạn</h4>
-
                     <div class="form-group rating-group">
                         <label>Bạn đánh giá sản phẩm này bao nhiêu sao?</label>
                         <div class="star-rating-input">
@@ -265,7 +301,6 @@
                             <input type="radio" id="star1" name="rating" value="1"><label for="star1"></label>
                         </div>
                     </div>
-
                     <div class="form-group">
         <textarea name="comment" rows="5"
                   placeholder="Hãy chia sẻ cảm nhận của bạn..."></textarea>
@@ -350,6 +385,22 @@
         numCount.innerText = v;
         qInput.value = v;
     };
+
+    function confirmDelete(rid, pid) {
+        document.getElementById("delete-rid").value = rid;
+        document.getElementById("delete-pid").value = pid;
+        const overlay = document.getElementById("confirm-delete-overlay");
+        overlay.style.display = "flex";
+    }
+    function closeConfirm() {
+        document.getElementById("confirm-delete-overlay").style.display = "none";
+    }
+    function submitDelete() {
+        document.getElementById("delete-review-form").submit();
+    }
+    document.getElementById("confirm-delete-overlay").onclick = function(e) {
+        if (e.target === this) closeConfirm();
+    }
 
 </script>
 </body>
