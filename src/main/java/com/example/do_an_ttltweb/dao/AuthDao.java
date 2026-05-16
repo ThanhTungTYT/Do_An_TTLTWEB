@@ -101,4 +101,30 @@ public class AuthDao extends BaseDao {
             });
         });
     }
+
+    public int countFailedAttempts(String email) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM login_attempts " +
+                                "WHERE email = :email AND attempt_time >= NOW() - INTERVAL 1 HOUR")
+                        .bind("email", email)
+                        .mapTo(Integer.class)
+                        .one()
+        );
+    }
+
+    public void recordFailedAttempt(String email) {
+        getJdbi().useHandle(handle ->
+                handle.createUpdate("INSERT INTO login_attempts(email) VALUES(:email)")
+                        .bind("email", email)
+                        .execute()
+        );
+    }
+
+    public void clearFailedAttempts(String email) {
+        getJdbi().useHandle(handle ->
+                handle.createUpdate("DELETE FROM login_attempts WHERE email = :email")
+                        .bind("email", email)
+                        .execute()
+        );
+    }
 }

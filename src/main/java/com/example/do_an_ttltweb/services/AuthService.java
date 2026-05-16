@@ -7,6 +7,7 @@ import java.util.*;
 
 public class AuthService {
     private final AuthDao authDao = new AuthDao();
+    private static final int MAX_ATTEMPTS = 5;
 
     public User login(String email, String password) {
         User u = authDao.findByEmail(email);
@@ -49,5 +50,21 @@ public class AuthService {
         if (!perms.contains("shopping")) perms.add("shopping");
 
         user.setPermissions(perms);
+    }
+
+    public boolean isLocked(String email) {
+        return authDao.countFailedAttempts(email) >= MAX_ATTEMPTS;
+    }
+
+    public void recordFailed(String email) {
+        authDao.recordFailedAttempt(email);
+    }
+
+    public void clearFailed(String email) {
+        authDao.clearFailedAttempts(email);
+    }
+
+    public int getRemainingAttempts(String email) {
+        return MAX_ATTEMPTS - authDao.countFailedAttempts(email);
     }
 }
