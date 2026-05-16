@@ -1,16 +1,51 @@
+let currentIndex = 0;
+let images = [];
+let img_home = null;
+
+function updateBanner() {
+    if (img_home && images.length > 0) {
+        img_home.style.backgroundImage = `url("${images[currentIndex]}")`;
+    }
+}
+
+function showPreviousImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateBanner();
+}
+
+function showNextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    updateBanner();
+}
+
+function scrollProduct(direction) {
+    const container = document.getElementById("product-list");
+    const cardWidth = 270;
+    const scrollAmount = cardWidth * 2;
+
+    container.scrollBy({
+        left: direction * scrollAmount,
+        behavior: "smooth"
+    });
+
+    setTimeout(() => {
+        const event = new Event("scroll");
+        container.dispatchEvent(event);
+    }, 300);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    const img_home = document.getElementById('img-home');
-    const images = window.BANNERS || [];
-    let currentIndex = 0;
+    img_home = document.getElementById('img-home');
+    images = window.BANNERS || [];
 
     if (img_home && images.length > 0) {
         img_home.style.backgroundImage = `url("${images[0]}")`;
 
         setInterval(() => {
             currentIndex = (currentIndex + 1) % images.length;
-            img_home.style.backgroundImage = `url("${images[currentIndex]}")`;
-        }, 3000);
+            updateBanner();
+        }, 7000);
     }
 
     window.addEventListener("scroll", () => {
@@ -68,34 +103,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function updateButtons() {
             if (!container) return;
-
             const isAtStart = container.scrollLeft <= 1;
             const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
-
             leftBtn.style.display = isAtStart ? "none" : "flex";
             rightBtn.style.display = isAtEnd ? "none" : "flex";
         }
 
         container.addEventListener("scroll", updateButtons);
-
         setTimeout(updateButtons, 50);
     }
-
 });
-
-function scrollProduct(direction) {
-    const container = document.getElementById("product-list");
-
-    const cardWidth = 270;
-    const scrollAmount = cardWidth * 2;
-
-    container.scrollBy({
-        left: direction * scrollAmount,
-        behavior: "smooth"
-    });
-
-    setTimeout(() => {
-        const event = new Event("scroll");
-        container.dispatchEvent(event);
-    }, 300);
-}
