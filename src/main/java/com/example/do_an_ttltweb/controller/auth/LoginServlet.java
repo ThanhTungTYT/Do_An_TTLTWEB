@@ -21,16 +21,31 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+
+        if (authService.isLocked(email)) {
+            request.setAttribute("error", "Tài khoản bị tạm khóa do đăng nhập sai quá 5 lần. Vui lòng thử lại sau 1 tiếng.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
 
         User user = authService.login(email, password);
 
         if (user == null) {
-            request.setAttribute("error", "Sai email hoặc mật khẩu!");
+            authService.recordFailed(email);
+
+            int remaining = authService.getRemainingAttempts(email);
+
+            if (remaining <= 0) {
+                request.setAttribute("error", "Bạn đã nhập sai quá 5 lần. Tài khoản bị tạm khóa trong 1 tiếng.");
+            }
+
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
+            authService.clearFailed(email);
             authService.loadUserPermissions(user);
 
             HttpSession session = request.getSession();
