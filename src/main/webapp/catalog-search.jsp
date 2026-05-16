@@ -29,16 +29,18 @@
             </div>
             <c:choose>
                 <c:when test="${not empty sessionScope.user}">
-                    <a href="${sessionScope.user.role eq 'admin' ? pageContext.request.contextPath.concat('/admin/dashboard') : pageContext.request.contextPath.concat('/account')}">
+                    <a href="${pageContext.request.contextPath}/account">
                         <i class="fas fa-user"></i>
                         <span style="font-size: 14px; margin-left: 5px">
-                            <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
-                            Hi, ${nameParts[fn:length(nameParts) - 1]}!
-                        </span>
+                <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
+                Hi, ${nameParts[fn:length(nameParts) - 1]}!
+            </span>
                     </a>
                 </c:when>
                 <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/login"><i class="fas fa-user"></i></a>
+                    <a href="${pageContext.request.contextPath}/login">
+                        <i class="fas fa-user"></i>
+                    </a>
                 </c:otherwise>
             </c:choose>
         </div>

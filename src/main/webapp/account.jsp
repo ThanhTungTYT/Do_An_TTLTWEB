@@ -32,26 +32,13 @@
             </div>
             <c:choose>
                 <c:when test="${not empty sessionScope.user}">
-                    <c:choose>
-                        <c:when test="${sessionScope.user.role eq 'admin'}">
-                            <a href="${pageContext.request.contextPath}/admin/dashboard">
-                                <i class="fas fa-user-shield"></i>
-                                <span style="font-size: 14px; margin-left: 5px">
-                                    <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
-                                    Hi, ${nameParts[fn:length(nameParts) - 1]}!
-                                </span>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="${pageContext.request.contextPath}/account">
-                                <i class="fas fa-user"></i>
-                                <span style="font-size: 14px; margin-left: 5px">
-                                    <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
-                                    Hi, ${nameParts[fn:length(nameParts) - 1]}!
-                                </span>
-                            </a>
-                        </c:otherwise>
-                    </c:choose>
+                    <a href="${pageContext.request.contextPath}/account">
+                        <i class="fas fa-user"></i>
+                        <span style="font-size: 14px; margin-left: 5px">
+                <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
+                Hi, ${nameParts[fn:length(nameParts) - 1]}!
+            </span>
+                    </a>
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/login">
@@ -77,6 +64,16 @@
                 <li><a href="${pageContext.request.contextPath}/info" class="sidebar-link active">Thông tin cá nhân</a></li>
                 <li><a href="${pageContext.request.contextPath}/his-order" class="sidebar-link">Lịch sử mua hàng</a></li>
                 <li><a href="${pageContext.request.contextPath}/change-password" class="sidebar-link">Đổi mật khẩu</a></li>
+                <c:if test="${sessionScope.user.role eq 'admin' or sessionScope.user.permissions.size() > 1}">
+                    <li>
+                        <a href="${pageContext.request.contextPath}/admin/dashboard"
+                           class="sidebar-link"
+                           style="color:#c76739; font-weight:bold;"
+                           onclick="window.location.href=this.href; return false;">
+                            <i class="fas fa-shield-alt"></i> Trang quản trị
+                        </a>
+                    </li>
+                </c:if>
                 <li><a href="${pageContext.request.contextPath}/logout" class="logout-link">Đăng xuất</a></li>
             </ul>
         </nav>
