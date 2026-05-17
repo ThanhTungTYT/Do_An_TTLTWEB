@@ -1,4 +1,4 @@
-package com.example.do_an_ttltweb.servlet;
+package com.example.do_an_ttltweb.controller.auth;
 
 import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.model.GoogleUser;

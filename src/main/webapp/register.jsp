@@ -27,13 +27,26 @@
             </div>
             <c:choose>
                 <c:when test="${not empty sessionScope.user}">
-                    <a href="${pageContext.request.contextPath}/account">
-                        <i class="fas fa-user"></i>
-                        <span style="font-size: 14px; margin-left: 5px">
-                <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
-                Hi, ${nameParts[fn:length(nameParts) - 1]}!
-            </span>
-                    </a>
+                    <c:choose>
+                        <c:when test="${sessionScope.user.role eq 'admin'}">
+                            <a href="${pageContext.request.contextPath}/admin/dashboard">
+                                <i class="fas fa-user-shield"></i>
+                                <span style="font-size: 14px; margin-left: 5px">
+                                    <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
+                                    Hi, ${nameParts[fn:length(nameParts) - 1]}!
+                                </span>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/account">
+                                <i class="fas fa-user"></i>
+                                <span style="font-size: 14px; margin-left: 5px">
+                                    <c:set var="nameParts" value="${fn:split(sessionScope.user.full_name, ' ')}" />
+                                    Hi, ${nameParts[fn:length(nameParts) - 1]}!
+                                </span>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/login">
@@ -55,15 +68,20 @@
     <h2 id="register">Đăng ký</h2>
     <form id="register-form" action="register" method="post">
         <label class="lbn" for="yourname">Họ và Tên</label>
-        <input type="text" id="yourname" name="fullname" placeholder="Họ và tên của bạn" required>
+        <input type="text" id="yourname" name="fullname" placeholder="Họ và tên của bạn">
+        <span class="error" id="err-name"></span>
         <label class="lbe" for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Email của bạn" required>
+        <input type="email" id="email" name="email" placeholder="Email của bạn">
+        <span class="error" id="err-email"></span>
         <label class="lbn" for="phone">Số điện thoại:</label>
-        <input type="text" id="phone" name="phone" placeholder="Số điện thoại" required>
+        <input type="text" id="phone" name="phone" placeholder="Số điện thoại">
+        <span class="error" id="err-phone"></span>
         <label class="lbpw" for="password">Mật khẩu:</label>
-        <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
+        <input type="password" id="password" name="password" placeholder="Mật khẩu">
+        <span class="error" id="err-password"></span>
         <label class="lbcpw" for="confirmpassword">Xác nhận mật khẩu:</label>
-        <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Xác nhận mật khẩu" required>
+        <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Xác nhận mật khẩu">
+        <span class="error" id="err-confirm"></span>
         <div class="password-wrapper">
             <input type="checkbox" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
             <label class="lbtoggle" for="toggle-password">Hiển thị mật khẩu</label>
