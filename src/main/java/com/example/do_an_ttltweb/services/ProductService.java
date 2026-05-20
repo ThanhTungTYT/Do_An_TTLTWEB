@@ -45,9 +45,11 @@ public class ProductService {
             int newProductId = productDao.insertProduct(product);
             if (newProductId > 0) {
                 if (imageUrls != null && imageUrls.length > 0) {
+                    int position = 0;
                     for (String url : imageUrls) {
                         if (url != null && !url.trim().isEmpty()) {
-                            productDao.insertProductImage(newProductId, url.trim());
+                            productDao.insertProductImage(newProductId, url.trim(), position);
+                            position++;
                         }
                     }
                 }
