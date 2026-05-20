@@ -9,7 +9,7 @@ public class ImageDao extends BaseDao{
 
     public List<ProductImage> getAllImageById(int pid){
         return getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT * FROM product_images WHERE product_id = :pid ORDER BY id ASC")
+                handle.createQuery("SELECT * FROM product_images WHERE product_id = :pid ORDER BY position ASC")
                         .bind("pid", pid)
                         .mapToBean(ProductImage.class)
                         .list()

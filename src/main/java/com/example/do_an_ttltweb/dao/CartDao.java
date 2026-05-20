@@ -59,7 +59,7 @@ public class CartDao extends BaseDao {
             h.createQuery(
                             "SELECT p.id, p.name, p.price, p.weight_grams, p.category_id, p.stock, p.state, " +
                                     "ci.quantity, ci.price AS cart_price, " +
-                                    "(SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id ORDER BY pi.id LIMIT 1) AS image_url " +
+                                    "(SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.position = 0 LIMIT 1) AS image_url " +
                                     "FROM cart_items ci " +
                                     "JOIN products p ON ci.product_id = p.id " +
                                     "WHERE ci.user_id = :uid"

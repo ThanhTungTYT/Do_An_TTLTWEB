@@ -31,7 +31,6 @@ public class OrderDao extends BaseDao {
                         .executeAndReturnGeneratedKeys("id")
                         .mapTo(Integer.class).one();
 
-                order.setId(orderId);
                 h.createUpdate("INSERT INTO order_addresses (order_id, country, province, ward, address) " +
                                 "VALUES (:orderId, :country, :province, :ward, :address)")
                         .bind("orderId", orderId)
@@ -44,6 +43,7 @@ public class OrderDao extends BaseDao {
                 );
 
                 for (CartItem i : checkoutCart.getList()) {
+
                     batch.bind("orderId", orderId)
                             .bind("productId", i.getProduct().getId())
                             .bind("price", i.getPrice())
@@ -123,8 +123,7 @@ public class OrderDao extends BaseDao {
                                         " ( " +
                                         "   SELECT pi.image_url " +
                                         "   FROM product_images pi " +
-                                        "   WHERE pi.product_id = p.id " +
-                                        "   ORDER BY pi.id " +
+                                        "   WHERE pi.product_id = p.id AND pi.position = 0 " +
                                         "   LIMIT 1 " +
                                         " ) AS image_url " +
                                         "FROM order_items oi " +
