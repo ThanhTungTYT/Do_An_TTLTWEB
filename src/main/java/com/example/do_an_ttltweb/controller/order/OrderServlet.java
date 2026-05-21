@@ -135,8 +135,18 @@ public class OrderServlet extends HttpServlet {
     }
 
     private Order buildOrder(HttpServletRequest req, User user, Cart checkoutCart) {
+
         double total = checkoutCart.getTotal();
-        double shippingFee = 30000;
+
+        double shippingFee = 0;
+        String shippingFeeParam = req.getParameter("shippingFee");
+        if (shippingFeeParam != null && !shippingFeeParam.isBlank()) {
+            try {
+                shippingFee = Double.parseDouble(shippingFeeParam);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
 
         Promotion promotion = null;
         double discountPercent = 0;
@@ -187,8 +197,16 @@ public class OrderServlet extends HttpServlet {
         OrderAddress address = new OrderAddress();
         address.setCountry(req.getParameter("country"));
         address.setProvince(req.getParameter("province"));
+        address.setDistrict(req.getParameter("district"));
         address.setWard(req.getParameter("ward"));
         address.setAddress(req.getParameter("address"));
+
+        String districtIdStr = req.getParameter("district_id");
+        if (districtIdStr != null && !districtIdStr.isEmpty()) {
+            try { address.setDistrictId(Integer.parseInt(districtIdStr)); }
+            catch (Exception e) { address.setDistrictId(0); }
+        }
+        address.setWardCode(req.getParameter("ward_code"));
         return address;
     }
 

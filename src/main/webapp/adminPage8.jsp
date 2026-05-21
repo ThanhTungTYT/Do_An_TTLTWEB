@@ -53,11 +53,11 @@
         </c:if>
 
         <c:if test="${sessionScope.user.hasPermission('manage_promotion')}">
-            <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
+            <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item active">Quản lí mã giảm giá</a>
         </c:if>
 
         <c:if test="${sessionScope.user.hasPermission('manage_contact')}">
-            <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item active">Chăm sóc khách hàng</a>
+            <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
         </c:if>
 
         <a href="#" class="menu-item" onclick="location.href='${pageContext.request.contextPath}/logout'">Đăng xuất</a>

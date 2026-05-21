@@ -50,11 +50,11 @@
         </c:if>
 
         <c:if test="${sessionScope.user.hasPermission('manage_review')}">
-            <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item">Quản lí đánh giá</a>
+            <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item active">Quản lí đánh giá</a>
         </c:if>
 
         <c:if test="${sessionScope.user.hasPermission('manage_banner')}">
-            <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item active">Quản lí banner</a>
+            <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
         </c:if>
 
         <c:if test="${sessionScope.user.hasPermission('manage_promotion')}">

@@ -34,12 +34,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const fullnameInput   = document.getElementById('fullname');
     const phoneInput      = document.getElementById('phone');
     const addressInput    = document.getElementById('address');
-    const citySelect      = document.getElementById("citySelect");
+    const citySelect      = document.getElementById("provinceSelect");
     const wardSelect      = document.getElementById("wardSelect");
+    const districtSelect  = document.getElementById("districtSelect");
     const hiddenProvince  = document.getElementById("hidden_province");
+    const hiddenDistrict  = document.getElementById("hidden_district");
     const hiddenWard      = document.getElementById("hidden_ward");
 
     function showError(input, message) {
+        if (!input) return;
         input.classList.add('input-error');
         let errLabel = input.nextElementSibling;
         if (errLabel && errLabel.classList.contains('error')) {
@@ -49,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function clearError(input) {
+        if (!input) return;
         input.classList.remove('input-error');
         let errLabel = input.nextElementSibling;
         if (errLabel && errLabel.classList.contains('error')) {
@@ -83,10 +87,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function validateLocation() {
         let isValid = true;
-        if (citySelect.value === '') { showError(citySelect, 'Vui lòng chọn Tỉnh/Thành phố!'); isValid = false; }
+
+        if (!citySelect || citySelect.value === '') { showError(citySelect, 'Vui lòng chọn Tỉnh/Thành phố!'); isValid = false; }
         else clearError(citySelect);
-        if (wardSelect.value === '') { showError(wardSelect, 'Vui lòng chọn Phường/Xã!'); isValid = false; }
+
+        if (!districtSelect || districtSelect.value === '') { showError(districtSelect, 'Vui lòng chọn Quận/Huyện!'); isValid = false; }
+        else clearError(districtSelect);
+
+        if (!wardSelect || wardSelect.value === '') { showError(wardSelect, 'Vui lòng chọn Phường/Xã!'); isValid = false; }
         else clearError(wardSelect);
+
         return isValid;
     }
 
@@ -98,65 +108,135 @@ document.addEventListener("DOMContentLoaded", function () {
         return a && b && c && d;
     }
 
-    fullnameInput.addEventListener('input', validateFullName);
-    phoneInput.addEventListener('input', validatePhone);
-    addressInput.addEventListener('input', validateAddress);
+    if (fullnameInput) fullnameInput.addEventListener('input', validateFullName);
+    if (phoneInput)    phoneInput.addEventListener('input', validatePhone);
+    if (addressInput)  addressInput.addEventListener('input', validateAddress);
 
-    const host = "https://provinces.open-api.vn/api/v2/";
-    let savedProvinceName = hiddenProvince ? hiddenProvince.value.trim() : "";
-    let savedWardName     = hiddenWard     ? hiddenWard.value.trim()     : "";
-
-    function loadProvinces() {
-        fetch(host + "p/")
-            .then(res => res.json())
-            .then(data => {
-                let options = '<option value="">-- Chọn Tỉnh/Thành phố --</option>';
-                let matchedCode = "";
-                data.forEach(tinh => {
-                    options += `<option value="${tinh.code}" data-name="${tinh.name}">${tinh.name}</option>`;
-                    if (tinh.name === savedProvinceName) matchedCode = tinh.code;
+    // ==========================================================
+    // KHỐI HÀM CALL API NỘI BỘ GHN CHUẨN (FIX KHỚP VALUE ID)
+    // ==========================================================
+    async function loadProvinces() {
+        try {
+            const res = await fetch('/Do_An_TTLTWEB/api/ghn/provinces');
+            const data = await res.json();
+            if (citySelect) {
+                citySelect.innerHTML = '<option value="">-- Chọn Tỉnh/Thành phố --</option>';
+                data.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.ProvinceID; // Trả về ID số của GHN (VD: 214)
+                    opt.text = p.ProvinceName;
+                    citySelect.appendChild(opt);
                 });
-                citySelect.innerHTML = options;
-                if (matchedCode) { citySelect.value = matchedCode; loadWards(matchedCode, savedWardName); }
-            })
-            .catch(err => console.error("Lỗi API Tỉnh/Thành:", err));
+            }
+        } catch (e) { console.error('Lỗi tải danh sách Tỉnh:', e); }
     }
 
-    function loadWards(provinceCode, wardNameToSelect = "") {
-        fetch(host + "p/" + provinceCode + "?depth=2")
-            .then(res => res.json())
-            .then(data => {
-                let options = '<option value="">-- Chọn Phường/Xã --</option>';
-                let matchedCode = "";
-                if (data.wards) {
-                    data.wards.forEach(xa => {
-                        options += `<option value="${xa.code}" data-name="${xa.name}">${xa.name}</option>`;
-                        if (xa.name === wardNameToSelect) matchedCode = xa.code;
-                    });
-                }
-                wardSelect.innerHTML = options;
-                if (matchedCode) wardSelect.value = matchedCode;
-            });
+    async function loadDistricts(provinceId, provinceName) {
+        if (!provinceId) return;
+        if (hiddenProvince) hiddenProvince.value = provinceName;
+
+        if (districtSelect) {
+            districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+            districtSelect.disabled = true;
+        }
+        if (wardSelect) {
+            wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+            wardSelect.disabled = true;
+        }
+
+        try {
+            const res = await fetch('/Do_An_TTLTWEB/api/ghn/districts?province_id=' + provinceId);
+            const data = await res.json();
+            if (districtSelect) {
+                data.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.DistrictID;
+                    opt.text = d.DistrictName;
+                    districtSelect.appendChild(opt);
+                });
+                districtSelect.disabled = false;
+            }
+        } catch (e) { console.error('Lỗi tải danh sách Huyện:', e); }
+        validateLocation();
     }
 
+    async function loadWards(districtId, districtName) {
+        if (!districtId) return;
+        if (hiddenDistrict) hiddenDistrict.value = districtName;
+
+        const hiddenDistrictId = document.getElementById('hidden_district_id');
+        if (hiddenDistrictId) hiddenDistrictId.value = districtId;
+
+        if (wardSelect) {
+            wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+            wardSelect.disabled = true;
+        }
+
+        try {
+            const res = await fetch('/Do_An_TTLTWEB/api/ghn/wards?district_id=' + districtId);
+            const data = await res.json();
+            if (wardSelect) {
+                data.forEach(w => {
+                    const opt = document.createElement('option');
+                    opt.value = w.WardCode;
+                    opt.text = w.WardName;
+                    wardSelect.appendChild(opt);
+                });
+                wardSelect.disabled = false;
+            }
+        } catch (e) { console.error('Lỗi tải danh sách Xã:', e); }
+        validateLocation();
+    }
+
+    async function onWardChange(wardCode, wardName) {
+        if (!wardCode) return;
+        if (hiddenWard) hiddenWard.value = wardName;
+
+        const hiddenDistrictId = document.getElementById('hidden_district_id');
+        const districtId = hiddenDistrictId ? hiddenDistrictId.value : "";
+        const weight = 500;
+
+        if (!districtId) return;
+
+        try {
+            const res = await fetch(`/Do_An_TTLTWEB/api/ghn/fee?district_id=${districtId}&ward_code=${wardCode}&weight=${weight}`);
+            const data = await res.json();
+            const fee = data.fee || 30000;
+
+            const hiddenShippingFee = document.getElementById('hidden_shipping_fee');
+            if (hiddenShippingFee) hiddenShippingFee.value = fee;
+
+            if (shippingEl) {
+                shippingEl.textContent = fee.toLocaleString('vi-VN') + ' VND';
+                shippingEl.setAttribute('data-fee', fee);
+            }
+            calculateTotal();
+        } catch (e) { console.error('Lỗi tính phí ship:', e); }
+        validateLocation();
+    }
+
+    // Gắn sự kiện lắng nghe thay đổi ô select
     if (citySelect) {
         citySelect.addEventListener("change", function () {
-            let pName = this.options[this.selectedIndex].getAttribute("data-name");
-            hiddenProvince.value = pName || "";
-            wardSelect.innerHTML = '<option value="">-- Đang tải... --</option>';
-            hiddenWard.value = "";
-            if (this.value) loadWards(this.value);
-            else wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-            validateLocation();
+            if (this.value) {
+                loadDistricts(this.value, this.options[this.selectedIndex].text);
+            }
         });
-        loadProvinces();
+    }
+
+    if (districtSelect) {
+        districtSelect.addEventListener("change", function () {
+            if (this.value) {
+                loadWards(this.value, this.options[this.selectedIndex].text);
+            }
+        });
     }
 
     if (wardSelect) {
         wardSelect.addEventListener("change", function () {
-            let wName = this.options[this.selectedIndex].getAttribute("data-name");
-            hiddenWard.value = wName || "";
-            validateLocation();
+            if (this.value) {
+                onWardChange(this.value, this.options[this.selectedIndex].text);
+            }
         });
     }
 
@@ -175,17 +255,17 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!selected) return;
         const val = selected.value;
 
-        bankInfoPanel.style.display    = "none";
-        ewalletInfoPanel.style.display = "none";
-        placeOrderBtn.style.display    = "block";
-        openBankModalBtn.style.display = "none";
+        if(bankInfoPanel) bankInfoPanel.style.display    = "none";
+        if(ewalletInfoPanel) ewalletInfoPanel.style.display = "none";
+        if(placeOrderBtn) placeOrderBtn.style.display    = "block";
+        if(openBankModalBtn) openBankModalBtn.style.display = "none";
 
         if (BANK_METHODS.includes(val)) {
-            bankInfoPanel.style.display   = "block";
-            placeOrderBtn.style.display   = "none";
-            openBankModalBtn.style.display = "block";
+            if(bankInfoPanel) bankInfoPanel.style.display   = "block";
+            if(placeOrderBtn) placeOrderBtn.style.display   = "none";
+            if(openBankModalBtn) openBankModalBtn.style.display = "block";
         } else if (EWALLET_METHODS.includes(val)) {
-            ewalletInfoPanel.style.display = "block";
+            if(ewalletInfoPanel) ewalletInfoPanel.style.display = "block";
         }
 
         updateQrAmount();
@@ -210,7 +290,6 @@ document.addEventListener("DOMContentLoaded", function () {
     paymentRadios.forEach(r => r.addEventListener("change", onPaymentMethodChange));
     highlightSelectedPayment();
 
-    // ===== CẬP NHẬT QR CODE THEO SỐ TIỀN =====
     function updateQrAmount() {
         const selected = document.querySelector('input[name="paymentMethod"]:checked');
         if (!selected || !BANK_METHODS.includes(selected.value)) return;
@@ -226,24 +305,28 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    placeOrderBtn.addEventListener("click", function () {
-        if (!validateAll()) {
-            const firstError = document.querySelector('.input-error');
-            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-        setButtonLoading(placeOrderBtn, true);
-        checkoutForm.submit();
-    });
+    if (placeOrderBtn) {
+        placeOrderBtn.addEventListener("click", function () {
+            if (!validateAll()) {
+                const firstError = document.querySelector('.input-error');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            setButtonLoading(placeOrderBtn, true);
+            checkoutForm.submit();
+        });
+    }
 
-    openBankModalBtn.addEventListener("click", function () {
-        if (!validateAll()) {
-            const firstError = document.querySelector('.input-error');
-            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-        openBankModal();
-    });
+    if (openBankModalBtn) {
+        openBankModalBtn.addEventListener("click", function () {
+            if (!validateAll()) {
+                const firstError = document.querySelector('.input-error');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            openBankModal();
+        });
+    }
 
     const modal             = document.getElementById("bank-payment-modal");
     const modalCloseX       = document.getElementById("modal-close-x");
@@ -254,14 +337,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalTimestamp    = document.getElementById("modal-timestamp");
 
     function openBankModal() {
+        if (!modal) return;
         const { finalTotal } = getFinalAmount();
         const amountInt = Math.round(finalTotal);
 
         if (modalAmountEl) modalAmountEl.textContent = formatVND(amountInt);
-
-        if (modalTimestamp) {
-            modalTimestamp.textContent = Date.now();
-        }
+        if (modalTimestamp) modalTimestamp.textContent = Date.now();
 
         const contentEl = document.getElementById("transfer-content-text");
         const content   = contentEl ? contentEl.textContent.trim().replace(/\s+/g, '+') : "AROMACAFE";
@@ -274,23 +355,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function closeModal() {
+        if (!modal) return;
         modal.style.display = "none";
         document.body.style.overflow = "";
     }
 
-    modalCloseX.addEventListener("click", closeModal);
-    cancelPaymentBtn.addEventListener("click", closeModal);
+    if (modalCloseX) modalCloseX.addEventListener("click", closeModal);
+    if (cancelPaymentBtn) cancelPaymentBtn.addEventListener("click", closeModal);
 
-    modal.addEventListener("click", function (e) {
-        if (e.target === modal) closeModal();
-    });
+    if (modal) {
+        modal.addEventListener("click", function (e) {
+            if (e.target === modal) closeModal();
+        });
+    }
 
-    confirmPaymentBtn.addEventListener("click", function () {
-        setButtonLoading(confirmPaymentBtn, true);
-        checkoutForm.submit();
-    });
+    if (confirmPaymentBtn) {
+        confirmPaymentBtn.addEventListener("click", function () {
+            setButtonLoading(confirmPaymentBtn, true);
+            checkoutForm.submit();
+        });
+    }
 
     function setButtonLoading(btn, loading) {
+        if (!btn) return;
         if (loading) {
             btn.dataset.originalHtml = btn.innerHTML;
             btn.innerHTML = '<span class="spinner"></span> Đang xử lý...';
@@ -333,7 +420,9 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     window.openQrZoom = function (imgId) {
-        const src = document.getElementById(imgId).src;
+        const targetImg = document.getElementById(imgId);
+        if (!targetImg) return;
+        const src = targetImg.src;
         document.getElementById("qr-zoom-img").src = src;
         document.getElementById("qr-zoom-modal").style.display = "flex";
         document.body.style.overflow = "hidden";
@@ -344,6 +433,8 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.style.overflow = "";
     };
 
+    // Chạy khởi tạo danh sách tỉnh
+    loadProvinces();
     calculateTotal();
     onPaymentMethodChange();
 });

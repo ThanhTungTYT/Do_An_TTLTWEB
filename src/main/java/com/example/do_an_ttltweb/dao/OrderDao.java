@@ -31,10 +31,18 @@ public class OrderDao extends BaseDao {
                         .executeAndReturnGeneratedKeys("id")
                         .mapTo(Integer.class).one();
 
-                h.createUpdate("INSERT INTO order_addresses (order_id, country, province, ward, address) " +
-                                "VALUES (:orderId, :country, :province, :ward, :address)")
+                order.setId(orderId);
+                h.createUpdate(
+                                "INSERT INTO order_addresses (order_id, country, province, district, ward, address, district_id, ward_code) " +
+                                        "VALUES (:orderId, :country, :province, :district, :ward, :address, :districtId, :wardCode)")
                         .bind("orderId", orderId)
-                        .bindBean(address)
+                        .bind("country", address.getCountry())
+                        .bind("province", address.getProvince())
+                        .bind("district", address.getDistrict())
+                        .bind("ward", address.getWard())
+                        .bind("address", address.getAddress())
+                        .bind("districtId", address.getDistrictId())
+                        .bind("wardCode", address.getWardCode())
                         .execute();
 
                 var batch = h.prepareBatch(
@@ -103,7 +111,7 @@ public class OrderDao extends BaseDao {
                                 "SELECT id, user_id, payment_method_id, promo_id, " +
                                         "receiver_name, receiver_phone, note, " +
                                         "total_amount, shipping_fee, discount_percent, final_amount, " +
-                                        "status, created_at " +
+                                        "status, created_at, ghn_order_code " +
                                         "FROM orders " +
                                         "WHERE user_id = :uid " +
                                         "ORDER BY created_at DESC"
@@ -348,7 +356,7 @@ public class OrderDao extends BaseDao {
                 "SELECT id, user_id, payment_method_id, promo_id, " +
                         "receiver_name, receiver_phone, note, " +
                         "total_amount, shipping_fee, discount_percent, final_amount, " +
-                        "status, created_at " +
+                        "status, created_at, ghn_order_code " +
                         "FROM orders WHERE 1=1 "
         );
 
@@ -390,6 +398,37 @@ public class OrderDao extends BaseDao {
                         .bind("key", "%" + keyword + "%")
                         .mapToBean(Order.class)
                         .list()
+        );
+    }
+
+    public Order getOrderById(int orderId) {
+        return getJdbi().withHandle(h ->
+                h.createQuery("SELECT * FROM orders WHERE id = :id")
+                        .bind("id", orderId)
+                        .mapToBean(Order.class)
+                        .findFirst()
+                        .orElse(null)
+        );
+    }
+
+    public OrderAddress getAddressByOrderId(int orderId) {
+        return getJdbi().withHandle(h ->
+                h.createQuery("SELECT * FROM order_addresses WHERE order_id = :oid")
+                        .bind("oid", orderId)
+                        .mapToBean(OrderAddress.class)
+                        .findFirst()
+                        .orElse(null)
+        );
+    }
+
+    public boolean updateOrderStatusAndGhn(int orderId, String status, String ghnCode) {
+        return getJdbi().withHandle(h ->
+                h.createUpdate(
+                                "UPDATE orders SET status = :status, ghn_order_code = :ghnCode WHERE id = :id")
+                        .bind("status", status)
+                        .bind("ghnCode", ghnCode)
+                        .bind("id", orderId)
+                        .execute() > 0
         );
     }
 }

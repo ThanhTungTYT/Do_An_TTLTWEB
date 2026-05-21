@@ -89,30 +89,29 @@
                 <div class="shipping-form">
                     <input type="text" id="fullname" name="fullname" placeholder="Họ và tên"
                            value="${sessionScope.user.full_name}">
-                    <small class="error"></small>
-
                     <input type="text" id="phone" name="phone" placeholder="Số điện thoại"
                            value="${sessionScope.user.phone}">
-                    <small class="error"></small>
-
                     <input type="hidden" name="country" value="Việt Nam">
-
-                    <input type="hidden" id="hidden_province" name="province" value="${requestScope.userAddress.province}">
-                    <input type="hidden" id="hidden_ward" name="ward" value="${requestScope.userAddress.ward}">
-
-                    <select id="citySelect">
+                    <input type="hidden" id="hidden_province" name="province" value="">
+                    <input type="hidden" id="hidden_district" name="district" value="">
+                    <input type="hidden" id="hidden_ward" name="ward" value="">
+                    <input type="hidden" id="hidden_district_id" name="district_id" value="">
+                    <input type="hidden" id="hidden_ward_code" name="ward_code" value="">
+                    <input type="hidden" id="hidden_shipping_fee" name="shippingFee" value="30000">
+                    <select id="provinceSelect"
+                            onchange="loadDistricts(this.value, this.options[this.selectedIndex].text)">
                         <option value="">-- Chọn Tỉnh/Thành phố --</option>
                     </select>
-                    <small class="error"></small>
-
-                    <select id="wardSelect">
+                    <select id="districtSelect" disabled
+                            onchange="loadWards(this.value, this.options[this.selectedIndex].text)">
+                        <option value="">-- Chọn Quận/Huyện --</option>
+                    </select>
+                    <select id="wardSelect" disabled
+                            onchange="onWardChange(this.value, this.options[this.selectedIndex].text)">
                         <option value="">-- Chọn Phường/Xã --</option>
                     </select>
-                    <small class="error"></small>
-
-                    <input type="text" id="address" name="address" placeholder="Đường, Số nhà"
+                    <input type="text" id="address" name="address" placeholder="Số nhà, tên đường"
                            value="${requestScope.userAddress.address}">
-                    <small class="error"></small>
                 </div>
             </section>
 
@@ -401,5 +400,74 @@
 
 <script src="assets/js/payment.js?v=3"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+<script>
+    async function loadProvinces() {
+        const res = await fetch('${pageContext.request.contextPath}/api/ghn/provinces');
+        const data = await res.json();
+        const select = document.getElementById('provinceSelect');
+        data.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.ProvinceID;
+            opt.text = p.ProvinceName;
+            select.appendChild(opt);
+        });
+    }
+
+    async function loadDistricts(provinceId, provinceName) {
+        document.getElementById('hidden_province').value = provinceName;
+        const districtSelect = document.getElementById('districtSelect');
+        const wardSelect = document.getElementById('wardSelect');
+        districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+        wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+        wardSelect.disabled = true;
+        const res = await fetch('${pageContext.request.contextPath}/api/ghn/districts?province_id=' + provinceId);
+        const data = await res.json();
+        data.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.DistrictID;
+            opt.text = d.DistrictName;
+            districtSelect.appendChild(opt);
+        });
+        districtSelect.disabled = false;
+    }
+
+    async function loadWards(districtId, districtName) {
+        document.getElementById('hidden_district_id').value = districtId;
+        document.getElementById('hidden_district').value = districtName;
+        const wardSelect = document.getElementById('wardSelect');
+        wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+        const res = await fetch('${pageContext.request.contextPath}/api/ghn/wards?district_id=' + districtId);
+        const data = await res.json();
+        data.forEach(w => {
+            const opt = document.createElement('option');
+            opt.value = w.WardCode;
+            opt.text = w.WardName;
+            wardSelect.appendChild(opt);
+        });
+        wardSelect.disabled = false;
+    }
+
+    async function onWardChange(wardCode, wardName) {
+        document.getElementById('hidden_ward_code').value = wardCode;
+        document.getElementById('hidden_ward').value = wardName;
+        const districtId = document.getElementById('hidden_district_id').value;
+        const weight = 500;
+        try {
+            const res = await fetch(
+                `${pageContext.request.contextPath}/api/ghn/fee?district_id=${districtId}&ward_code=${wardCode}&weight=${weight}`
+            );
+            const data = await res.json();
+            const fee = data.fee;
+            document.getElementById('hidden_shipping_fee').value = fee;
+            document.getElementById('shipping-fee').textContent = fee.toLocaleString('vi-VN') + ' VND';
+            document.getElementById('shipping-fee').dataset.fee = fee;
+            calculateTotal();
+        } catch (e) {
+            console.error('Lỗi tính phí ship:', e);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProvinces);
+</script>
 </body>
 </html>

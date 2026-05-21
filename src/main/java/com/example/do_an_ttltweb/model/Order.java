@@ -9,6 +9,7 @@ public class Order {
     private List<OrderItem> items;
     private Integer promoId;
     private int paymentMethodId;
+    private String ghnOrderCode;
 
     private String receiverName;
     private String receiverPhone;
@@ -133,4 +134,7 @@ public class Order {
     public void setItems(List<OrderItem> items) {
         this.items = items;
     }
+
+    public String getGhnOrderCode() { return ghnOrderCode; }
+    public void setGhnOrderCode(String ghnOrderCode) { this.ghnOrderCode = ghnOrderCode; }
 }

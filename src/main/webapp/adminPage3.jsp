@@ -116,6 +116,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="${pageContext.request.contextPath}/admin/orders?status=Đang giao"
+                       class="status-item ${status == 'Đang giao' ? 'active' : ''}">
+                        Đang giao
+                    </a>
+                </li>
+                <li>
                     <a href="${pageContext.request.contextPath}/admin/orders?status=Đã giao&startDate=${startDate}&endDate=${endDate}"
                        class="status-item ${status == 'Đã giao' ? 'active' : ''}">
                         Đã giao
@@ -172,6 +178,8 @@
                                     <c:when test="${o.status == 'Đang xử lý'}">Đang xử lý</c:when>
                                     <c:when test="${o.status == 'Đã giao'}">Đã giao</c:when>
                                     <c:when test="${o.status == 'Đã hủy'}">Đã huỷ</c:when>
+                                    <c:when test="${o.status == 'Đang giao'}">Đang giao</c:when>
+                                    <c:when test="${o.status == 'Đã nhận'}">Đã nhận</c:when>
                                 </c:choose>
                             </span>
                         </td>
@@ -224,7 +232,6 @@
 
         <button id="close" onclick="closeDetail()">X</button>
 
-        <!-- DANH SÁCH SẢN PHẨM -->
         <div class="order">
             <h3>DANH SÁCH SẢN PHẨM</h3>
             <table>
@@ -248,7 +255,6 @@
                 </tbody>
             </table>
         </div>
-        <!-- THÔNG TIN KHÁCH -->
         <div class="info-customer">
             <h3>THÔNG TIN KHÁCH HÀNG</h3>
             <div class="info">
@@ -258,9 +264,12 @@
                 </div>
             </div>
         </div>
-
-        <!-- TỔNG TIỀN -->
         <div class="totalSum">
+            <c:if test="${not empty o.ghnOrderCode}">
+                <h3>
+                    MÃ GIAO HÀNG: <span>${o.ghnOrderCode}</span>
+                </h3>
+            </c:if>
             <h3>
                 TỔNG TIỀN SẢN PHẨM:
                 <span>

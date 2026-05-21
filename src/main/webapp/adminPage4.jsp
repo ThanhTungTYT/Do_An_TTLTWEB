@@ -39,7 +39,7 @@
         </c:if>
 
         <c:if test="${sessionScope.user.hasPermission('manage_user')}">
-            <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
+            <a href="${pageContext.request.contextPath}/admin/users" class="menu-item active">Quản lí tài khoản</a>
         </c:if>
 
         <c:if test="${sessionScope.user.hasPermission('manage_review')}">
