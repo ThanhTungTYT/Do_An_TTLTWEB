@@ -15,20 +15,7 @@
     <title>Quản lí sản phẩm</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
-    <style>
-        body { display: flex; flex-direction: row; }
-        .right-content { width: 80%; transition: width 0.3s ease; }
-        .permission-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-            background: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .permission-item { font-size: 0.9em; cursor: pointer; }
-    </style>
+
 </head>
 <body>
 <div class="left-menu" id="left-menu">
@@ -37,35 +24,13 @@
     </div>
     <div class="menu">
         <a href="${pageContext.request.contextPath}/admin/dashboard" class="menu-item">Tổng quan</a>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_product')}">
-            <a href="${pageContext.request.contextPath}/admin/products" class="menu-item active">Quản lí sản phẩm</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_order')}">
-            <a href="${pageContext.request.contextPath}/admin/orders" class="menu-item">Quản lí đơn hàng</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_user')}">
-            <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_review')}">
-            <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item">Quản lí đánh giá</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_banner')}">
-            <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_promotion')}">
-            <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_contact')}">
-            <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
-        </c:if>
-
+        <a href="${pageContext.request.contextPath}/admin/products" class="menu-item active">Quản lí sản phẩm</a>
+        <a href="${pageContext.request.contextPath}/admin/orders" class="menu-item">Quản lí đơn hàng</a>
+        <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
+        <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item">Quản lí đánh giá</a>
+        <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
+        <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
+        <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
         <a href="#" class="menu-item" onclick="location.href='${pageContext.request.contextPath}/logout'">Đăng xuất</a>
     </div>
     <div class="footer">
@@ -227,7 +192,7 @@
 
         <div style="margin-top: 15px;">
             <button type="button" onclick="deleteCheckedProducts()">
-                 Xóa sản phẩm
+                Xóa sản phẩm
             </button>
         </div>
     </div>
@@ -237,7 +202,7 @@
         <p>THÊM SẢN PHẨM</p>
         <button id="take-off" type="button" >X</button>
     </div>
-    <form class="main-form" action="${pageContext.request.contextPath}/admin/products" method="post">
+    <form class="main-form" action="${pageContext.request.contextPath}/admin/products" method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="add_product">
         <div class="p name-p">
             <label>Tên sản phẩm</label>
@@ -265,11 +230,45 @@
             <input type="number" name="weight" placeholder="Khối lượng" required>
         </div>
         <div class="img-p">
-            <label>Ảnh</label>
-            <input type="text" id="urlInput" placeholder="Url link">
-            <button type="button" onclick="addImageUrl()">Thêm</button>
-            <span id="countImg">0</span>
-            <div id="hidden-area"></div>
+            <label>Ảnh sản phẩm</label>
+            <div class="upload-boxes">
+                <div class="upload-box">
+                    <input type="file" name="main_image" id="mainImage"
+                           accept="image/jpeg,image/png,image/webp" hidden
+                           onchange="previewImage(this)">
+                    <label for="mainImage" class="upload-label">
+                        <span class="upload-placeholder">
+                            <i class="fa-solid fa-plus"></i>
+                            <small>Ảnh chính</small>
+                        </span>
+                        <img class="upload-preview" alt="">
+                    </label>
+                </div>
+                <div class="upload-box">
+                    <input type="file" name="sub_image_1" id="subImage1"
+                           accept="image/jpeg,image/png,image/webp" hidden
+                           onchange="previewImage(this)">
+                    <label for="subImage1" class="upload-label">
+                        <span class="upload-placeholder">
+                            <i class="fa-solid fa-plus"></i>
+                            <small>Ảnh phụ 1</small>
+                        </span>
+                        <img class="upload-preview" alt="">
+                    </label>
+                </div>
+                <div class="upload-box">
+                    <input type="file" name="sub_image_2" id="subImage2"
+                           accept="image/jpeg,image/png,image/webp" hidden
+                           onchange="previewImage(this)">
+                    <label for="subImage2" class="upload-label">
+                        <span class="upload-placeholder">
+                            <i class="fa-solid fa-plus"></i>
+                            <small>Ảnh phụ 2</small>
+                        </span>
+                        <img class="upload-preview" alt="">
+                    </label>
+                </div>
+            </div>
         </div>
         <div class="des-p">
             <label>Mô tả</label>
@@ -284,7 +283,7 @@
         <button id="close-remake" type="button" onclick="closeEditModal()">X</button>
     </div>
 
-    <form class="main-form" action="${pageContext.request.contextPath}/admin/products" method="post">
+    <form class="main-form" action="${pageContext.request.contextPath}/admin/products" method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="edit_product">
 
         <input type="hidden" name="id" id="edit-id-hidden">
@@ -327,6 +326,48 @@
             <label>Số lượng</label>
             <input type="number" name="stock" id="edit-stock" required>
         </div>
+        <div class="img-p">
+            <label>Ảnh sản phẩm</label>
+            <div class="upload-boxes">
+                <div class="upload-box" id="edit-box-main">
+                    <input type="file" name="main_image" id="editMainImage"
+                           accept="image/jpeg,image/png,image/webp" hidden
+                           onchange="previewImage(this)">
+                    <label for="editMainImage" class="upload-label">
+                        <span class="upload-placeholder">
+                            <i class="fa-solid fa-plus"></i>
+                            <small>Ảnh chính</small>
+                        </span>
+                        <img class="upload-preview" alt="">
+                    </label>
+                </div>
+                <div class="upload-box" id="edit-box-sub1">
+                    <input type="file" name="sub_image_1" id="editSubImage1"
+                           accept="image/jpeg,image/png,image/webp" hidden
+                           onchange="previewImage(this)">
+                    <label for="editSubImage1" class="upload-label">
+                        <span class="upload-placeholder">
+                            <i class="fa-solid fa-plus"></i>
+                            <small>Ảnh phụ 1</small>
+                        </span>
+                        <img class="upload-preview" alt="">
+                    </label>
+                </div>
+                <div class="upload-box" id="edit-box-sub2">
+                    <input type="file" name="sub_image_2" id="editSubImage2"
+                           accept="image/jpeg,image/png,image/webp" hidden
+                           onchange="previewImage(this)">
+                    <label for="editSubImage2" class="upload-label">
+                        <span class="upload-placeholder">
+                            <i class="fa-solid fa-plus"></i>
+                            <small>Ảnh phụ 2</small>
+                        </span>
+                        <img class="upload-preview" alt="">
+                    </label>
+                </div>
+            </div>
+        </div>
+
         <div class="des-p">
             <label>Mô tả</label>
             <textarea name="description" id="edit-desc"></textarea>
