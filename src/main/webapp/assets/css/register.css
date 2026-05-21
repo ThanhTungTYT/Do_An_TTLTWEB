@@ -1,43 +1,40 @@
-/* container */
 .container {
-    margin: 50px auto; /* set margin top là 50px con lại tự căng chỉnh */
+    margin: 50px auto;
     padding: 30px;
     background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* thêm bóng mờ */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     min-height: 450px;
     width: 400px;
 
 }
 
-/* Tiêu đề đăng ký */
 .container h2 {
     text-align: center;
     margin-bottom: 12px;
     color: #c76739;
-    font-size: 24px; /* chỉnh sửa kích thước font */
+    font-size: 24px;
     margin-top: 12px;
 }
 
 .container label {
     display: block;
     margin-bottom: 10px;
-    font-weight: bold; /* in đậm chữ */
+    font-weight: bold;
 }
 
-/* các input trong container */
 .container input[type="text"], .container input[type="email"], .container input[type="password"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* đảm bảo padding và border được tính vào tổng chiều rộng */
+    box-sizing: border-box;
 }
 
 .container .bt_regis {
     display: flex;
-    justify-content: space-between; /* chỉnh sửa để nút cách đều nhau */
+    justify-content: space-between;
 }
 
 .bt_regis button {
@@ -47,7 +44,7 @@
     color: white;
     border: none;
     border-radius: 4px;
-    cursor: pointer; /* con trỏ chuột biến thành tay khi hover qua nút */
+    cursor: pointer;
 }
 
 .bt_regis button:hover {
@@ -96,5 +93,18 @@
 }
 .container .error-msg{
     margin-bottom: 20px;
+}
+
+.container input.input-error {
+    border-color: red;
+    margin-bottom: 4px;
+}
+
+.container .error {
+    display: none;
+    color: red;
+    font-size: 12px;
+    font-style: italic;
+    margin-bottom: 8px;
 }
 

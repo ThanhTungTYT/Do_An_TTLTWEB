@@ -76,15 +76,21 @@ ssh.settings {
 
 task docker_app_start {
     doLast {
-        println 'begin docker_app_start'
+        println '--- Đang khởi động Tomcat ---'
         ssh.run {
             session(remotes.host) {
-                execute 'docker stop tomcat10', ignoreError: true
-                execute 'docker run -it --rm -d ' +
+                // Xóa container cũ (không cần sudo)
+                execute 'docker rm -f tomcat10', ignoreError: true
+
+                // Chạy lệnh run (bỏ sudo, bỏ -it)
+                execute 'docker run -d ' +
                         '--name tomcat10 ' +
+                        '--restart always ' +
                         '-v /usr/deploy:/usr/local/tomcat/webapps ' +
                         '-p 80:8080 ' +
                         'tomcat:10.1'
+
+                println '--- Deploy thành công lên cổng 80! ---'
             }
         }
     }
@@ -92,14 +98,13 @@ task docker_app_start {
 
 task docker_upload_file_to_server {
     doLast {
-        println 'begin docker_upload_file_to_server'
         ssh.run {
             session(remotes.host) {
-                remove '/usr/deploy/lab.war'
-                remove '/usr/deploy/lab/'
+                execute 'rm -f /usr/deploy/ROOT.war', ignoreError: true
+                execute 'rm -rf /usr/deploy/ROOT/', ignoreError: true
 
                 put from: tasks.war.archiveFile.get().asFile.path,
-                        into: "/usr/deploy/lab.war"
+                        into: "/usr/deploy/ROOT.war" // Đổi tên thành ROOT
             }
         }
     }

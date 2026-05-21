@@ -4,13 +4,15 @@ public class ProductImage {
     private int id;
     private int product_id;
     private String image_url;
+    private int position;
 
     public ProductImage() {}
 
-    public ProductImage(int id, int product_id, String image_url) {
+    public ProductImage(int id, int product_id, String image_url, int position) {
         this.id = id;
         this.product_id = product_id;
         this.image_url = image_url;
+        this.position = position;
     }
 
     public int getId() { return id; }
@@ -21,4 +23,7 @@ public class ProductImage {
 
     public String getImage_url() { return image_url; }
     public void setImage_url(String image_url) { this.image_url = image_url; }
+
+    public int getPosition() { return position; }
+    public void setPosition(int position) { this.position = position; }
 }

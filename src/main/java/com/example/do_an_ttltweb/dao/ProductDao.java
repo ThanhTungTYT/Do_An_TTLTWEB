@@ -20,8 +20,7 @@ public class ProductDao extends BaseDao {
                                 "    (\n" +
                                 "        SELECT image_url \n" +
                                 "        FROM product_images i \n" +
-                                "        WHERE i.product_id = p.id \n" +
-                                "        ORDER BY i.id ASC \n" +
+                                "        WHERE i.product_id = p.id AND i.position = 0 \n" +
                                 "        LIMIT 1\n" +
                                 "    ) AS image_url,\n" +
                                 "    c.name AS category_name,\n" +
@@ -49,7 +48,7 @@ public class ProductDao extends BaseDao {
     public List<Product> getAllProduct() {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.id, p.category_id, p.name, p.price, p.description, p.stock, p.sold, p.weight_grams, p.state, " +
-                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id ASC LIMIT 1) AS image_url, " +
+                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
                                 "c.name AS category_name, " +
                                 "IFNULL(AVG(r.rating), 0) AS avg_rating " +
                                 "FROM products p " +
@@ -64,7 +63,7 @@ public class ProductDao extends BaseDao {
     public List<Product> getProductForCategory(int cid) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.id, p.name, p.price, p.sold, " +
-                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id ASC LIMIT 1) AS image_url, " +
+                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
                                 "c.name AS category_name " +
                                 "FROM products p " +
                                 "JOIN categories c ON p.category_id = c.id " +
@@ -79,7 +78,7 @@ public class ProductDao extends BaseDao {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.*, " +
                                 "c.name AS category_name, " +
-                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id LIMIT 1) AS image_url, " +
+                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
                                 "IFNULL(AVG(r.rating), 0) AS avg_rating " +
                                 "FROM products p " +
                                 "JOIN categories c ON p.category_id = c.id " +
@@ -96,7 +95,7 @@ public class ProductDao extends BaseDao {
     public List<Product> getProductsByRelative(int cid, String name, int pid) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.id, p.name, p.price, p.sold, " +
-                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id LIMIT 1) AS image_url, " +
+                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
                                 "c.name AS category_name " +
                                 "FROM products p " +
                                 "JOIN categories c ON p.category_id = c.id " +
@@ -129,7 +128,7 @@ public class ProductDao extends BaseDao {
     public List<Product> getFilteredProducts(int cid, String sortType, int offset) {
         return getJdbi().withHandle(handle -> {
             String sql = "SELECT p.id, p.category_id, p.name, p.price, p.sold, p.stock, p.weight_grams, " +
-                    "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id ASC LIMIT 1) AS image_url, " +
+                    "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
                     "c.name AS category_name, " +
                     "IFNULL(AVG(r.rating), 0) AS avg_rating " +
                     "FROM products p " +
@@ -184,11 +183,12 @@ public class ProductDao extends BaseDao {
         );
     }
 
-    public void insertProductImage(int productId, String imageUrl) {
+    public void insertProductImage(int productId, String imageUrl, int position) {
         getJdbi().useHandle(handle ->
-                handle.createUpdate("INSERT INTO product_images (product_id, image_url) VALUES (:pid, :url)")
+                handle.createUpdate("INSERT INTO product_images (product_id, image_url, position) VALUES (:pid, :url, :pos)")
                         .bind("pid", productId)
                         .bind("url", imageUrl)
+                        .bind("pos", position)
                         .execute()
         );
     }
@@ -273,7 +273,7 @@ public class ProductDao extends BaseDao {
 
     public List<Product> searchProductsPaginated(String keyword, int limit, int offset) {
         String sql = "SELECT p.id, p.category_id, p.name, p.price, p.description, p.stock, p.sold, p.weight_grams, p.state, " +
-                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id ASC LIMIT 1) AS image_url, " +
+                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
                 "c.name AS category_name " +
                 "FROM products p " +
                 "JOIN categories c ON p.category_id = c.id " +
@@ -307,7 +307,7 @@ public class ProductDao extends BaseDao {
     public List<Product> getProductsPaginatedForAdmin(int categoryId, int limit, int offset) {
         StringBuilder sql = new StringBuilder(
                 "SELECT p.id, p.category_id, p.name, p.price, p.description, p.stock, p.sold, p.weight_grams, p.state, " +
-                        "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id ASC LIMIT 1) AS image_url, " +
+                        "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
                         "c.name AS category_name " +
                         "FROM products p " +
                         "JOIN categories c ON p.category_id = c.id "
@@ -331,7 +331,7 @@ public class ProductDao extends BaseDao {
     public List<Product> getProductByKey(String key){
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT p.id, p.name, p.price, p.sold, " +
-                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id ORDER BY i.id ASC LIMIT 1) AS image_url, " +
+                                "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
                                 "c.name AS category_name " +
                                 "FROM products p " +
                                 "JOIN categories c ON p.category_id = c.id " +

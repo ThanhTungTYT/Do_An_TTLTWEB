@@ -51,6 +51,7 @@ public class OrderDao extends BaseDao {
                 );
 
                 for (CartItem i : checkoutCart.getList()) {
+
                     batch.bind("orderId", orderId)
                             .bind("productId", i.getProduct().getId())
                             .bind("price", i.getPrice())
@@ -110,7 +111,7 @@ public class OrderDao extends BaseDao {
                                 "SELECT id, user_id, payment_method_id, promo_id, " +
                                         "receiver_name, receiver_phone, note, " +
                                         "total_amount, shipping_fee, discount_percent, final_amount, " +
-                                        "status, created_at " +
+                                        "status, created_at, ghn_order_code " +
                                         "FROM orders " +
                                         "WHERE user_id = :uid " +
                                         "ORDER BY created_at DESC"
@@ -130,8 +131,7 @@ public class OrderDao extends BaseDao {
                                         " ( " +
                                         "   SELECT pi.image_url " +
                                         "   FROM product_images pi " +
-                                        "   WHERE pi.product_id = p.id " +
-                                        "   ORDER BY pi.id " +
+                                        "   WHERE pi.product_id = p.id AND pi.position = 0 " +
                                         "   LIMIT 1 " +
                                         " ) AS image_url " +
                                         "FROM order_items oi " +
@@ -356,7 +356,7 @@ public class OrderDao extends BaseDao {
                 "SELECT id, user_id, payment_method_id, promo_id, " +
                         "receiver_name, receiver_phone, note, " +
                         "total_amount, shipping_fee, discount_percent, final_amount, " +
-                        "status, created_at " +
+                        "status, created_at, ghn_order_code " +
                         "FROM orders WHERE 1=1 "
         );
 
