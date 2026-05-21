@@ -3,6 +3,9 @@ package com.example.do_an_ttltweb.controller.account;
 import com.example.do_an_ttltweb.model.Order;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.services.OrderService;
+import com.example.do_an_ttltweb.model.OrderAddress;
+import java.util.HashMap;
+import java.util.Map;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -32,6 +35,12 @@ public class OrderHistoryServlet extends HttpServlet {
         }
 
         List<Order> orders = orderService.getOrdersByUserId(authUser.getId());
+        Map<Integer, OrderAddress> orderAddressMap = new HashMap<>();
+        for (Order o : orders) {
+            OrderAddress addr = orderService.getAddressByOrderId(o.getId());
+            if (addr != null) orderAddressMap.put(o.getId(), addr);
+        }
+        request.setAttribute("orderAddressMap", orderAddressMap);
         request.setAttribute("orders", orders);
 
         request.getRequestDispatcher("/historyOrder.jsp").forward(request, response);
