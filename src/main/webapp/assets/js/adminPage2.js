@@ -1,21 +1,35 @@
-function addImageUrl() {
-    var input = document.getElementById("urlInput");
-    var url = input.value.trim();
-    var countSpan = document.getElementById("countImg");
-    var hiddenArea = document.getElementById("hidden-area");
-    if (url === "") {
-        alert("Vui lòng nhập link ảnh!");
+function previewImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+        alert("Ảnh không được vượt quá 5MB!");
+        input.value = "";
         return;
     }
-    var hiddenInput = document.createElement("input");
-    hiddenInput.type = "hidden";
-    hiddenInput.name = "image_urls";
-    hiddenInput.value = url;
-    hiddenArea.appendChild(hiddenInput);
-    var currentCount = parseInt(countSpan.innerText);
-    countSpan.innerText = currentCount + 1;
-    input.value = "";
-    alert("Đã thêm ảnh vào danh sách chờ!");
+
+    const box = input.closest(".upload-box");
+    const preview = box.querySelector(".upload-preview");
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        preview.src = e.target.result;
+        box.classList.add("filled");
+    };
+    reader.readAsDataURL(file);
+}
+
+function setBoxImage(box, imgUrl) {
+    const fileInput = box.querySelector("input[type='file']");
+    const preview = box.querySelector(".upload-preview");
+    fileInput.value = "";
+    if (imgUrl && imgUrl.trim() !== "") {
+        preview.src = imgUrl;
+        box.classList.add("filled");
+    } else {
+        preview.src = "";
+        box.classList.remove("filled");
+    }
 }
 function addCat() {
     var popup = document.getElementById('form-add-cat');
@@ -23,7 +37,6 @@ function addCat() {
 
     if (popup) {
         popup.style.display = 'block';
-        // Làm mờ nền phía sau (nếu muốn)
         if (content) content.style.filter = 'blur(5px)';
     } else {
         console.error("Lỗi: Không tìm thấy ID form-add-cat");
@@ -36,21 +49,17 @@ function dongFormThemLoai() {
 
     if (popup) {
         popup.style.display = 'none';
-        // Bỏ làm mờ nền
         if (content) content.style.filter = 'none';
     }
 }
 function deleteCategory(id) {
     if (confirm("CẢNH BÁO: Bạn có chắc chắn muốn xóa loại sản phẩm này?\n(Lưu ý: Nếu loại này đang chứa sản phẩm thì sẽ xóa các sản phẩm có loại này)")) {
-        // Điền ID vào form ẩn
         document.getElementById('input-cat-id').value = id;
-        // Gửi form đi
         document.getElementById('form-delete-cat').submit();
     }
 }
 
 function openEditModal(button) {
-    // 1. Lấy dữ liệu từ các thuộc tính data- của nút bấm
     var id = button.getAttribute("data-id");
     var name = button.getAttribute("data-name");
     var category = button.getAttribute("data-category");
@@ -60,9 +69,8 @@ function openEditModal(button) {
     var state = button.getAttribute("data-state");
     var desc = button.getAttribute("data-desc");
 
-    // 2. Điền dữ liệu vào các ô input trong form (Dựa vào ID đã thêm ở Bước 1)
-    document.getElementById("edit-id-hidden").value = id;        // Input ẩn gửi đi
-    document.getElementById("edit-id-display").value = "#" + id; // Input hiện để xem
+    document.getElementById("edit-id-hidden").value = id;
+    document.getElementById("edit-id-display").value = "#" + id;
 
     document.getElementById("edit-name").value = name;
     document.getElementById("edit-price").value = price;
@@ -80,10 +88,16 @@ function openEditModal(button) {
                 ? 'Inactive'
                 : 'Active';
         } else {
-            // DEFAULT – bắt buộc có
             stateSelect.value = 'Active';
         }
     }
+
+    var imgMain = button.getAttribute("data-img-main");
+    var imgSub1 = button.getAttribute("data-img-sub1");
+    var imgSub2 = button.getAttribute("data-img-sub2");
+    setBoxImage(document.getElementById("edit-box-main"), imgMain);
+    setBoxImage(document.getElementById("edit-box-sub1"), imgSub1);
+    setBoxImage(document.getElementById("edit-box-sub2"), imgSub2);
 }
 
 function closeEditModal() {
