@@ -50,4 +50,16 @@ public class OrderService {
     public List<Order> searchOrders(String keyword) {
         return dao.searchOrders(keyword);
     }
+
+    public Order getOrderById(int orderId) {
+        return dao.getOrderById(orderId);
+    }
+
+    public OrderAddress getAddressByOrderId(int orderId) {
+        return dao.getAddressByOrderId(orderId);
+    }
+
+    public boolean updateOrderStatusAndGhn(int orderId, String status, String ghnCode) {
+        return dao.updateOrderStatusAndGhn(orderId, status, ghnCode);
+    }
 }

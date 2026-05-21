@@ -6,6 +6,9 @@ public class OrderAddress {
     String province;
     String ward;
     String address;
+    private String district;
+    private int districtId;
+    private String wardCode;
 
 
     public int getOrderId() {
@@ -47,4 +50,11 @@ public class OrderAddress {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public String getDistrict() { return district; }
+    public void setDistrict(String district) { this.district = district; }
+    public int getDistrictId() { return districtId; }
+    public void setDistrictId(int districtId) { this.districtId = districtId; }
+    public String getWardCode() { return wardCode; }
+    public void setWardCode(String wardCode) { this.wardCode = wardCode; }
 }

@@ -1,9 +1,11 @@
 package com.example.do_an_ttltweb.controller.adminPage3;
 
 import com.example.do_an_ttltweb.model.Order;
+import com.example.do_an_ttltweb.model.OrderAddress;
 import com.example.do_an_ttltweb.model.OrderItem;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.services.AccountService;
+import com.example.do_an_ttltweb.services.GHNService;
 import com.example.do_an_ttltweb.services.OrderService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -78,16 +80,20 @@ public class AdminPage3Servlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
         int orderId = Integer.parseInt(req.getParameter("orderId"));
-        String status = "Đã giao";
 
-        Order order = new Order();
-        order.setId(orderId);
-        order.setStatus(status);
+        String ghnCode = null;
+        try {
+            Order order = orderService.getOrderById(orderId);
+            OrderAddress address = orderService.getAddressByOrderId(orderId);
+            List<OrderItem> items = orderService.getItemsByOrderId(orderId);
 
-        boolean updated = orderService.updateOrder(order);
-        System.out.println("Update order " + orderId + ": " + updated);
+            GHNService ghnService = new GHNService();
+            ghnCode = ghnService.createOrder(order, address, items);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        orderService.updateOrder(order);
+        orderService.updateOrderStatusAndGhn(orderId, "Đang giao", ghnCode);
         resp.sendRedirect(req.getContextPath() + "/admin/orders");
     }
 }
