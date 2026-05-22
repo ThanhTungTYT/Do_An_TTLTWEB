@@ -79,7 +79,7 @@
         <c:if test="${o.status == 'Đang xử lý'}">
             <form action="${pageContext.request.contextPath}/cancel-order" method="post">
                 <input type="hidden" name="orderId" value="${o.id}">
-                <button type="submit" onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?')" style="background: red; color: white; width: auto; padding: 7px 14px; border-radius: 6px;">
+                <button type="button" onclick="openCancelModal('${o.id}')" style="background: red; color: white; width: auto; padding: 7px 14px; border-radius: 6px;">
                     Hủy đơn
                 </button>
             </form>
@@ -113,6 +113,50 @@
                 <div class="detail-row"><span class="label">Mã vận đơn:</span><strong id="d-ghn-code"></strong></div>
                 <div class="detail-row"><span class="label">Trạng thái:</span><strong id="d-ghn-status">Đang tải<span class="spinner"></span></strong></div>
             </div>
+        </div>
+    </div>
+</div>
+
+<form id="cancel-order-form"
+      action="${pageContext.request.contextPath}/cancel-order"
+      method="post" style="display:none;">
+    <input type="hidden" name="orderId" id="cancel-order-id">
+    <input type="hidden" name="cancelReason" id="cancel-reason-value">
+</form>
+
+<div class="cancel-overlay" id="cancel-overlay" onclick="closeCancelIfOutside(event)">
+    <div class="cancel-modal">
+
+        <h3>Hủy đơn hàng #<span id="cancel-order-display-id"></span></h3>
+        <p>Vui lòng chọn lý do hủy đơn hàng của bạn:</p>
+
+        <div class="reason-list">
+            <label class="reason-item">
+                <input type="radio" name="cancelReason" value="Sản phẩm không còn cần thiết">
+                Sản phẩm không còn cần thiết
+            </label>
+            <label class="reason-item">
+                <input type="radio" name="cancelReason" value="Đổi thông tin nhận hàng">
+                Đổi thông tin nhận hàng
+            </label>
+            <label class="reason-item">
+                <input type="radio" name="cancelReason" value="Đặt nhầm sản phẩm">
+                Đặt nhầm sản phẩm
+            </label>
+            <label class="reason-item">
+                <input type="radio" name="cancelReason" value="Đổi phương thức thanh toán">
+                Đổi phương thức thanh toán
+            </label>
+        </div>
+
+        <div class="cancel-modal-actions">
+            <button class="btn-back" onclick="closeCancelModal()">
+                Quay lại
+            </button>
+            <button class="btn-confirm-cancel" id="btn-confirm-cancel"
+                    onclick="submitCancel()" disabled>
+                Xác nhận hủy đơn
+            </button>
         </div>
     </div>
 </div>
@@ -182,4 +226,44 @@
             window.closeDetail();
         }
     };
+    document.querySelectorAll('input[name="cancelReason"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll('.reason-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            this.closest('.reason-item').classList.add('selected');
+            document.getElementById('btn-confirm-cancel').disabled = false;
+        });
+    });
+
+    function openCancelModal(orderId) {
+        document.getElementById('cancel-order-id').value = orderId;
+        document.getElementById('cancel-order-display-id').textContent = orderId;
+
+        document.querySelectorAll('input[name="cancelReason"]').forEach(r => r.checked = false);
+        document.querySelectorAll('.reason-item').forEach(item => item.classList.remove('selected'));
+        document.getElementById('btn-confirm-cancel').disabled = true;
+
+        document.getElementById('cancel-overlay').classList.add('show');
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancel-overlay').classList.remove('show');
+    }
+
+    function closeCancelIfOutside(event) {
+        if (event.target === document.getElementById('cancel-overlay')) {
+            closeCancelModal();
+        }
+    }
+
+    function submitCancel() {
+        const selected = document.querySelector('input[name="cancelReason"]:checked');
+        if (!selected) {
+            alert('Vui lòng chọn lý do hủy đơn!');
+            return;
+        }
+        document.getElementById('cancel-reason-value').value = selected.value;
+        document.getElementById('cancel-order-form').submit();
+    }
 </script>
