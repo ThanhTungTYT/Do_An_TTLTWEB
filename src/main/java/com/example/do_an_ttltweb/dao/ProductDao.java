@@ -101,7 +101,7 @@ public class ProductDao extends BaseDao {
                                 "JOIN categories c ON p.category_id = c.id " +
                                 "WHERE ( p.state ='active' And p.name LIKE CONCAT('%', :name, '%') OR p.category_id = :category_id) " +
                                 "AND p.id != :product_id " +
-                                "ORDER BY p.sold DESC LIMIT 4")
+                                "ORDER BY p.sold DESC LIMIT 10")
                         .bind("name", name)
                         .bind("category_id", cid)
                         .bind("product_id", pid)
