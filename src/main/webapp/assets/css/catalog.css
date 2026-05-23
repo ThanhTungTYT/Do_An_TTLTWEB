@@ -306,6 +306,89 @@
     border-color: #c76739;
     box-shadow: 0 0 3px #c76739;
 }
+/* ── Price Range Slider ── */
+.price-range-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px 2px;
+}
+
+.price-range-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c76739;
+}
+
+.price-slider-track {
+    position: relative;
+    height: 5px;
+    background: #ddd;
+    border-radius: 4px;
+    margin: 18px 0 8px;
+}
+
+.price-slider-fill {
+    position: absolute;
+    height: 100%;
+    background: #c76739;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.price-range-input {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    pointer-events: none;
+    height: 5px;
+}
+
+.price-range-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #c76739;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.price-range-input::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #c76739;
+    border: 2px solid #fff;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.price-apply-btn {
+    width: 100%;
+    padding: 9px;
+    background: #c76739;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.price-apply-btn:hover {
+    background: #8c4828;
+}
 
 /* Ẩn mũi tên trong input number */
 input[type=number]::-webkit-inner-spin-button,

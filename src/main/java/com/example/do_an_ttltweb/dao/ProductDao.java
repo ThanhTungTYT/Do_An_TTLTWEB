@@ -111,57 +111,57 @@ public class ProductDao extends BaseDao {
     }
 
 
-    public int countProducts(int cid) {
+    public int countProducts(int cid, double minPrice, double maxPrice) {
         return getJdbi().withHandle(handle -> {
-            StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM products p WHERE p.state = 'active' AND p.stock > 0 ");
-
-            if (cid > 0) {
-                sql.append("AND p.category_id = :cid");
-            }
-
-            var query = handle.createQuery(sql.toString());
+            StringBuilder sql = new StringBuilder(
+                    "SELECT COUNT(*) FROM products p WHERE p.state = 'active' AND p.stock > 0 " +
+                            "AND p.price >= :minPrice AND p.price <= :maxPrice "
+            );
+            if (cid > 0) sql.append("AND p.category_id = :cid");
+            var query = handle.createQuery(sql.toString())
+                    .bind("minPrice", minPrice)
+                    .bind("maxPrice", maxPrice);
             if (cid > 0) query.bind("cid", cid);
             return query.mapTo(Integer.class).one();
         });
     }
 
-    public List<Product> getFilteredProducts(int cid, String sortType, int offset) {
+    public List<Product> getFilteredProducts(int cid, String sortType, int offset, double minPrice, double maxPrice) {
         return getJdbi().withHandle(handle -> {
-            String sql = "SELECT p.id, p.category_id, p.name, p.price, p.sold, p.stock, p.weight_grams, " +
-                    "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
-                    "c.name AS category_name, " +
-                    "IFNULL(AVG(r.rating), 0) AS avg_rating " +
-                    "FROM products p " +
-                    "JOIN categories c ON p.category_id = c.id " +
-                    "LEFT JOIN products_review r ON p.id = r.product_id " +
-                    "Where p.state = 'active' And p.stock > 0 " ;
+            StringBuilder sql = new StringBuilder(
+                    "SELECT p.id, p.category_id, p.name, p.price, p.sold, p.stock, p.weight_grams, " +
+                            "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
+                            "c.name AS category_name, " +
+                            "IFNULL(AVG(r.rating), 0) AS avg_rating " +
+                            "FROM products p " +
+                            "JOIN categories c ON p.category_id = c.id " +
+                            "LEFT JOIN products_review r ON p.id = r.product_id " +
+                            "WHERE p.state = 'active' AND p.stock > 0 " +
+                            "AND p.price >= :minPrice AND p.price <= :maxPrice "
+            );
 
-            if (cid > 0) {
-                sql += "AND p.category_id = :cid ";
-            }
+            if (cid > 0) sql.append("AND p.category_id = :cid ");
 
-            sql += "GROUP BY p.id, p.name, p.price, c.name, p.sold, p.stock, p.weight_grams, p.category_id ";
+            sql.append("GROUP BY p.id, p.name, p.price, c.name, p.sold, p.stock, p.weight_grams, p.category_id ");
 
             if (sortType != null) {
                 switch (sortType) {
-                    case "price-desc": sql += "ORDER BY p.price DESC "; break;
-                    case "price-asc":  sql += "ORDER BY p.price ASC "; break;
-                    case "sold":       sql += "ORDER BY p.sold DESC "; break;
-                    case "rating":     sql += "ORDER BY avg_rating DESC "; break;
-                    default:           sql += "ORDER BY p.name ASC "; break;
+                    case "price-desc": sql.append("ORDER BY p.price DESC "); break;
+                    case "price-asc":  sql.append("ORDER BY p.price ASC ");  break;
+                    case "sold":       sql.append("ORDER BY p.sold DESC ");  break;
+                    case "rating":     sql.append("ORDER BY avg_rating DESC "); break;
+                    default:           sql.append("ORDER BY p.name ASC ");   break;
                 }
             } else {
-                sql += "ORDER BY p.name ASC ";
+                sql.append("ORDER BY p.name ASC ");
             }
+            sql.append("LIMIT 25 OFFSET :offset");
 
-            sql += "LIMIT 25 OFFSET :offset";
-
-            var query = handle.createQuery(sql);
-            if (cid > 0) {
-                query.bind("cid", cid);
-            }
-            query.bind("offset", offset);
-
+            var query = handle.createQuery(sql.toString())
+                    .bind("minPrice", minPrice)
+                    .bind("maxPrice", maxPrice)
+                    .bind("offset", offset);
+            if (cid > 0) query.bind("cid", cid);
             return query.mapToBean(Product.class).list();
         });
     }

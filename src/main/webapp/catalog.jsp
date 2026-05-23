@@ -87,22 +87,48 @@
                     </select>
                 </div>
             </div>
-
             <div class="filter-group">
                 <h3 class="filter-title">Khoảng giá</h3>
-                <div class="price-radio-group">
+                <div class="price-radio-group" style="margin-bottom: 14px;">
                     <label class="radio-item">
-                        <input type="radio" name="price" value="all" ${(empty param.price or param.price == 'all') ? 'checked' : ''} onclick="changePrice('all')">
+                        <input type="radio" name="price" value="all"
+                        ${(empty param.minPrice and empty param.maxPrice) ? 'checked' : ''}
+                               onclick="changePrice('all')">
                         <span>Tất cả</span>
                     </label>
                     <label class="radio-item">
-                        <input type="radio" name="price" value="0-50000" ${param.price == '0-50000' ? 'checked' : ''} onclick="changePrice('0-50000')">
-                        <span>Dưới 50.000đ</span>
+                        <input type="radio" name="price" value="0-100000"
+                        ${param.minPrice == '0' and param.maxPrice == '100000' ? 'checked' : ''}
+                               onclick="changePrice('0-100000')">
+                        <span>Dưới 100.000đ</span>
                     </label>
                     <label class="radio-item">
-                        <input type="radio" name="price" value="50000-150000" ${param.price == '50000-150000' ? 'checked' : ''} onclick="changePrice('50000-150000')">
-                        <span>50.000đ - 150.000đ</span>
+                        <input type="radio" name="price" value="100000-500000"
+                        ${param.minPrice == '100000' and param.maxPrice == '500000' ? 'checked' : ''}
+                               onclick="changePrice('100000-500000')">
+                        <span>100.000đ - 500.000đ</span>
                     </label>
+                    <label class="radio-item">
+                        <input type="radio" name="price" value="500000-10000000"
+                        ${param.minPrice == '500000' ? 'checked' : ''}
+                               onclick="changePrice('500000-10000000')">
+                        <span>Trên 500.000đ</span>
+                    </label>
+                </div>
+                <div class="price-range-wrap">
+                    <div class="price-range-display">
+                        <span id="price-min-label">0đ</span>
+                        <span>—</span>
+                        <span id="price-max-label">10.000.000đ</span>
+                    </div>
+                    <div class="price-slider-track">
+                        <div class="price-slider-fill" id="slider-fill"></div>
+                        <input type="range" id="range-min" class="price-range-input"
+                               min="0" max="10000000" step="10000" value="${currentMin}">
+                        <input type="range" id="range-max" class="price-range-input"
+                               min="0" max="10000000" step="10000" value="${currentMax}">
+                    </div>
+                    <button class="price-apply-btn" onclick="applyPriceFilter()">Áp dụng</button>
                 </div>
             </div>
         </aside>
