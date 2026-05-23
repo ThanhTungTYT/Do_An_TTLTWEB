@@ -35,3 +35,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+function scrollProduct(direction) {
+    const container = document.getElementById("product-catalog");
+    const cardWidth = 270;
+    const scrollAmount = cardWidth * 2;
+
+    container.scrollBy({
+        left: direction * scrollAmount,
+        behavior: "smooth"
+    });
+
+    setTimeout(() => {
+        const event = new Event("scroll");
+        container.dispatchEvent(event);
+    }, 300);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("product-catalog");
+    const leftBtn = document.querySelector(".nav.left");
+    const rightBtn = document.querySelector(".nav.right");
+
+    setTimeout(() => {
+        container.scrollLeft = 0;
+    }, 50);
+
+    if (container && leftBtn && rightBtn) {
+
+        function updateButtons() {
+            if (!container) return;
+            const isAtStart = container.scrollLeft <= 1;
+            const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+            leftBtn.style.display = isAtStart ? "none" : "flex";
+            rightBtn.style.display = isAtEnd ? "none" : "flex";
+        }
+
+        container.addEventListener("scroll", updateButtons);
+        setTimeout(updateButtons, 50);
+    }
+});

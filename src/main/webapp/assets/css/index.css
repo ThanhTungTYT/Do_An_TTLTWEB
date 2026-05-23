@@ -155,7 +155,7 @@
     transform: scale(1.05);
 }
 .product::after {
-    content: "☕ Xem nhanh";
+    content: "Xem nhanh";
     position: absolute;
     bottom: 0;
     left: 0;
