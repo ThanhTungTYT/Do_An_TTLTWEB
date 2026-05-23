@@ -437,3 +437,57 @@
 }
 
 .btn-back:hover { background: #f5f5f5; }
+
+.status-filter-wrapper {
+    margin-bottom: 25px;
+}
+
+.status-filter-title {
+    font-weight: bold;
+    color: #c76739;
+    font-size: 1.05em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-filter-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: #c76739;
+}
+
+.status-filter {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 9px 24px;
+    border-radius: 50px;
+    border: 1.5px solid #ccc;
+    background: transparent !important;
+    color: #555 !important;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s;
+    white-space: nowrap;
+    width: auto !important;
+    margin-top: 0 !important;
+}
+
+.filter-btn:hover {
+    border-color: #c76739;
+    color: #c76739 !important;
+    background: transparent !important;
+}
+
+.filter-btn.active {
+    background: #c76739 !important;
+    color: white !important;
+    border-color: #c76739;
+    font-weight: bold;
+}
