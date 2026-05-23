@@ -10,8 +10,23 @@
     <p>Bạn chưa có đơn hàng nào.</p>
 </c:if>
 
+<div class="status-filter-wrapper">
+    <p class="status-filter-title">Trạng thái đơn hàng</p>
+    <div class="status-filter">
+        <button class="filter-btn active" onclick="filterOrders('all', this)">Tất cả</button>
+        <button class="filter-btn" onclick="filterOrders('Đang xử lý', this)">Đang xử lý</button>
+        <button class="filter-btn" onclick="filterOrders('Đang giao', this)">Đang giao</button>
+        <button class="filter-btn" onclick="filterOrders('Đã nhận', this)">Đã nhận</button>
+        <button class="filter-btn" onclick="filterOrders('Đã hủy', this)">Đã hủy</button>
+    </div>
+</div>
+
+<p id="empty-filter-msg" style="display:none; color:#999; text-align:center; padding:20px;">
+    Không có đơn hàng nào trong trạng thái này.
+</p>
+
 <c:forEach items="${orders}" var="o">
-    <div class="order-item" style="border:1px solid #ccc;padding:15px;margin-bottom:20px">
+    <div class="order-item" data-status="${o.status}" style="border:1px solid #ccc;padding:15px;margin-bottom:20px">
         <h3>Đơn hàng #DH${o.id}</h3>
         <p>Trạng thái:
             <span class="order-status ${o.status}">
@@ -265,5 +280,28 @@
         }
         document.getElementById('cancel-reason-value').value = selected.value;
         document.getElementById('cancel-order-form').submit();
+    }
+
+    function filterOrders(status, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('.order-item').forEach(item => {
+            if (status === 'all' || item.getAttribute('data-status') === status) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        const visible = [...document.querySelectorAll('.order-item')]
+            .filter(item => item.style.display !== 'none');
+
+        const emptyMsg = document.getElementById('empty-filter-msg');
+        if (visible.length === 0) {
+            emptyMsg.style.display = 'block';
+        } else {
+            emptyMsg.style.display = 'none';
+        }
     }
 </script>
