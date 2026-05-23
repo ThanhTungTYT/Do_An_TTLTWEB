@@ -341,4 +341,61 @@ public class ProductDao extends BaseDao {
                         .list()
         );
     }
+    public List<Product> searchProductsPaginatedByPrice(String keyword, int cid, String sort, int limit, int offset, double minPrice, double maxPrice) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT p.id, p.name, p.price, p.sold, p.stock, p.weight_grams, p.category_id, p.description, p.state, " +
+                        "(SELECT image_url FROM product_images i WHERE i.product_id = p.id AND i.position = 0 LIMIT 1) AS image_url, " +
+                        "c.name AS category_name, " +
+                        "IFNULL(AVG(r.rating), 0) AS avg_rating " +
+                        "FROM products p " +
+                        "JOIN categories c ON p.category_id = c.id " +
+                        "LEFT JOIN products_review r ON p.id = r.product_id " +
+                        "WHERE p.name LIKE :key " +
+                        "AND p.price >= :minPrice AND p.price <= :maxPrice " +
+                        "AND p.state = 'active' AND p.stock > 0 "
+        );
+        if (cid > 0) sql.append("AND p.category_id = :cid ");
+        sql.append("GROUP BY p.id, p.name, p.price, c.name, p.sold, p.stock, p.weight_grams, p.category_id, p.description, p.state ");
+
+        if ("price-asc".equals(sort)) {
+            sql.append("ORDER BY p.price ASC ");
+        } else if ("price-desc".equals(sort)) {
+            sql.append("ORDER BY p.price DESC ");
+        } else if ("sold".equals(sort)) {
+            sql.append("ORDER BY p.sold DESC ");
+        } else {
+            sql.append("ORDER BY p.id DESC ");
+        }
+
+        sql.append("LIMIT :limit OFFSET :offset");
+
+        return getJdbi().withHandle(h -> {
+            var q = h.createQuery(sql.toString())
+                    .bind("key", "%" + keyword + "%")
+                    .bind("minPrice", minPrice)
+                    .bind("maxPrice", maxPrice)
+                    .bind("limit", limit)
+                    .bind("offset", offset);
+            if (cid > 0) q.bind("cid", cid);
+            return q.mapToBean(Product.class).list();
+        });
+    }
+    public int countSearchProductsByPrice(String keyword,int cid, double minPrice, double maxPrice) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) FROM products p " +
+                        "WHERE p.name LIKE :key " +
+                        "AND p.price >= :minPrice AND p.price <= :maxPrice " +
+                        "AND p.state = 'active' AND p.stock > 0 "
+        );
+        if (cid > 0) sql.append("AND p.category_id = :cid");
+
+        return getJdbi().withHandle(h -> {
+            var q = h.createQuery(sql.toString())
+                    .bind("key", "%" + keyword + "%")
+                    .bind("minPrice", minPrice)
+                    .bind("maxPrice", maxPrice);
+            if (cid > 0) q.bind("cid", cid);
+            return q.mapTo(Integer.class).one();
+        });
+    }
 }

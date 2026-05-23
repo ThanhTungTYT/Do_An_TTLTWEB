@@ -112,4 +112,15 @@ public class ProductService {
     public List<Product> getProductByKey(String key){
         return productDao.getProductByKey(key);
     }
+    public List<Product> searchProductsByPrice(String keyword, int cid, String sort, int page, int pageSize, double minPrice, double maxPrice) {
+        int offset = (page - 1) * pageSize;
+        if (sort == null) sort = "default";
+        return productDao.searchProductsPaginatedByPrice(keyword, cid, sort, pageSize, offset, minPrice, maxPrice);
+    }
+
+    public int getTotalPagesSearchByPrice(String keyword,int cid, int pageSize, double minPrice, double maxPrice) {
+        int totalProducts = productDao.countSearchProductsByPrice(keyword, cid, minPrice, maxPrice);
+        if (totalProducts == 0) return 1;
+        return (int) Math.ceil((double) totalProducts / pageSize);
+    }
 }

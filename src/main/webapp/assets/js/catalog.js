@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const pageInput = document.getElementById('page-input');
-
     if (pageInput) {
         pageInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
@@ -32,20 +31,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateSlider() {
-        const min   = parseInt(rangeMin.value);
-        const max   = parseInt(rangeMax.value);
         const total = parseInt(rangeMin.max);
+        let min = parseInt(rangeMin.value);
+        let max = parseInt(rangeMax.value);
 
-        if (min > max - 50000) rangeMin.value = max - 50000;
+        if (min > max - 50000) {
+            rangeMin.value = max - 50000;
+            min = parseInt(rangeMin.value);
+        }
 
-        const leftPct  = (parseInt(rangeMin.value) / total) * 100;
-        const rightPct = (parseInt(rangeMax.value) / total) * 100;
+        const leftPct  = (min / total) * 100;
+        const rightPct = (max / total) * 100;
 
         fill.style.left  = leftPct + "%";
         fill.style.width = (rightPct - leftPct) + "%";
 
-        labelMin.textContent = fmt(rangeMin.value);
-        labelMax.textContent = fmt(rangeMax.value);
+        labelMin.textContent = fmt(min);
+        labelMax.textContent = fmt(max);
     }
 
     rangeMin.addEventListener("input", updateSlider);
@@ -53,40 +55,74 @@ document.addEventListener('DOMContentLoaded', function () {
     updateSlider();
 })();
 
-function applyPriceFilter() {
-    const rangeMin = document.getElementById("range-min");
-    const rangeMax = document.getElementById("range-max");
+function getBaseUrl() {
+    const path = window.location.pathname;
+    if (path.includes('search-product')) {
+        const keyword = document.getElementById("currentKeyword")?.value || "";
+        return `search-product?search=${encodeURIComponent(keyword)}`;
+    }
+    const cid = document.getElementById("currentCid")?.value || "0";
+    return `catalog?cid=${cid}`;
+}
+
+function buildUrl(overrides) {
     const url = new URL(window.location.href);
-    url.searchParams.set("minPrice", rangeMin.value);
-    url.searchParams.set("maxPrice", rangeMax.value);
-    url.searchParams.set("page", "1");
-    window.location.href = url.toString();
+
+    Object.keys(overrides).forEach(k => {
+        if (overrides[k] === null) {
+            url.searchParams.delete(k);
+        } else {
+            url.searchParams.set(k, overrides[k]);
+        }
+    });
+
+    return url.toString();
 }
 
 function changePage(page) {
-    const url = new URL(window.location.href);
-    url.searchParams.set("page", page);
-    window.location.href = url.toString();
+    window.location.href = buildUrl({ page: page });
 }
 
 function changeSort(sort) {
-    const url = new URL(window.location.href);
-    url.searchParams.set("sort", sort);
-    url.searchParams.set("page", "1");
-    window.location.href = url.toString();
+    window.location.href = buildUrl({ sort: sort, page: 1 });
 }
 function changePrice(range) {
-    const url = new URL(window.location.href);
-    url.searchParams.set("page", "1");
-
     if (range === 'all') {
-        url.searchParams.delete("minPrice");
-        url.searchParams.delete("maxPrice");
+        window.location.href = buildUrl({
+            minPrice: null,
+            maxPrice: null,
+            page: 1
+        });
     } else {
         const parts = range.split('-');
-        url.searchParams.set("minPrice", parts[0]);
-        url.searchParams.set("maxPrice", parts[1]);
+        window.location.href = buildUrl({
+            minPrice: parts[0],
+            maxPrice: parts[1],
+            page: 1
+        });
     }
+}
 
+function applyPriceFilter() {
+    const rangeMin = document.getElementById("range-min");
+    const rangeMax = document.getElementById("range-max");
+    window.location.href = buildUrl({
+        minPrice: rangeMin.value,
+        maxPrice: rangeMax.value,
+        page: 1
+    });
+}
+function changeCid(cid) {
+    const url = new URL(window.location.href);
+
+    if (url.pathname.includes('search-product')) {
+        url.searchParams.set('cid', cid);
+        url.searchParams.set('page', 1); // Reset về trang 1 khi đổi bộ lọc
+    } else {
+        url.pathname = url.pathname.replace('search-product', 'catalog');
+        url.searchParams.delete('search');
+        url.searchParams.set('cid', cid);
+        url.searchParams.set('page', 1);
+    }
     window.location.href = url.toString();
 }
