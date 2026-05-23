@@ -1,0 +1,60 @@
+    /* --- PAGE 8: MÃ GIẢM GIÁ --- */
+    .list-discount {
+        padding: 25px;
+    }
+
+    .discount-title {
+
+        margin-top: 40px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .list-discount table {
+        margin-top: 5px;
+    }
+
+    .list-discount td button {
+        font-weight: 500;
+        font-size: 15px;
+        margin-top: 5px;
+        margin-right: 10px;
+        color: white;
+        background: #c76739;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .list-discount td button:hover {
+        background: #8c4828;
+    }
+
+    .list-discount td a.btn-action{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        color: white;
+        font-size: 16px;
+    }
+
+    .list-discount td a.btn-action.btn-delete {
+        background-color: #c76739;
+    }
+
+    .list-discount td a.btn-action.btn-edit {
+        background-color: #c76739;
+    }
+
+    .list-discount td a.btn-action.btn-edit:hover {
+        background-color: #8c4828;
+    }

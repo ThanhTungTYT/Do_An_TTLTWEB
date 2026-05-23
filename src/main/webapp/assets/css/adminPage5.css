@@ -1,0 +1,41 @@
+    /* --- PAGE 5: LIÊN HỆ --- */
+    .contact {
+        padding: 25px;
+    }
+
+    .contact-title {
+        margin-top: 40px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .contact table th {
+        text-align: center;
+    }
+
+    .contact table td {
+        text-align: center;
+    }
+
+    .contact table td button {
+        font-weight: 500;
+        font-size: 15px;
+        margin-top: 5px;
+        margin-right: 10px;
+        color: white;
+        background: #c76739;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .contact table td button:hover {
+        background: #8c4828;
+    }
+
+    .contact table td button.btn-reply {
+        background-color: #c76739;
+    }
