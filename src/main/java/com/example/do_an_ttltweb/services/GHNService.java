@@ -8,6 +8,9 @@ import com.google.gson.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class GHNService {
@@ -62,7 +65,7 @@ public class GHNService {
         String responseBody = sb.toString().trim();
 
         if (responseCode >= 400) {
-            System.err.println("❌ GHN API Error - Code: " + responseCode);
+            System.err.println("GHN API Error - Code: " + responseCode);
             System.err.println("Endpoint: " + conn.getURL());
             System.err.println("Response: " + responseBody);
             throw new IOException("GHN API Error: " + responseCode + " - " + responseBody);
@@ -203,5 +206,28 @@ public class GHNService {
             case "cancel": return "Đã hủy";
             default: return status;
         }
+    }
+
+    public String getLeadTime(int toDistrictId, String toWardCode, int serviceId) throws IOException {
+        String body = "{"
+                + "\"to_district_id\":" + toDistrictId + ","
+                + "\"to_ward_code\":\"" + toWardCode + "\","
+                + "\"service_id\":" + serviceId
+                + "}";
+
+        JsonObject res = callPost("/v2/shipping-order/leadtime", body);
+        JsonObject data = res.getAsJsonObject("data");
+
+        long leadtimeTimestamp = data.get("leadtime").getAsLong();
+
+        LocalDate date = Instant
+                .ofEpochSecond(leadtimeTimestamp)
+                .atZone(java.time.ZoneId.of("Asia/Ho_Chi_Minh"))
+                .toLocalDate();
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        return date.format(formatter);
     }
 }

@@ -67,7 +67,6 @@
                 <c:if test="${!its.last}"><c:set var="itemsJson" value="${itemsJson}," /></c:if>
             </c:forEach>
             <c:set var="itemsJson" value="${itemsJson}]" />
-
             <button class="btn-detail"
                     data-id="${o.id}"
                     data-name="${fn:escapeXml(o.receiverName)}"
@@ -77,7 +76,10 @@
                     data-ward="${fn:escapeXml(orderAddressMap[o.id].ward)}"
                     data-address="${fn:escapeXml(orderAddressMap[o.id].address)}"
                     data-ghn="${o.ghnOrderCode}"
-                    onclick="openOrderModal(this)" style="background: #A0522D; color: white; width: auto; padding: 7px 14px; border-radius: 6px;">
+                    data-district-id="${orderAddressMap[o.id].districtId}"
+                    data-ward-code="${orderAddressMap[o.id].wardCode}"
+                    onclick="openOrderModal(this)"
+                    style="background:#A0522D;color:white;width:auto;padding:7px 14px;border-radius:6px;">
                 Xem chi tiết vận chuyển
             </button>
         </c:if>
@@ -127,6 +129,12 @@
             <div class="ghn-box">
                 <div class="detail-row"><span class="label">Mã vận đơn:</span><strong id="d-ghn-code"></strong></div>
                 <div class="detail-row"><span class="label">Trạng thái:</span><strong id="d-ghn-status">Đang tải<span class="spinner"></span></strong></div>
+                <div class="detail-row">
+                    <span class="label">Dự kiến giao:</span>
+                    <strong id="d-leadtime" style="color:#27ae60;">
+                        Đang tải<span class="spinner"></span>
+                    </strong>
+                </div>
             </div>
         </div>
     </div>
@@ -179,15 +187,16 @@
 <script>
     window.openOrderModal = function(btn) {
         try {
-            const orderId  = btn.getAttribute('data-id');
-            const name     = btn.getAttribute('data-name');
-            const phone    = btn.getAttribute('data-phone');
-            const province = btn.getAttribute('data-province') || '—';
-            const district = btn.getAttribute('data-district') || '—';
-            const ward     = btn.getAttribute('data-ward') || '—';
-            const address  = btn.getAttribute('data-address') || '—';
-            const ghnCode  = btn.getAttribute('data-ghn');
-            const itemsRaw = btn.getAttribute('data-items');
+            const orderId    = btn.getAttribute('data-id');
+            const name       = btn.getAttribute('data-name');
+            const phone      = btn.getAttribute('data-phone');
+            const province   = btn.getAttribute('data-province') || '—';
+            const district   = btn.getAttribute('data-district') || '—';
+            const ward       = btn.getAttribute('data-ward') || '—';
+            const address    = btn.getAttribute('data-address') || '—';
+            const ghnCode    = btn.getAttribute('data-ghn');
+            const districtId = btn.getAttribute('data-district-id');  // ✅
+            const wardCode   = btn.getAttribute('data-ward-code');    // ✅
 
             document.getElementById('d-order-id').textContent = orderId;
             document.getElementById('d-name').textContent = name;
@@ -197,29 +206,19 @@
             document.getElementById('d-ward').textContent = ward;
             document.getElementById('d-address').textContent = address;
             document.getElementById('d-ghn-code').textContent = ghnCode || 'Chưa có';
-
-            document.getElementById('d-ghn-status').innerHTML = 'Đang tải<span class="spinner"></span>';
-
-            let items = [];
-            if (itemsRaw) {
-                try {
-                    items = JSON.parse(itemsRaw);
-                } catch(e) {
-                    console.error("Lỗi parse JSON sản phẩm:", e);
-                }
-            }
+            document.getElementById('d-ghn-status').innerHTML =
+                'Đang tải<span class="spinner"></span>';
+            document.getElementById('d-leadtime').innerHTML =
+                'Đang tải<span class="spinner"></span>';
 
             document.getElementById('detail-overlay').classList.add('show');
-
-            if (ghnCode && ghnCode.trim() !== "") {
-                const contextPath = '${pageContext.request.contextPath}';
+            const contextPath = '${pageContext.request.contextPath}';
+            if (ghnCode && ghnCode.trim() !== '') {
                 fetch(contextPath + '/api/ghn/tracking?code=' + ghnCode)
-                    .then(r => {
-                        if (!r.ok) throw new Error("API lỗi");
-                        return r.json();
-                    })
+                    .then(r => r.ok ? r.json() : Promise.reject())
                     .then(data => {
-                        document.getElementById('d-ghn-status').textContent = data.statusVi || 'Không xác định';
+                        document.getElementById('d-ghn-status').textContent =
+                            data.statusVi || 'Không xác định';
                     })
                     .catch(() => {
                         document.getElementById('d-ghn-status').textContent = 'Không thể tải';
@@ -227,8 +226,23 @@
             } else {
                 document.getElementById('d-ghn-status').textContent = 'Chưa có mã vận đơn';
             }
+            if (districtId && wardCode) {
+                fetch(contextPath + '/api/ghn/leadtime?district_id=' + districtId +
+                    '&ward_code=' + wardCode)
+                    .then(r => r.ok ? r.json() : Promise.reject())
+                    .then(data => {
+                        document.getElementById('d-leadtime').textContent =
+                            data.leadtime ? '' + data.leadtime : 'Không xác định';
+                    })
+                    .catch(() => {
+                        document.getElementById('d-leadtime').textContent = 'Không thể tải';
+                    });
+            } else {
+                document.getElementById('d-leadtime').textContent = 'Không có thông tin';
+            }
+
         } catch (error) {
-            console.error("Lỗi xử lý popup: ", error);
+            console.error('Lỗi xử lý popup:', error);
         }
     };
 
