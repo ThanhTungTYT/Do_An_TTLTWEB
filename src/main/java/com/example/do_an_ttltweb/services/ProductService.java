@@ -28,14 +28,14 @@ public class ProductService {
         return productDao.getProductsByRelative(cid, name, pid);
     }
 
-    public List<Product> getProductsForCatalog(int cid, String sort, int page) {
+    public List<Product> getProductsForCatalog(int cid, String sort, int page, double minPrice, double maxPrice) {
         if (sort == null) sort = "default";
-        int offset = (page - 1) * 25; // Tính vị trí bắt đầu
-        return productDao.getFilteredProducts(cid, sort, offset);
+        int offset = (page - 1) * 25;
+        return productDao.getFilteredProducts(cid, sort, offset, minPrice, maxPrice);
     }
 
-    public int getTotalPages(int cid) {
-        int totalProducts = productDao.countProducts(cid);
+    public int getTotalPages(int cid, double minPrice, double maxPrice) {
+        int totalProducts = productDao.countProducts(cid, minPrice, maxPrice);
         return (int) Math.ceil((double) totalProducts / 25);
     }
     // ---------------------------

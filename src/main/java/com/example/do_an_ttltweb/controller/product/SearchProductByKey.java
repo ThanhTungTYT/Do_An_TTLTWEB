@@ -45,8 +45,7 @@ public class SearchProductByKey extends HttpServlet {
             listProducts = productService.searchProducts(keyword, page, pageSize);
             totalPages = productService.getTotalPagesSearch(keyword, pageSize);
         } else {
-            listProducts = productService.getProductsForCatalog(0, sort, page);
-            totalPages = productService.getTotalPages(0);
+return;
         }
 
         request.setAttribute("listProducts", listProducts);

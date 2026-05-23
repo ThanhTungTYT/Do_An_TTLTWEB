@@ -27,37 +27,29 @@ public class ProductListServlet extends HttpServlet {
         String cidStr = request.getParameter("cid");
         String sort = request.getParameter("sort");
         String pageStr = request.getParameter("page");
+        String minStr   = request.getParameter("minPrice");
+        String maxStr   = request.getParameter("maxPrice");
 
         int cid = 0;
-        if (cidStr != null && !cidStr.isEmpty()) {
-            try {
-                cid = Integer.parseInt(cidStr);
-            } catch (NumberFormatException e) {
-                cid = 0;
-            }
-        }
-
         int page = 1;
-        if (pageStr != null && !pageStr.isEmpty()) {
-            try {
-                page = Integer.parseInt(pageStr);
-                if (page < 1) page = 1;
-            } catch (NumberFormatException e) {
-                page = 1;
-            }
-        }
+        double minPrice = 0;
+        double maxPrice = 10_000_000;
 
-        int totalPages = productService.getTotalPages(cid);
+        try { cid  = Integer.parseInt(cidStr);  } catch (Exception ignored) {}
+        try { page = Integer.parseInt(pageStr); if (page < 1) page = 1; } catch (Exception ignored) {}
+        try { minPrice = Double.parseDouble(minStr); } catch (Exception ignored) {}
+        try { maxPrice = Double.parseDouble(maxStr); } catch (Exception ignored) {}
 
-        List<Product> listProducts = productService.getProductsForCatalog(cid, sort, page);
+        int totalPages    = productService.getTotalPages(cid, minPrice, maxPrice);
+        List<Product> listProducts = productService.getProductsForCatalog(cid, sort, page, minPrice, maxPrice);
 
         request.setAttribute("listProducts", listProducts);
-
         request.setAttribute("currentCid", cid);
         request.setAttribute("currentSort", sort);
-
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentMin", (long) minPrice);
+        request.setAttribute("currentMax", (long) maxPrice);
 
         request.getRequestDispatcher("catalog.jsp").forward(request, response);
     }
