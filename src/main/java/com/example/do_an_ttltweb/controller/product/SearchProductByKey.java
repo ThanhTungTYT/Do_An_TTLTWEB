@@ -27,13 +27,19 @@ public class SearchProductByKey extends HttpServlet {
         String sort = request.getParameter("sort");
         String price = request.getParameter("price");
         String pageStr = request.getParameter("page");
+        String minStr = request.getParameter("minPrice");
+        String maxStr = request.getParameter("maxPrice");
+        String cidStr = request.getParameter("cid");
 
+        int cid = 0;
         int page = 1;
-        if (pageStr != null) {
-            try {
-                page = Integer.parseInt(pageStr);
-            } catch (Exception ignored) {}
-        }
+        double minPrice = 0;
+        double maxPrice = 10_000_000;
+
+        try { cid  = Integer.parseInt(cidStr);  } catch (Exception ignored) {}
+        try { page = Integer.parseInt(pageStr); if (page < 1) page = 1; } catch (Exception ignored) {}
+        try { minPrice = Double.parseDouble(minStr); } catch (Exception ignored) {}
+        try { maxPrice = Double.parseDouble(maxStr); } catch (Exception ignored) {}
 
         List<Product> listProducts;
         int totalPages;
@@ -42,11 +48,14 @@ public class SearchProductByKey extends HttpServlet {
         List<Category> listCategories = categoryService.getAllCategories();
 
         if (keyword != null && !keyword.trim().isEmpty()) {
-            listProducts = productService.searchProducts(keyword, page, pageSize);
-            totalPages = productService.getTotalPagesSearch(keyword, pageSize);
+            listProducts = productService.searchProductsByPrice(keyword, cid, sort, page, pageSize, minPrice, maxPrice);
+            totalPages   = productService.getTotalPagesSearchByPrice(keyword, cid, pageSize, minPrice, maxPrice);
         } else {
-return;
+            listProducts = productService.getProductsForCatalog(0, sort, page, minPrice, maxPrice);
+            totalPages   = productService.getTotalPages(0, minPrice, maxPrice);
         }
+        request.setAttribute("currentMin", (long) minPrice);
+        request.setAttribute("currentMax", (long) maxPrice);
 
         request.setAttribute("listProducts", listProducts);
         request.setAttribute("listCategories", listCategories);
@@ -55,6 +64,7 @@ return;
         request.setAttribute("price", price != null ? price : "all");
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentCid", cid);
 
         request.getRequestDispatcher("/catalog-search.jsp").forward(request, response);
     }

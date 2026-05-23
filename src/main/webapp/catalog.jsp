@@ -65,11 +65,11 @@
                 <h3 class="filter-title">Danh mục</h3>
                 <ul class="list-catalog">
                     <li>
-                        <a href="catalog?cid=0" class="catalog-item ${currentCid == 0 ? 'active' : ''}">Tất cả sản phẩm</a>
+                        <a href="javascript:void(0)" onclick="changeCid(0)" class="catalog-item ${currentCid == 0 ? 'active' : ''}">Tất cả sản phẩm</a>
                     </li>
                     <c:forEach items="${listCategories}" var="c">
                         <li>
-                            <a href="catalog?cid=${c.id}" class="catalog-item ${currentCid == c.id ? 'active' : ''}">${c.name}</a>
+                            <a href="javascript:void(0)" onclick="changeCid(${c.id})" class="catalog-item ${currentCid == c.id ? 'active' : ''}">${c.name}</a>
                         </li>
                     </c:forEach>
                 </ul>
