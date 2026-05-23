@@ -15,22 +15,17 @@
     <title>Trang Quản Trị Aroma Café</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage3.css">
     <style>
         body {
             display: flex;
             flex-direction: row;
         }
-        .right-content { width: 80%; transition: width 0.3s ease; }
-        .permission-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-            background: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
+
+        .right-content {
+            width: 80%;
+            transition: width 0.3s ease;
         }
-        .permission-item { font-size: 0.9em; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -40,35 +35,13 @@
     </div>
     <div class="menu">
         <a href="${pageContext.request.contextPath}/admin/dashboard" class="menu-item">Tổng quan</a>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_product')}">
-            <a href="${pageContext.request.contextPath}/admin/products" class="menu-item">Quản lí sản phẩm</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_order')}">
-            <a href="${pageContext.request.contextPath}/admin/orders" class="menu-item active">Quản lí đơn hàng</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_user')}">
-            <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_review')}">
-            <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item">Quản lí đánh giá</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_banner')}">
-            <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_promotion')}">
-            <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
-        </c:if>
-
-        <c:if test="${sessionScope.user.hasPermission('manage_contact')}">
-            <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
-        </c:if>
-
+        <a href="${pageContext.request.contextPath}/admin/products" class="menu-item">Quản lí sản phẩm</a>
+        <a href="${pageContext.request.contextPath}/admin/orders" class="menu-item active">Quản lí đơn hàng</a>
+        <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
+        <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item">Quản lí đánh giá</a>
+        <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
+        <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
+        <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
         <a href="#" class="menu-item" onclick="location.href='${pageContext.request.contextPath}/logout'">Đăng xuất</a>
     </div>
     <div class="footer">
@@ -113,12 +86,6 @@
                     <a href="${pageContext.request.contextPath}/admin/orders?status=Đang xử lý&startDate=${startDate}&endDate=${endDate}"
                        class="status-item ${status == 'Đang xử lý' ? 'active' : ''}">
                         Đang xử lý
-                    </a>
-                </li>
-                <li>
-                    <a href="${pageContext.request.contextPath}/admin/orders?status=Đang giao"
-                       class="status-item ${status == 'Đang giao' ? 'active' : ''}">
-                        Đang giao
                     </a>
                 </li>
                 <li>
@@ -178,8 +145,6 @@
                                     <c:when test="${o.status == 'Đang xử lý'}">Đang xử lý</c:when>
                                     <c:when test="${o.status == 'Đã giao'}">Đã giao</c:when>
                                     <c:when test="${o.status == 'Đã hủy'}">Đã huỷ</c:when>
-                                    <c:when test="${o.status == 'Đang giao'}">Đang giao</c:when>
-                                    <c:when test="${o.status == 'Đã nhận'}">Đã nhận</c:when>
                                 </c:choose>
                             </span>
                         </td>
@@ -232,6 +197,7 @@
 
         <button id="close" onclick="closeDetail()">X</button>
 
+        <!-- DANH SÁCH SẢN PHẨM -->
         <div class="order">
             <h3>DANH SÁCH SẢN PHẨM</h3>
             <table>
@@ -255,6 +221,7 @@
                 </tbody>
             </table>
         </div>
+        <!-- THÔNG TIN KHÁCH -->
         <div class="info-customer">
             <h3>THÔNG TIN KHÁCH HÀNG</h3>
             <div class="info">
@@ -264,12 +231,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- TỔNG TIỀN -->
         <div class="totalSum">
-            <c:if test="${not empty o.ghnOrderCode}">
-                <h3>
-                    MÃ GIAO HÀNG: <span>${o.ghnOrderCode}</span>
-                </h3>
-            </c:if>
             <h3>
                 TỔNG TIỀN SẢN PHẨM:
                 <span>

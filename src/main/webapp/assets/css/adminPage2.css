@@ -1,0 +1,154 @@
+    /* --- PAGE 2: SẢN PHẨM --- */
+    .right-content .list-product {
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .right-content .list-product h3 {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        color: #495057;
+    }
+
+    .right-content .list-product table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .right-content .list-product table th, .right-content .list-product table td {
+        padding: 12px 15px;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .right-content .list-product table th, .right-content .list-product table td button {
+        width: 40px;
+        height: 30px;
+        background: #c76739;
+        color: white;
+        margin-bottom: 20px;
+    }
+
+    .right-content .list-product table th, .right-content .list-product table td button:hover {
+        background: #8c4828;
+    }
+
+    .right-content .list-product table th {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .right-content .list-product table td {
+        font-size: 15px;
+    }
+
+    .right-content .list-product button {
+        font-weight: 500;
+        margin-top: 20px;
+        color: white;
+        background: red;
+        width: 150px;
+        height: 40px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .right-content .list-product button:hover {
+        background: #700000;
+    }
+    .right-content .cat-list h3 {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        color: #495057;
+    }
+    .right-content .cat-list{
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);}
+    .right-content .cat-list button {
+        font-weight: 500;
+        font-size: 15px;
+        margin-top: 20px;
+        color: white;
+        background: #c76739;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+    }
+
+    /* --- Upload ảnh sản phẩm (form Thêm/Sửa) --- */
+    .form-add .main-form .img-p .upload-boxes {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        margin-bottom: 0;
+    }
+
+    .form-add .main-form .img-p .upload-box {
+        display: block;
+        width: 110px;
+        height: 110px;
+        margin-bottom: 0;
+        padding: 0;
+    }
+
+    .form-add .main-form .img-p .upload-label {
+        width: 100%;
+        height: 100%;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #999;
+        background: #fafafa;
+        overflow: hidden;
+        position: relative;
+        transition: border-color 0.2s, color 0.2s;
+    }
+
+    .form-add .main-form .img-p .upload-label:hover {
+        border-color: #c76739;
+        color: #c76739;
+    }
+
+    .form-add .main-form .img-p .upload-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-add .main-form .img-p .upload-placeholder i {
+        font-size: 22px;
+    }
+
+    .form-add .main-form .img-p .upload-preview {
+        display: none;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .form-add .main-form .img-p .upload-box.filled .upload-placeholder {
+        display: none;
+    }
+
+    .form-add .main-form .img-p .upload-box.filled .upload-preview {
+        display: block;
+    }

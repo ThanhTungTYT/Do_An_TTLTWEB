@@ -1,0 +1,137 @@
+    /* --- PAGE 3: ĐƠN HÀNG --- */
+    .right-content .main-content .main-menu-date {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        margin-bottom: 10px;
+        margin-left: 30px;
+        align-items: baseline;
+    }
+    .right-content .main-content .main-menu-date .action-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        margin-top: 10px;
+    }
+    .right-content .main-content .main-menu-date button {
+        width: 150px;
+        height: 25px;
+        border-radius: 20px;
+        background: #c76739;
+        color: white;
+        cursor: pointer;
+    }
+
+    .right-content .main-content .main-menu-date button:hover {
+        background: #8c4828;
+    }
+
+    .right-content .main-content .list-order {
+        padding: 10px 30px;
+    }
+
+    .right-content .main-content .list-order table .detail {
+        cursor: pointer;
+        padding: 5px 5px;
+    }
+    .right-content .main-content .main-menu-date .btn-reset {
+        width: 150px;
+        height: 25px;
+        border-radius: 20px;
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .list-order .detail {
+        background-color: #c76739;
+    }
+
+    .list-order .detail i {
+        color: white;
+    }
+
+    /* Trạng thái đơn hàng (page 3 dùng class theo tên tiếng Việt) */
+    .status.Đang.xử.lý {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .status.Đã.giao {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status.Đã.hủy {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    /* Tổng tiền trong popup chi tiết đơn hàng */
+    .detail-p .totalSum span {
+        color: #A0522D;
+        margin-left: 20px;
+    }
+
+    /* Danh sách trạng thái lọc đơn hàng */
+    .status-list {
+        width: 100%;
+        height: fit-content;
+        padding: 0 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .status-list .head-status {
+        font-size: 30px;
+        font-weight: 600;
+        color: #c76739;
+        display: flex;
+        align-items: center;
+    }
+    .status-list .head-status:after {
+        content: "";
+        flex-grow: 1;
+        margin-left: 15px;
+        height: 3px;
+        background-color: #c76739;
+    }
+    .status-list .list-status {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 80px;
+        padding: 0;
+        justify-content: center;
+    }
+    .status-list .list-status li {
+        display: block;
+    }
+    .status-list .list-status .status-item {
+        display: inline-block;
+        white-space: nowrap;
+        font-size: 18px;
+        font-weight: 400;
+        text-decoration: none;
+        color: #040404;
+        border: 2px darkgray solid;
+        padding: 15px 25px;
+        border-radius: 50px;
+        transition: all 0.3s ease-in-out;
+    }
+    .status-list .list-status .status-item.active {
+        border-color: #8c4827;
+        background-color: #c76739;
+        color: #fff;
+    }
+
+    .status-list .list-status .status-item:hover {
+        border-color: #8c4827;
+        background-color: #c76739;
+        color: #fff;
+    }

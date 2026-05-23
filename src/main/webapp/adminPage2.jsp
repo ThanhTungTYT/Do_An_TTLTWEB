@@ -15,6 +15,7 @@
     <title>Quản lí sản phẩm</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage2.css">
 
 </head>
 <body>
@@ -192,7 +193,7 @@
 
         <div style="margin-top: 15px;">
             <button type="button" onclick="deleteCheckedProducts()">
-                Xóa sản phẩm
+                 Xóa sản phẩm
             </button>
         </div>
     </div>

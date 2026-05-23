@@ -1,0 +1,34 @@
+    /* --- PAGE 6: ĐÁNH GIÁ --- */
+    .review {
+        padding: 25px;
+    }
+
+    .review-title {
+
+        margin-top: 40px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .review table {
+        margin-top: 5px;
+    }
+
+    .review td button {
+        font-weight: 500;
+        font-size: 15px;
+        margin-top: 5px;
+        margin-right: 15px;
+        color: white;
+        background: #c76739;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .review td button:hover {
+        background: #8c4828;
+    }
