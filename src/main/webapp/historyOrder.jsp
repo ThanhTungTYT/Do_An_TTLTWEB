@@ -50,7 +50,7 @@
 
         <c:forEach items="${o.items}" var="it">
             <div style="display:flex;gap:15px;margin-bottom:10px">
-                <img src="${it.product.image_url}" width="80" height="80" style="object-fit:cover;border-radius:5px" onerror="this.src='https://placehold.co/80'">
+                <img src="<c:url value='${it.product.image_url}'/>" width="80" height="80" style="object-fit:cover;border-radius:5px" onerror="this.src='https://placehold.co/80'">
                 <div>
                     <strong>${it.product.name}</strong><br>
                     Số lượng: ${it.quantity}<br>
@@ -63,7 +63,8 @@
             <c:set var="itemsJson" value="[" />
             <c:forEach items="${o.items}" var="it" varStatus="its">
                 <c:set var="pName" value="${fn:replace(it.product.name, '\"', '\\\"')}" />
-                <c:set var="itemsJson" value="${itemsJson}{\"name\":\"${fn:escapeXml(pName)}\",\"image\":\"${it.product.image_url}\",\"quantity\":${empty it.quantity ? 0 : it.quantity},\"price\":${empty it.price ? 0 : it.price}}" />
+                <c:url value="${it.product.image_url}" var="itemImgUrl"/>
+                <c:set var="itemsJson" value="${itemsJson}{\"name\":\"${fn:escapeXml(pName)}\",\"image\":\"${itemImgUrl}\",\"quantity\":${empty it.quantity ? 0 : it.quantity},\"price\":${empty it.price ? 0 : it.price}}" />
                 <c:if test="${!its.last}"><c:set var="itemsJson" value="${itemsJson}," /></c:if>
             </c:forEach>
             <c:set var="itemsJson" value="${itemsJson}]" />

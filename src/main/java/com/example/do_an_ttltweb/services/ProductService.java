@@ -1,12 +1,18 @@
 package com.example.do_an_ttltweb.services;
 
+import com.example.do_an_ttltweb.dao.ImageDao;
 import com.example.do_an_ttltweb.dao.ProductDao;
+import com.example.do_an_ttltweb.helper.upload.FileUploadHelper;
 import com.example.do_an_ttltweb.model.Product;
+import com.example.do_an_ttltweb.model.ProductImage;
+import jakarta.servlet.http.Part;
 
 import java.util.List;
+import java.util.Map;
 
 public class ProductService {
     private ProductDao productDao = new ProductDao();
+    private ImageDao imageDao = new ImageDao();
 
     public List<Product> getProductsBySold(){
         return productDao.getProductsBySold();
@@ -61,8 +67,48 @@ public class ProductService {
             return false;
         }
     }
+    public boolean addProductWithFiles(Product product, Map<Integer, Part> filesByPosition, String webappRealPath) {
+        try {
+            int newProductId = productDao.insertProduct(product);
+            if (newProductId <= 0) return false;
+
+            for (Map.Entry<Integer, Part> entry : filesByPosition.entrySet()) {
+                Part part = entry.getValue();
+                if (!FileUploadHelper.isValid(part)) continue;
+
+                String url = FileUploadHelper.save(part, webappRealPath);
+                productDao.insertProductImage(newProductId, url, entry.getKey());
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean updateProduct(Product p) {
         return productDao.updateProduct(p);
+    }
+
+    public void updateProductImages(int productId, Map<Integer, Part> filesByPosition, String webappRealPath) {
+        for (Map.Entry<Integer, Part> entry : filesByPosition.entrySet()) {
+            int position = entry.getKey();
+            Part part = entry.getValue();
+            if (!FileUploadHelper.isValid(part)) continue;
+
+            try {
+                String newUrl = FileUploadHelper.save(part, webappRealPath);
+                ProductImage existing = imageDao.getImageByPosition(productId, position);
+                if (existing != null) {
+                    FileUploadHelper.delete(existing.getImage_url(), webappRealPath);
+                    imageDao.updateImageUrl(existing.getId(), newUrl);
+                } else {
+                    productDao.insertProductImage(productId, newUrl, position);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void deleteListProducts(String[] ids) {

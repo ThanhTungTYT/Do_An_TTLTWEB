@@ -212,7 +212,7 @@
                                 <div class="product-img">
                                     <c:choose>
                                         <c:when test="${not empty item.product.image_url}">
-                                            <img src="${item.product.image_url}" alt="${item.product.name}">
+                                            <img src="<c:url value='${item.product.image_url}'/>" alt="${item.product.name}">
                                         </c:when>
                                         <c:otherwise>
                                             <img src="${pageContext.request.contextPath}/assets/img/about04.png" alt="Default">

@@ -154,7 +154,7 @@
                         <div class="product-card">
                             <a href="product?pid=${p.id}">
                                 <div class="product-img">
-                                    <img src="${p.image_url}" alt="${p.name}">
+                                    <img src="<c:url value='${p.image_url}'/>" alt="${p.name}">
                                 </div>
                                 <div class="product-info">
                                     <p class="p-category">${p.category_name}</p>

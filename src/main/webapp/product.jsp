@@ -70,11 +70,11 @@
         </div>
         <div class="product-content">
             <div class="product-img">
-                <img src="${product.image_url}" id="img-main">
+                <img src="<c:url value='${product.image_url}'/>" id="img-main">
                 <div class="thumbnail-gallery">
                     <c:forEach items="${listImage}" var="i">
-                        <img src="${i.image_url}" alt="${product.name}" class="thumbnail-item ${i.image_url == product.image_url ? 'active' : ''}"
-                             data-full-image="${i.image_url}">
+                        <img src="<c:url value='${i.image_url}'/>" alt="${product.name}" class="thumbnail-item ${i.image_url == product.image_url ? 'active' : ''}"
+                             data-full-image="<c:url value='${i.image_url}'/>">
                     </c:forEach>
                 </div>
             </div>
@@ -314,11 +314,11 @@
                     <c:forEach items="${relative}" var="p">
                         <a class="product" href="product?pid=${p.id}" data-name="${p.name}"
                            data-price="<fmt:formatNumber value='${p.price}' type='number' maxFractionDigits='0'/> VND"
-                           data-image="${p.image_url}"
+                           data-image="<c:url value='${p.image_url}'/>"
                            data-sold="${p.sold}"
                            data-des="${p.description}"
                            data-avgr = "${p.avg_rating}">
-                            <img src="${p.image_url}" alt="${p.name}">
+                            <img src="<c:url value='${p.image_url}'/>" alt="${p.name}">
                             <p>${p.name}</p>
                             <span><fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0"/> VND</span>
                             <label><i class="fa-solid fa-fire"></i> ${p.sold}</label>

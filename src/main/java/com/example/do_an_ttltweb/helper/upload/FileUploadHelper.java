@@ -15,7 +15,7 @@ public class FileUploadHelper {
 
     public static final long MAX_FILE_SIZE = 5L * 1024 * 1024;
     public static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "webp");
-    public static final String UPLOAD_SUBDIR = "images/products";
+    public static final String UPLOAD_SUBDIR = "assets/img/products";
 
     public static boolean isValid(Part part) {
         if (part == null || part.getSize() == 0) return false;
@@ -40,14 +40,15 @@ public class FileUploadHelper {
             Files.copy(in, target);
         }
 
-        return UPLOAD_SUBDIR + "/" + filename;
+        return "/" + UPLOAD_SUBDIR + "/" + filename;
     }
 
     public static void delete(String relativePath, String webappRealPath) {
         if (relativePath == null || relativePath.isBlank()) return;
         if (relativePath.startsWith("http://") || relativePath.startsWith("https://")) return;
 
-        Path target = Paths.get(webappRealPath, relativePath);
+        String stripped = relativePath.startsWith("/") ? relativePath.substring(1) : relativePath;
+        Path target = Paths.get(webappRealPath, stripped);
         try {
             Files.deleteIfExists(target);
         } catch (IOException e) {

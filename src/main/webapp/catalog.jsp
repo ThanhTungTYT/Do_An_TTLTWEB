@@ -146,7 +146,7 @@
                     <div class="product-card">
                         <a href="product?pid=${p.id}">
                             <div class="product-img">
-                                <img src="${p.image_url}" alt="${p.name}">
+                                <img src="<c:url value='${p.image_url}'/>" alt="${p.name}">
                                 <c:if test="${p.sold > 20}">
                                     <span class="badge-hot">Bán chạy</span>
                                 </c:if>

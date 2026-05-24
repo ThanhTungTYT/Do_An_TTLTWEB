@@ -72,11 +72,11 @@
             <c:forEach items="${listProduct}" var="p">
                 <a class="product" href="product?pid=${p.id}" data-name="${p.name}"
                     data-price="<fmt:formatNumber value='${p.price}' type='number' maxFractionDigits='0'/> VND"
-                    data-image="${p.image_url}"
+                    data-image="<c:url value='${p.image_url}'/>"
                     data-sold="${p.sold}"
                     data-des="${p.description}"
                     data-avgr = "${p.avg_rating}">
-                    <img src="${p.image_url}" alt="${p.name}">
+                    <img src="<c:url value='${p.image_url}'/>" alt="${p.name}">
                     <p>${p.name}</p>
                     <span><fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0"/> VND</span>
                     <label><i class="fa-solid fa-fire"></i> ${p.sold}</label>
