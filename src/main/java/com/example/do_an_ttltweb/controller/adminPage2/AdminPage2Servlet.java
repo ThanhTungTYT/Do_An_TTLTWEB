@@ -2,22 +2,33 @@ package com.example.do_an_ttltweb.controller.adminPage2;
 
 import com.example.do_an_ttltweb.model.Category;
 import com.example.do_an_ttltweb.model.Product;
+import com.example.do_an_ttltweb.model.ProductImage;
 import com.example.do_an_ttltweb.services.CategoryService;
+import com.example.do_an_ttltweb.services.ImageService;
 import com.example.do_an_ttltweb.services.ProductService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "AdminPage2Servlet", value = "/admin/products")
-
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 5L * 1024 * 1024,
+        maxRequestSize = 20L * 1024 * 1024
+)
 public class AdminPage2Servlet  extends HttpServlet {
     private ProductService productService = new ProductService();
     private CategoryService categoryService = new CategoryService();
+    private ImageService imageService = new ImageService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,7 +58,18 @@ public class AdminPage2Servlet  extends HttpServlet {
         List<Product> products = productService.getProductsAdmin(categoryId, page, pageSize);
         int totalPages = productService.getTotalPagesAdmin(categoryId, pageSize);
 
+        Map<Integer, String[]> productImagesMap = new HashMap<>();
+        for (Product p : products) {
+            String[] urls = new String[3];
+            for (ProductImage pi : imageService.getAllImageById(p.getId())) {
+                int pos = pi.getPosition();
+                if (pos >= 0 && pos < 3) urls[pos] = pi.getImage_url();
+            }
+            productImagesMap.put(p.getId(), urls);
+        }
+
         request.setAttribute("products", products);
+        request.setAttribute("productImagesMap", productImagesMap);
         request.setAttribute("currentFilter", categoryId);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
@@ -96,9 +118,6 @@ public class AdminPage2Servlet  extends HttpServlet {
         int categoryId = Integer.parseInt(request.getParameter("category_id"));
         int weight = Integer.parseInt(request.getParameter("weight"));
 
-
-        String[] imageUrls = request.getParameterValues("image_urls");
-
         Product newProduct = new Product();
         newProduct.setName(name);
         newProduct.setDescription(description);
@@ -108,7 +127,10 @@ public class AdminPage2Servlet  extends HttpServlet {
         newProduct.setWeight_grams(weight);
         newProduct.setSold(0);
 
-        boolean isSuccess = productService.addProductWithUrls(newProduct, imageUrls);
+        Map<Integer, Part> imageParts = readImageParts(request);
+        String webappRealPath = getServletContext().getRealPath("");
+
+        boolean isSuccess = productService.addProductWithFiles(newProduct, imageParts, webappRealPath);
 
         if (isSuccess) {
             response.sendRedirect(request.getContextPath() + "/admin/products?msg=success");
@@ -116,6 +138,17 @@ public class AdminPage2Servlet  extends HttpServlet {
             request.setAttribute("error", "Thêm sản phẩm thất bại!");
             doGet(request, response);
         }
+    }
+
+    private Map<Integer, Part> readImageParts(HttpServletRequest request) throws ServletException, IOException {
+        Map<Integer, Part> parts = new HashMap<>();
+        Part main = request.getPart("main_image");
+        Part sub1 = request.getPart("sub_image_1");
+        Part sub2 = request.getPart("sub_image_2");
+        if (main != null && main.getSize() > 0) parts.put(0, main);
+        if (sub1 != null && sub1.getSize() > 0) parts.put(1, sub1);
+        if (sub2 != null && sub2.getSize() > 0) parts.put(2, sub2);
+        return parts;
     }
 
     private void handleAddCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -173,6 +206,11 @@ public class AdminPage2Servlet  extends HttpServlet {
             boolean isSuccess = productService.updateProduct(p);
 
             if (isSuccess) {
+                Map<Integer, Part> imageParts = readImageParts(request);
+                if (!imageParts.isEmpty()) {
+                    String webappRealPath = getServletContext().getRealPath("");
+                    productService.updateProductImages(id, imageParts, webappRealPath);
+                }
                 response.sendRedirect(request.getContextPath() + "/admin/products?msg=update_success");
             } else {
                 response.sendRedirect(request.getContextPath() + "/admin/products?error=update_failed");

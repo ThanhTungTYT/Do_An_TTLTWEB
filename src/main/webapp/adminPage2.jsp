@@ -114,6 +114,13 @@
             </thead>
             <tbody>
             <c:forEach items="${products}" var="p">
+                <c:set var="imgs" value="${productImagesMap[p.id]}"/>
+                <c:set var="img0url" value=""/>
+                <c:set var="img1url" value=""/>
+                <c:set var="img2url" value=""/>
+                <c:if test="${not empty imgs[0]}"><c:url value="${imgs[0]}" var="img0url"/></c:if>
+                <c:if test="${not empty imgs[1]}"><c:url value="${imgs[1]}" var="img1url"/></c:if>
+                <c:if test="${not empty imgs[2]}"><c:url value="${imgs[2]}" var="img2url"/></c:if>
                 <tr>
                     <td style="text-align: center;">
                         <input type="checkbox" name="productIds" value="${p.id}" style="cursor: pointer;">
@@ -152,6 +159,9 @@
                                 data-stock="${p.stock}"
                                 data-state="${p.state}"
                                 data-desc="${p.description}"
+                                data-img-main="${img0url}"
+                                data-img-sub1="${img1url}"
+                                data-img-sub2="${img2url}"
                                 onclick="openEditModal(this)">
                             <i class="fa-solid fa-pen"></i>
                         </button>
@@ -193,7 +203,7 @@
 
         <div style="margin-top: 15px;">
             <button type="button" onclick="deleteCheckedProducts()">
-                 Xóa sản phẩm
+                Xóa sản phẩm
             </button>
         </div>
     </div>
