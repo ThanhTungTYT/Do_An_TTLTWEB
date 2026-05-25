@@ -16,6 +16,14 @@ public class ImageDao extends BaseDao{
         );
     }
 
+    public List<ProductImage> getAllImages() {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT * FROM product_images")
+                        .mapToBean(ProductImage.class)
+                        .list()
+        );
+    }
+
     public ProductImage getImageByPosition(int productId, int position) {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT * FROM product_images WHERE product_id = :pid AND position = :pos LIMIT 1")
