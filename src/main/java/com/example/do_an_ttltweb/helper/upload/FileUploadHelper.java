@@ -4,6 +4,8 @@ import jakarta.servlet.http.Part;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,5 +63,47 @@ public class FileUploadHelper {
         int dot = filename.lastIndexOf('.');
         if (dot == -1 || dot == filename.length() - 1) return null;
         return filename.substring(dot + 1);
+    }
+
+    public static String saveFromUrl(String urlStr, String webappRealPath) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
+        conn.setConnectTimeout(10000);
+        conn.setReadTimeout(15000);
+        conn.setInstanceFollowRedirects(true);
+        conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+        int status = conn.getResponseCode();
+        if (status >= 400) throw new IOException("HTTP " + status);
+
+        String ext = detectExtensionFromUrl(urlStr, conn.getContentType());
+        if (ext == null) ext = "jpg";
+
+        String filename = UUID.randomUUID().toString() + "." + ext;
+        Path uploadDir = Paths.get(webappRealPath, UPLOAD_SUBDIR);
+        Files.createDirectories(uploadDir);
+        Path target = uploadDir.resolve(filename);
+
+        try (InputStream in = conn.getInputStream()) {
+            Files.copy(in, target);
+        }
+        return "/" + UPLOAD_SUBDIR + "/" + filename;
+    }
+
+    private static String detectExtensionFromUrl(String urlStr, String contentType) {
+        int q = urlStr.indexOf('?');
+        String path = q >= 0 ? urlStr.substring(0, q) : urlStr;
+        int dot = path.lastIndexOf('.');
+        int slash = path.lastIndexOf('/');
+        if (dot > slash && dot < path.length() - 1) {
+            String ext = path.substring(dot + 1).toLowerCase();
+            if (ALLOWED_EXTENSIONS.contains(ext)) return ext;
+        }
+        if (contentType != null) {
+            String ct = contentType.toLowerCase();
+            if (ct.startsWith("image/jpeg") || ct.startsWith("image/jpg")) return "jpg";
+            if (ct.startsWith("image/png")) return "png";
+            if (ct.startsWith("image/webp")) return "webp";
+        }
+        return null;
     }
 }
