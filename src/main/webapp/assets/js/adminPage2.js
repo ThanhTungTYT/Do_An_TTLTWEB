@@ -1,3 +1,38 @@
+function buildUrl(overrides) {
+    const url = new URL(window.location.href);
+    Object.keys(overrides).forEach(k => {
+        if (overrides[k] === null) {
+            url.searchParams.delete(k);
+        } else {
+            url.searchParams.set(k, overrides[k]);
+        }
+    });
+    return url.toString();
+}
+
+function changePage(page) {
+    window.location.href = buildUrl({ page: page });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const pageInput = document.getElementById('page-input');
+    if (pageInput) {
+        pageInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                let targetPage = parseInt(this.value, 10);
+                let maxPage = parseInt(this.getAttribute('data-max'), 10);
+                if (isNaN(targetPage) || targetPage < 1) targetPage = 1;
+                else if (targetPage > maxPage) targetPage = maxPage;
+                changePage(targetPage);
+            }
+        });
+        pageInput.addEventListener('blur', function () {
+            this.value = this.defaultValue;
+        });
+    }
+});
+
 function previewImage(input) {
     const file = input.files[0];
     if (!file) return;
