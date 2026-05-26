@@ -105,5 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // --- F. ĐÓNG MODAL KHI BẤM RA NGOÀI ---
+        const modals = [
+            { el: form_add,     openSel: '#add' },
+            { el: form_remake,  openSel: '.remake' },
+            { el: form_add_cat, openSel: '#add-cat-btn, #add-cat' },
+            { el: detail,       openSel: '.detail' }
+        ];
+        modals.forEach(({ el, openSel }) => {
+            if (!el) return;
+            const display = el.style.display;
+            if (display !== 'block' && display !== 'flex') return;
+            if (e.target.closest(openSel)) return;
+            if (el.contains(e.target)) return;
+            el.style.display = 'none';
+            if (content) content.style.filter = 'blur(0)';
+        });
+
     });
 });
