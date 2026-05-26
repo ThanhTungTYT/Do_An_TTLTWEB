@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +19,14 @@ public class FileUploadHelper {
     public static final long MAX_FILE_SIZE = 5L * 1024 * 1024;
     public static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "webp");
     public static final String UPLOAD_SUBDIR = "assets/img/products";
+
+    private static String resolveBasePath(String fallback) {
+        String configured = System.getProperty("aroma.webapp.path");
+        if (configured != null && !configured.isBlank()) return configured;
+        configured = System.getenv("AROMA_WEBAPP_PATH");
+        if (configured != null && !configured.isBlank()) return configured;
+        return fallback;
+    }
 
     public static boolean isValid(Part part) {
         if (part == null || part.getSize() == 0) return false;
@@ -31,15 +40,22 @@ public class FileUploadHelper {
     }
 
     public static String save(Part part, String webappRealPath) throws IOException {
+        String basePath = resolveBasePath(webappRealPath);
         String ext = getExtension(part.getSubmittedFileName()).toLowerCase();
         String filename = UUID.randomUUID().toString() + "." + ext;
 
-        Path uploadDir = Paths.get(webappRealPath, UPLOAD_SUBDIR);
+        Path uploadDir = Paths.get(basePath, UPLOAD_SUBDIR);
         Files.createDirectories(uploadDir);
 
         Path target = uploadDir.resolve(filename);
         try (InputStream in = part.getInputStream()) {
             Files.copy(in, target);
+        }
+
+        if (webappRealPath != null && !basePath.equals(webappRealPath)) {
+            Path deployDir = Paths.get(webappRealPath, UPLOAD_SUBDIR);
+            Files.createDirectories(deployDir);
+            Files.copy(target, deployDir.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
         }
 
         return "/" + UPLOAD_SUBDIR + "/" + filename;
@@ -49,10 +65,13 @@ public class FileUploadHelper {
         if (relativePath == null || relativePath.isBlank()) return;
         if (relativePath.startsWith("http://") || relativePath.startsWith("https://")) return;
 
+        String basePath = resolveBasePath(webappRealPath);
         String stripped = relativePath.startsWith("/") ? relativePath.substring(1) : relativePath;
-        Path target = Paths.get(webappRealPath, stripped);
         try {
-            Files.deleteIfExists(target);
+            Files.deleteIfExists(Paths.get(basePath, stripped));
+            if (webappRealPath != null && !basePath.equals(webappRealPath)) {
+                Files.deleteIfExists(Paths.get(webappRealPath, stripped));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

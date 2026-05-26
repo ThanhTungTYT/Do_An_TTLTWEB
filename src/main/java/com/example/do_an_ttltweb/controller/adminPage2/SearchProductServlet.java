@@ -2,7 +2,9 @@ package com.example.do_an_ttltweb.controller.adminPage2;
 
 import com.example.do_an_ttltweb.model.Category;
 import com.example.do_an_ttltweb.model.Product;
+import com.example.do_an_ttltweb.model.ProductImage;
 import com.example.do_an_ttltweb.services.CategoryService;
+import com.example.do_an_ttltweb.services.ImageService;
 import com.example.do_an_ttltweb.services.ProductService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,12 +13,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 @WebServlet(name = "SearchProductServlet", value = "/admin/products/search")
 
 public class SearchProductServlet extends HttpServlet {
     private ProductService productService = new ProductService();
     private CategoryService categoryService = new CategoryService();
+    private ImageService imageService = new ImageService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,10 +50,21 @@ public class SearchProductServlet extends HttpServlet {
             return;
         }
 
+        Map<Integer, String[]> productImagesMap = new HashMap<>();
+        for (Product p : products) {
+            String[] urls = new String[3];
+            for (ProductImage pi : imageService.getAllImageById(p.getId())) {
+                int pos = pi.getPosition();
+                if (pos >= 0 && pos < 3) urls[pos] = pi.getImage_url();
+            }
+            productImagesMap.put(p.getId(), urls);
+        }
+
         List<Category> categories = categoryService.getAllCategories();
         req.setAttribute("categories", categories);
 
         req.setAttribute("products", products);
+        req.setAttribute("productImagesMap", productImagesMap);
         req.setAttribute("searchKeyword", keyword);
         req.setAttribute("currentPage", page);
         req.setAttribute("totalPages", totalPages);
