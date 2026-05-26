@@ -170,34 +170,56 @@
             </c:forEach>
             </tbody>
         </table>
-        <div class="pagination">
-            <c:if test="${totalPages > 1}">
+        <div class="product-page" id="pagination" style="margin-top: 20px; text-align: center;">
 
+            <c:set var="displayTotal" value="${totalPages > 0 ? totalPages : 1}" />
+            <c:set var="startPage" value="${currentPage - 1}" />
+            <c:set var="endPage" value="${currentPage + 1}" />
+
+            <c:if test="${startPage < 1}">
+                <c:set var="startPage" value="1" />
+                <c:set var="endPage" value="3" />
+            </c:if>
+
+            <c:if test="${endPage > displayTotal}">
+                <c:set var="endPage" value="${displayTotal}" />
+                <c:set var="startPage" value="${displayTotal - 2}" />
+                <c:if test="${startPage < 1}">
+                    <c:set var="startPage" value="1" />
+                </c:if>
+            </c:if>
+
+            <c:if test="${currentPage > 1}">
+                <button type="button" onclick="changePage(1)" title="Trang đầu tiên">
+                    <i class="fas fa-angle-double-left"></i>
+                </button>
+                <button type="button" onclick="changePage(${currentPage - 1})" title="Trang trước">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+            </c:if>
+
+            <c:forEach begin="${startPage}" end="${endPage}" var="i">
                 <c:choose>
-                    <c:when test="${not empty searchKeyword}">
-                        <c:set var="baseUrl" value="${pageContext.request.contextPath}/admin/products/search?search=${searchKeyword}&" />
+                    <c:when test="${currentPage == i}">
+                        <input type="number"
+                               id="page-input"
+                               value="${i}"
+                               data-max="${displayTotal}"
+                               title="Nhập số trang và nhấn Enter" />
                     </c:when>
                     <c:otherwise>
-                        <c:set var="baseUrl" value="${pageContext.request.contextPath}/admin/products?filter=${currentFilter}&" />
+                        <button type="button" onclick="changePage(${i})">${i}</button>
                     </c:otherwise>
                 </c:choose>
+            </c:forEach>
 
-                <a href="${baseUrl}page=${currentPage > 1 ? currentPage - 1 : 1}"
-                   class="${currentPage <= 1 ? 'disabled' : ''}">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </a>
-
-                <c:forEach begin="1" end="${totalPages}" var="i">
-                    <a href="${baseUrl}page=${i}"
-                       class="${currentPage == i ? 'active' : ''}">
-                            ${i}
-                    </a>
-                </c:forEach>
-
-                <a href="${baseUrl}page=${currentPage < totalPages ? currentPage + 1 : totalPages}"
-                   class="${currentPage >= totalPages ? 'disabled' : ''}">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </a>
+            <c:if test="${currentPage < displayTotal}">
+                <button type="button" onclick="changePage(${currentPage + 1})" title="Trang tiếp theo">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                <button type="button" onclick="changePage(${displayTotal})" title="Trang cuối cùng">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
             </c:if>
         </div>
 
