@@ -1,86 +1,97 @@
-    /* --- PAGE 4: TÀI KHOẢN --- */
-    .right-content .notify {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 80%;
-        background: #fff;
-        padding: 25px;
-        margin-left: 120px;
-        margin-bottom: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
+/* --- PAGE 4: TÀI KHOẢN --- */
+.right-content .notify {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 80%;
+    background: #fff;
+    padding: 25px;
+    margin-left: 120px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
 
-    .right-content .notify h3 {
-        font-size: 18px;
-        font-weight: 500;
-        color: #495057;
-    }
+.right-content .notify h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #495057;
+}
 
-    .right-content .notify .notify-main {
-        width: 100%;
-        height: 200px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        padding: 25px 0;
-        overflow-y: scroll;
-    }
+.right-content .notify .notify-main {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 25px 0;
+    overflow-y: scroll;
+}
 
-    .right-content .notify .notify-main p span {
-        font-weight: 600;
-    }
+.right-content .notify .notify-main p span {
+    font-weight: 600;
+}
 
-    .right-content .list-account {
-        background: #fff;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
+.right-content .list-account {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
 
-    .right-content .list-account h3 {
-        font-size: 18px;
-        font-weight: 500;
-        margin-bottom: 20px;
-        color: #495057;
-    }
+.right-content .list-account h3 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #495057;
+}
 
-    .right-content .list-account table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+.right-content .list-account table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-    .right-content .list-account table th, .right-content .list-account table td {
-        padding: 12px 15px;
-        text-align: center;
-        border-bottom: 1px solid #f0f0f0;
-    }
+.right-content .list-account table th,
+.right-content .list-account table td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
 
-    .right-content .list-account table th {
-        background-color: #f8f9fa;
-        color: #6c757d;
-        font-weight: 500;
-        font-size: 14px;
-    }
+.right-content .list-account table th {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 14px;
+}
 
-    .right-content .list-account table td {
-        font-size: 15px;
-    }
+.right-content .list-account table td {
+    font-size: 15px;
+}
 
-    .right-content .list-account button {
-        font-weight: 500;
-        font-size: 15px;
-        margin-top: 20px;
-        color: white;
-        background: #c76739;
-        width: 30px;
-        height: 30px;
-        border-radius: 10px;
-        cursor: pointer;
-        border: none;
-    }
+.right-content .list-account table td form {
+    margin: 0;
+    display: inline-block;
+    vertical-align: middle;
+}
 
-    .right-content .list-account button:hover {
-        background: #700000;
-    }
+.right-content .list-account button {
+    font-weight: 500;
+    font-size: 15px;
+    color: white;
+    background: #c76739;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.right-content .list-account button:hover {
+    background: #700000;
+}
