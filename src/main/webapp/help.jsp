@@ -15,6 +15,7 @@
     <title>Liên hệ | Aroma Café</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/help.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -75,12 +76,7 @@
         <div class="main-content">
             <h2>Liên hệ với chúng tôi</h2>
 
-            <c:if test="${not empty success or not empty error}">
-                <div id="toast-notification" class="toast ${not empty success ? 'toast-success' : 'toast-error'}">
-                    <i class="${not empty success ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'}"></i>
-                    <span>${not empty success ? success : error}</span>
-                </div>
-            </c:if>
+            <jsp:include page="/WEB-INF/includes/toast.jsp"/>
 
             <form action="${pageContext.request.contextPath}/contact" method="post" id="f-contact" novalidate>                <input type="text" id="name" name="name" placeholder="Họ và tên của bạn">
                 <small class="error"></small>
@@ -148,6 +144,7 @@
 </footer>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 <script src="${pageContext.request.contextPath}/assets/js/help.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>
