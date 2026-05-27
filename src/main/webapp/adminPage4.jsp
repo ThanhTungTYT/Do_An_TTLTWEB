@@ -161,32 +161,58 @@
     </form>
 </div>
 
-<div class="form-add" id="form-remake" style="display: none">
-    <div class="form-title"><p>SỬA ACCOUNT & PHÂN QUYỀN</p><button id="close-remake">X</button></div>
-    <form class="main-form" method="post" action="${pageContext.request.contextPath}/update-user">
-        <input type="hidden" name="uid" id="up_uid">
+<div class="form-add" id="form-remake" style="display: none; width: 500px; max-height: 90vh; overflow-y: auto; padding: 0; border-radius: 12px;">
+    <div class="form-title" style="position: sticky; top: 0; background: #c76739; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0; z-index: 1;">
+        <p style="margin: 0; font-size: 1.1em; font-weight: bold;">SỬA ACCOUNT & PHÂN QUYỀN</p>
+        <button id="close-remake" style="background: transparent; border: none; color: white; font-size: 1.3em; cursor: pointer;">✕</button>
+    </div>
 
-        <div class="type-p">
-            <label>Cấp quyền cho User này:</label>
-            <div class="permission-grid">
+    <form class="main-form" method="post" action="${pageContext.request.contextPath}/update-user" style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+        <input type="hidden" name="uid" id="up_uid">
+        <div>
+            <p style="font-weight: bold; margin-bottom: 10px; color: #333; border-bottom: 2px solid #c76739; padding-bottom: 6px;">
+                Phân quyền
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <c:forEach items="${allPermissions}" var="p">
-                    <label class="permission-item">
-                        <input type="checkbox" name="up_permissions" value="${p.id}" data-key="${p.permission_key}">
-                            ${p.permission_name}
+                    <label style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee; cursor: pointer;"
+                           onmouseover="this.style.background='#fff3ed'" onmouseout="this.style.background='#f9f9f9'">
+                        <c:choose>
+                            <c:when test="${p.permission_key eq 'shopping'}">
+                                <input type="checkbox" name="up_permissions"
+                                       value="${p.id}" data-key="${p.permission_key}"
+                                       checked disabled
+                                       style="accent-color: #c76739; width: 16px; height: 16px; flex-shrink: 0;">
+                                <input type="hidden" name="up_permissions" value="${p.id}">
+                            </c:when>
+                            <c:otherwise>
+                                <input type="checkbox" name="up_permissions"
+                                       value="${p.id}" data-key="${p.permission_key}"
+                                       style="accent-color: #c76739; width: 16px; height: 16px; flex-shrink: 0;">
+                            </c:otherwise>
+                        </c:choose>
+                        <span style="font-size: 0.88em; color: #444; line-height: 1.3;">${p.permission_name}</span>
+                        <c:if test="${p.permission_key eq 'shopping'}">
+                            <span style="margin-left: auto; font-size: 0.75em; color: #aaa; white-space: nowrap;">mặc định</span>
+                        </c:if>
                     </label>
                 </c:forEach>
             </div>
         </div>
-
-        <div class="type-p" style="margin-top: 15px;">
-            <label>Thay đổi Role chính:</label>
-            <select name="up_role">
-                <option value="admin">admin</option>
-                <option value="customer">customer</option>
+        <div>
+            <p style="font-weight: bold; margin-bottom: 10px; color: #333; border-bottom: 2px solid #c76739; padding-bottom: 6px;">
+                Role chính
+            </p>
+            <select name="up_role" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95em; background: #f9f9f9; cursor: pointer;">
+                <option value="admin">Admin</option>
+                <option value="customer">Customer</option>
             </select>
         </div>
-
-        <button class="submit" type="submit">Lưu Thay Đổi</button>
+        <button type="submit"
+                style="background: #c76739; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer;"
+                onmouseover="this.style.background='#a85530'" onmouseout="this.style.background='#c76739'">
+            Lưu Thay Đổi
+        </button>
     </form>
 </div>
 
