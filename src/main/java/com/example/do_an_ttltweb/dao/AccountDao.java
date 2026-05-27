@@ -86,7 +86,7 @@ public class AccountDao extends BaseDao {
     }
     public boolean addUser(User user){
         return getJdbi().withHandle(handle ->
-                handle.createUpdate("INSERT INTO users(full_name, email, phone, password_hash, role, created_at) VALUES (:name, :email, :phone, :pass, :role, NOW())")
+                handle.createUpdate("INSERT INTO users(full_name, email, phone, password_hash, role, created_at, status) VALUES (:name, :email, :phone, :pass, :role, NOW(), 'active')")
                         .bind("name", user.getFull_name())
                         .bind("email", user.getEmail())
                         .bind("phone", user.getPhone())

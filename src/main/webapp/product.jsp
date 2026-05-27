@@ -89,9 +89,9 @@
                     </p>
                 </div>
                 <div class="quick-info">
-                    <span>☕ ${product.category_name}</span>
-                    <span>📦 ${product.weight_grams}g</span>
-                    <span>🏷️ Hàng chính hãng</span>
+                    <span>Loại: ${product.category_name}</span>
+                    <span>Khối lượng: ${product.weight_grams}g</span>
+                    <span>Hàng chính hãng</span>
                 </div>
                 <form method="post" action="${pageContext.request.contextPath}/add-to-cart">
                     <input type="hidden" name="pid" value="${product.id}">
@@ -108,7 +108,7 @@
                         <c:choose>
                             <c:when test="${product.stock > 0}">
                                 <button type="submit" class="btn-cart">
-                                    🛒 Thêm vào giỏ hàng
+                                    Thêm vào giỏ hàng
                                 </button>
                             </c:when>
                             <c:otherwise>
@@ -120,9 +120,9 @@
                     </div>
                 </form>
                 <div class="trust">
-                    <p>🚚 Giao nhanh 2-3 ngày toàn quốc</p>
-                    <p>🔄 Đổi trả miễn phí 7 ngày</p>
-                    <p>💯 Cam kết chính hãng 100%</p>
+                    <p>- Giao nhanh 2-3 ngày toàn quốc</p>
+                    <p>- Đổi trả miễn phí 7 ngày</p>
+                    <p>- Cam kết chính hãng 100%</p>
                 </div>
 
             </div>

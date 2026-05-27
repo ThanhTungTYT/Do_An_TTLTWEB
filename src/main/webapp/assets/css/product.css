@@ -156,12 +156,13 @@
 }
 
 .btn-cart {
-    flex: 1;
+    width: 50%;
     background: #fff;
     border: 2px solid #c76739;
     color: #c76739;
     padding: 12px;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .btn-buy {
