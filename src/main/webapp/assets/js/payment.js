@@ -1,10 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    const ctx = window.contextPath || "/Do_An_TTLTWEB";
+
     var promotionSelect = document.getElementById("promotionSelect");
     var totalEl         = document.getElementById("total-price");
     var shippingEl      = document.getElementById("shipping-fee");
     var discountEl      = document.getElementById("discount-amount");
     var finalEl         = document.getElementById("final-total");
+
+    let paymentPollingInterval = null;
 
     function formatVND(amount) {
         return amount.toLocaleString('vi-VN') + " VND";
@@ -117,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================================
     async function loadProvinces() {
         try {
-            const res = await fetch('/Do_An_TTLTWEB/api/ghn/provinces');
+            const res = await fetch(`${ctx}/api/ghn/provinces`);
             const data = await res.json();
             if (citySelect) {
                 citySelect.innerHTML = '<option value="">-- Chọn Tỉnh/Thành phố --</option>';
@@ -145,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
-            const res = await fetch('/Do_An_TTLTWEB/api/ghn/districts?province_id=' + provinceId);
+            const res = await fetch(`${ctx}/api/ghn/districts?province_id=${provinceId}`);
             const data = await res.json();
             if (districtSelect) {
                 data.forEach(d => {
@@ -173,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
-            const res = await fetch('/Do_An_TTLTWEB/api/ghn/wards?district_id=' + districtId);
+            const res = await fetch(`${ctx}/api/ghn/wards?district_id=${districtId}`);
             const data = await res.json();
             if (wardSelect) {
                 data.forEach(w => {
@@ -192,6 +196,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!wardCode) return;
         if (hiddenWard) hiddenWard.value = wardName;
 
+        const hiddenWardCode = document.getElementById('hidden_ward_code');
+        if (hiddenWardCode) hiddenWardCode.value = wardCode;
+
         const hiddenDistrictId = document.getElementById('hidden_district_id');
         const districtId = hiddenDistrictId ? hiddenDistrictId.value : "";
         const weight = 500;
@@ -199,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!districtId) return;
 
         try {
-            const res = await fetch(`/Do_An_TTLTWEB/api/ghn/fee?district_id=${districtId}&ward_code=${wardCode}&weight=${weight}`);
+            const res = await fetch(`${ctx}/api/ghn/fee?district_id=${districtId}&ward_code=${wardCode}&weight=${weight}`);
             const data = await res.json();
             const fee = data.fee || 30000;
 
@@ -301,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const qrImg = document.getElementById("qr-image");
         if (qrImg) {
-            qrImg.src = `https://img.vietqr.io/image/BIDV-1234567890123456-compact2.png?amount=${amountInt}&addInfo=${content}&accountName=AROMA+CAFE`;
+            qrImg.src = `https://img.vietqr.io/image/BIDV-8800273817-compact2.png?amount=${amountInt}&addInfo=${content}&accountName=AROMA+CAFE`;
         }
     }
 
@@ -324,7 +331,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
             }
-            openBankModal();
+            handleBankTransferCheckout();
         });
     }
 
@@ -336,28 +343,109 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalQrImg        = document.getElementById("modal-qr-image");
     const modalTimestamp    = document.getElementById("modal-timestamp");
 
-    function openBankModal() {
+    async function handleBankTransferCheckout() {
+        setButtonLoading(openBankModalBtn, true);
+
+        const formData = new FormData(checkoutForm);
+        const searchParams = new URLSearchParams(formData);
+
+        try {
+            const actionUrl = checkoutForm.getAttribute("action") || `${ctx}/payment`;
+            const res = await fetch(actionUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: searchParams.toString()
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                openBankModal(result.orderId, result.finalAmount);
+            } else {
+                alert("Lỗi đặt hàng: " + (result.message || "Vui lòng thử lại sau."));
+            }
+        } catch (e) {
+            console.error("Lỗi gửi đơn hàng qua AJAX:", e);
+            alert("Đã xảy ra lỗi hệ thống khi tạo đơn hàng. Vui lòng thử lại!");
+        } finally {
+            setButtonLoading(openBankModalBtn, false);
+        }
+    }
+
+    function openBankModal(orderId, finalAmount) {
         if (!modal) return;
-        const { finalTotal } = getFinalAmount();
-        const amountInt = Math.round(finalTotal);
+        const amountInt = Math.round(finalAmount);
 
         if (modalAmountEl) modalAmountEl.textContent = formatVND(amountInt);
         if (modalTimestamp) modalTimestamp.textContent = Date.now();
 
-        const contentEl = document.getElementById("transfer-content-text");
-        const content   = contentEl ? contentEl.textContent.trim().replace(/\s+/g, '+') : "AROMACAFE";
+        const orderRef = document.getElementById("modal-order-ref");
+        if (orderRef) orderRef.textContent = `AROMACAFE-${orderId}`;
+
+        const transferContent = document.getElementById("modal-transfer-content");
+        if (transferContent) transferContent.textContent = `AROMACAFE ${orderId}`;
+
         if (modalQrImg) {
-            modalQrImg.src = `https://img.vietqr.io/image/BIDV-1234567890123456-compact2.png?amount=${amountInt}&addInfo=${content}&accountName=AROMA+CAFE`;
+            modalQrImg.src = `https://img.vietqr.io/image/BIDV-8800273817-compact2.png?amount=${amountInt}&addInfo=AROMACAFE+${orderId}&accountName=AROMA+CAFE`;
         }
 
         modal.style.display = "flex";
         document.body.style.overflow = "hidden";
+
+        startSepayPolling(orderId);
+    }
+
+    function startSepayPolling(orderId) {
+        if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+        paymentPollingInterval = setInterval(async () => {
+            await checkOrderStatus(orderId);
+        }, 3000);
+    }
+
+    async function checkOrderStatus(orderId) {
+        try {
+            const res = await fetch(`${ctx}/api/check-order-status?orderId=${orderId}`);
+            const data = await res.json();
+
+            if (data.status === "Đã thanh toán" || data.status === "Đang xử lý") {
+                handlePaymentSuccess();
+            }
+        } catch (e) {
+            console.error("Lỗi khi kiểm tra trạng thái đơn hàng từ polling:", e);
+        }
+    }
+
+    function handlePaymentSuccess() {
+        if (paymentPollingInterval) {
+            clearInterval(paymentPollingInterval);
+            paymentPollingInterval = null;
+        }
+
+        const modalBody = document.querySelector(".modal-box .modal-body");
+        if (modalBody) {
+            modalBody.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-check-circle" style="color: #28a745; font-size: 64px; margin-bottom: 20px;"></i>
+                    <h3 style="color: #28a745; margin-bottom: 10px;">Thanh toán thành công!</h3>
+                    <p>Hệ thống Aroma Café đã nhận được tiền của bạn.</p>
+                    <p style="font-size: 14px; color: #666; margin-top: 8px;">Đang tự động chuyển hướng về trang tài khoản của bạn...</p>
+                </div>
+            `;
+        }
+
+        setTimeout(() => {
+            window.location.href = `${ctx}/account?success=1`;
+        }, 2500);
     }
 
     function closeModal() {
         if (!modal) return;
         modal.style.display = "none";
         document.body.style.overflow = "";
+
+        if (paymentPollingInterval) {
+            clearInterval(paymentPollingInterval);
+            paymentPollingInterval = null;
+        }
     }
 
     if (modalCloseX) modalCloseX.addEventListener("click", closeModal);
@@ -370,9 +458,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (confirmPaymentBtn) {
-        confirmPaymentBtn.addEventListener("click", function () {
+        confirmPaymentBtn.addEventListener("click", async function () {
             setButtonLoading(confirmPaymentBtn, true);
-            checkoutForm.submit();
+            const orderRefText = document.getElementById("modal-order-ref")?.textContent || "";
+            const orderId = orderRefText.replace("AROMACAFE-", "").trim();
+            if (orderId) {
+                await checkOrderStatus(orderId);
+            }
+            setButtonLoading(confirmPaymentBtn, false);
         });
     }
 
@@ -433,7 +526,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.style.overflow = "";
     };
 
-    // Chạy khởi tạo danh sách tỉnh
+    // Khởi chạy nạp dữ liệu ban đầu một cách duy nhất
     loadProvinces();
     calculateTotal();
     onPaymentMethodChange();

@@ -10,6 +10,8 @@ import java.util.List;
 
 public class OrderService {
     private final OrderDao dao = new OrderDao();
+    private final GHNService ghnService = new GHNService();
+
     public boolean create(Order order, OrderAddress address, Cart cart) {
         return dao.createOrder(order,address, cart);
     }
@@ -61,5 +63,28 @@ public class OrderService {
 
     public boolean updateOrderStatusAndGhn(int orderId, String status, String ghnCode) {
         return dao.updateOrderStatusAndGhn(orderId, status, ghnCode);
+    }
+
+    public boolean updateOrderStatusById(int orderId, String status) {
+        return dao.updateOrderStatusById(orderId, status);
+    }
+
+    public String createGhnOrderAfterPaid(Order order, OrderAddress address) {
+        try {
+            List<OrderItem> items = dao.getItemsByOrderId(order.getId());
+
+            if (items == null || items.isEmpty()) {
+                System.err.println("Không tìm thấy chi tiết sản phẩm cho đơn hàng: " + order.getId());
+                return null;
+            }
+            order.setFinalAmount(0);
+
+            return ghnService.createOrder(order, address, items);
+
+        } catch (Exception e) {
+            System.err.println("Lỗi tích hợp đẩy vận đơn tự động sang GHN: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 }

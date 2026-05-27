@@ -164,7 +164,7 @@
                             <div class="bank-info-row">
                                 <span class="bank-info-label">Nội dung CK:</span>
                                 <span class="bank-info-value" id="transfer-content">
-                                    <span id="transfer-content-text">AROMACAFE ${sessionScope.user.id} ${sessionScope.user.full_name}</span>
+                                    <span id="transfer-content-text">AROMACAFE</span>
                                     <button type="button" class="copy-btn" id="copy-content-btn"
                                             onclick="copyTransferContent()">
                                         <i class="fas fa-copy"></i>
@@ -398,76 +398,10 @@
 
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 
-<script src="assets/js/payment.js?v=3"></script>
-<script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 <script>
-    async function loadProvinces() {
-        const res = await fetch('${pageContext.request.contextPath}/api/ghn/provinces');
-        const data = await res.json();
-        const select = document.getElementById('provinceSelect');
-        data.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.ProvinceID;
-            opt.text = p.ProvinceName;
-            select.appendChild(opt);
-        });
-    }
-
-    async function loadDistricts(provinceId, provinceName) {
-        document.getElementById('hidden_province').value = provinceName;
-        const districtSelect = document.getElementById('districtSelect');
-        const wardSelect = document.getElementById('wardSelect');
-        districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
-        wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-        wardSelect.disabled = true;
-        const res = await fetch('${pageContext.request.contextPath}/api/ghn/districts?province_id=' + provinceId);
-        const data = await res.json();
-        data.forEach(d => {
-            const opt = document.createElement('option');
-            opt.value = d.DistrictID;
-            opt.text = d.DistrictName;
-            districtSelect.appendChild(opt);
-        });
-        districtSelect.disabled = false;
-    }
-
-    async function loadWards(districtId, districtName) {
-        document.getElementById('hidden_district_id').value = districtId;
-        document.getElementById('hidden_district').value = districtName;
-        const wardSelect = document.getElementById('wardSelect');
-        wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-        const res = await fetch('${pageContext.request.contextPath}/api/ghn/wards?district_id=' + districtId);
-        const data = await res.json();
-        data.forEach(w => {
-            const opt = document.createElement('option');
-            opt.value = w.WardCode;
-            opt.text = w.WardName;
-            wardSelect.appendChild(opt);
-        });
-        wardSelect.disabled = false;
-    }
-
-    async function onWardChange(wardCode, wardName) {
-        document.getElementById('hidden_ward_code').value = wardCode;
-        document.getElementById('hidden_ward').value = wardName;
-        const districtId = document.getElementById('hidden_district_id').value;
-        const weight = 500;
-        try {
-            const res = await fetch(
-                `${pageContext.request.contextPath}/api/ghn/fee?district_id=${districtId}&ward_code=${wardCode}&weight=${weight}`
-            );
-            const data = await res.json();
-            const fee = data.fee;
-            document.getElementById('hidden_shipping_fee').value = fee;
-            document.getElementById('shipping-fee').textContent = fee.toLocaleString('vi-VN') + ' VND';
-            document.getElementById('shipping-fee').dataset.fee = fee;
-            calculateTotal();
-        } catch (e) {
-            console.error('Lỗi tính phí ship:', e);
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', loadProvinces);
+    window.contextPath = "${pageContext.request.contextPath}";
 </script>
+<script src="${pageContext.request.contextPath}/assets/js/payment.js?v=4"></script>
+<script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>
