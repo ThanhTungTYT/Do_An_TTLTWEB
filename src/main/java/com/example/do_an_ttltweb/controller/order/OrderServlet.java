@@ -57,7 +57,8 @@ public class OrderServlet extends HttpServlet {
             case "prepare":
                 handlePrepareCheckout(req, resp);
                 break;
-            default: handleProcessPayment(req, resp);
+            default:
+                handleProcessPayment(req, resp);
         }
     }
 
@@ -92,14 +93,19 @@ public class OrderServlet extends HttpServlet {
         }
 
         session.setAttribute("checkoutCart", checkoutCart);
-
         resp.sendRedirect("payment");
     }
 
     private void handleProcessPayment(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         HttpSession s = req.getSession(false);
+        String paymentMethodName = req.getParameter("paymentMethod");
+        boolean isBankTransfer   = "bank".equals(paymentMethodName);
         if (s == null || s.getAttribute("user") == null || s.getAttribute("checkoutCart") == null) {
-            resp.sendRedirect("login.jsp");
+            if (isBankTransfer) {
+                sendJsonError(resp, "Phiên làm việc đã hết hạn hoặc giỏ hàng trống. Vui lòng thử lại.");
+            } else {
+                resp.sendRedirect("login.jsp");
+            }
             return;
         }
 
@@ -110,10 +116,8 @@ public class OrderServlet extends HttpServlet {
         Order       order   = buildOrder(req, user, checkoutCart);
         OrderAddress address = buildAddress(req);
 
-        String paymentMethodName = req.getParameter("paymentMethod");
-        boolean isBankTransfer   = "bank".equals(paymentMethodName);
         if (isBankTransfer) {
-            order.setStatus("Đang xử lý");
+            order.setStatus("Chờ thanh toán");
         }
 
         try {
@@ -121,23 +125,40 @@ public class OrderServlet extends HttpServlet {
                 cleanupAfterOrder(s, mainCart, checkoutCart, user);
 
                 if (isBankTransfer) {
-                    s.setAttribute("pendingOrderId", order.getId());
-                    resp.sendRedirect(req.getContextPath() + "/account?pending=1");
+                    resp.setContentType("application/json");
+                    resp.setCharacterEncoding("UTF-8");
+
+                    long finalAmountLong = Math.round(order.getFinalAmount());
+                    String jsonResponse = "{\"success\":true,\"orderId\":" + order.getId() + ",\"finalAmount\":" + finalAmountLong + "}";
+                    resp.getWriter().write(jsonResponse);
                 } else {
                     resp.sendRedirect(req.getContextPath() + "/account?success=1");
                 }
             } else {
-                forwardWithError(req, resp, s, "Đặt hàng thất bại. Vui lòng thử lại.");
+                if (isBankTransfer) {
+                    sendJsonError(resp, "Đặt hàng thất bại từ hệ thống. Vui lòng thử lại.");
+                } else {
+                    forwardWithError(req, resp, s, "Đặt hàng thất bại. Vui lòng thử lại.");
+                }
             }
         } catch (RuntimeException e) {
-            forwardWithError(req, resp, s, e.getMessage());
+            if (isBankTransfer) {
+                sendJsonError(resp, e.getMessage());
+            } else {
+                forwardWithError(req, resp, s, e.getMessage());
+            }
         }
     }
 
+    private void sendJsonError(HttpServletResponse resp, String message) throws IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        String cleanMessage = message.replace("\"", "\\\"");
+        resp.getWriter().write("{\"success\":false,\"message\":\"" + cleanMessage + "\"}");
+    }
+
     private Order buildOrder(HttpServletRequest req, User user, Cart checkoutCart) {
-
         double total = checkoutCart.getTotal();
-
         double shippingFee = 0;
         String shippingFeeParam = req.getParameter("shippingFee");
         if (shippingFeeParam != null && !shippingFeeParam.isBlank()) {
