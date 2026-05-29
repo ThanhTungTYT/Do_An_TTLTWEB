@@ -100,37 +100,60 @@
         </div>
     </div>
 </div>
-
+<div class="modal-backdrop" id="modal-backdrop" style="display: none;" onclick="closeReviewModal()"></div>
 <div class="detail-p" id="detail-p" style="display: none">
-    <button id="close">X</button>
+    <button id="close" onclick="closeReviewModal()"><i class="fa-solid fa-xmark"></i></button>
     <h3>CHI TIẾT ĐÁNH GIÁ</h3>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+
+    <div class="review-info-grid">
+        <div class="info-item">
+            <span class="info-label">Sản phẩm:</span>
+            <span class="info-value review-product"></span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Khách hàng:</span>
+            <span class="info-value review-user"></span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Ngày đánh giá:</span>
+            <span class="info-value review-date"></span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Xếp hạng:</span>
+            <span class="info-value review-rating-badge"></span>
+        </div>
+    </div>
+
     <div class="detail-full">
-        <p>Nội dung:</p>
-        <p class="review-text"></p>
+        <p class="comment-label"><i class="fa-solid fa-comment-dots"></i> Nội dung bình luận:</p>
+        <div class="review-text-box">
+            <p class="review-text"></p>
+        </div>
     </div>
 </div>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
-<script>
-    document.querySelectorAll(".detail").forEach(btn => {
-        btn.onclick = function () {
-            document.querySelector("#detail-p div:nth-child(3)").innerText =
-                "Sản phẩm: " + btn.dataset.product;
-            document.querySelector("#detail-p div:nth-child(4)").innerText =
-                "Khách hàng: " + btn.dataset.user;
-            document.querySelector("#detail-p div:nth-child(5)").innerText =
-                "Ngày: " + btn.dataset.date;
-            document.querySelector("#detail-p div:nth-child(6)").innerText =
-                "Xếp hạng: " + btn.dataset.rating + "/5";
-            document.querySelector(".review-text").innerText =
-                btn.dataset.comment;
-        }
-    });
-</script>
 <script src="${pageContext.request.contextPath}/assets/js/admin.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+<script>
+    document.querySelectorAll(".detail").forEach(btn => {
+        btn.addEventListener("click", function () {
+            document.getElementById("detail-p").style.display = "flex";
+            document.getElementById("modal-backdrop").style.display = "block";
+            const rating = this.dataset.rating ? this.dataset.rating.trim() : "5";
+            console.log("Dữ liệu nhận được khi click:", this.dataset);
+            document.querySelector(".review-product").innerText = this.dataset.product || "";
+            document.querySelector(".review-user").innerText = this.dataset.user || "";
+            document.querySelector(".review-date").innerText = this.dataset.date || "";
+            document.querySelector(".review-rating-badge").innerHTML =
+                `<span class="rating-badge">` + rating + `/5 <i class="fa-solid fa-star text-warning"></i></span>`;
+
+            document.querySelector(".review-text").innerText = this.dataset.comment ? this.dataset.comment.trim() : "(Không có nội dung bình luận)";
+        });
+    });
+    function closeReviewModal() {
+        document.getElementById("detail-p").style.display = "none";
+        document.getElementById("modal-backdrop").style.display = "none";
+    }
+</script>
 </body>
 </html>
