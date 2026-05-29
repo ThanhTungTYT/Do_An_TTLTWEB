@@ -15,11 +15,20 @@
         margin-top: 5px;
     }
 
+    .review td:last-child {
+        white-space: nowrap;
+    }
+
+    .review td:last-child form {
+        display: inline-block;
+        margin: 0;
+    }
+
     .review td button {
         font-weight: 500;
         font-size: 15px;
-        margin-top: 5px;
-        margin-right: 15px;
+        margin-top: 0;
+        margin-right: 5px;
         color: white;
         background: #c76739;
         width: 30px;
@@ -27,6 +36,10 @@
         border-radius: 10px;
         cursor: pointer;
         border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
     }
 
     .review td button:hover {
