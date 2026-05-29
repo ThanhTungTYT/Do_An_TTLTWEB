@@ -19,8 +19,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/forgotpassword.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 
 <header>
     <div class="top">
@@ -73,17 +75,6 @@
         <label class="lbu" for="username">Email:</label>
         <input type="email" id="username" name="email" placeholder="Nhập email của bạn" required>
 
-        <c:if test="${not empty error}">
-            <div style="color: #721c24; background-color: #f8d7da; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-                <i class="fas fa-exclamation-triangle"></i> ${error}
-            </div>
-        </c:if>
-        <c:if test="${not empty message}">
-            <div style="color: #155724; background-color: #d4edda; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-                <i class="fas fa-check-circle"></i> ${message}
-            </div>
-        </c:if>
-
         <br>
         <div class="bt_forgot">
             <button type="button" id="b-return" onclick="location.href='${pageContext.request.contextPath}/login.jsp'">Quay lại</button>
@@ -127,5 +118,6 @@
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
 </body>
 </html>
