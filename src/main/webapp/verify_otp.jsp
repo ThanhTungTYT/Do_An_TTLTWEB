@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/register.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 
     <style>
         .otp-wrapper {
@@ -81,6 +82,7 @@
     </style>
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <header>
     <div class="top">
         <div class="logo">
@@ -98,14 +100,6 @@
         Mã OTP 6 số đã được gửi tới email:<br>
         <strong>${sessionScope.reg_temp.email}</strong>
     </p>
-
-    <c:if test="${not empty error}">
-        <div class="alert alert-error" style="color: red; font-style: italic; font-size: 12px">${error}</div>
-
-    </c:if>
-    <c:if test="${not empty message}">
-        <div class="alert alert-success">${message}</div>
-    </c:if>
 
     <form action="verify-otp" method="post">
         <input type="text"
@@ -206,5 +200,6 @@
         updateTimer();
     });
 </script>
+<script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
 </body>
 </html>

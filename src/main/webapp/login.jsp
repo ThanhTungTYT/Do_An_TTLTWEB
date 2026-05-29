@@ -6,9 +6,11 @@
     <title>Đăng nhập | Aroma Café</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/login.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <header>
     <div class="top">
         <div class="logo">
@@ -75,10 +77,6 @@
             <small class="error-msg" id="err-password"></small>
         </div>
 
-        <c:if test="${not empty error}">
-            <p style="color: red; font-style: italic; font-size: 13px; margin-bottom: 15px;">${error}</p>
-        </c:if>
-
         <div class="forgot-password">
             <p>Quên mật khẩu? <a href="${pageContext.request.contextPath}/forgot-password">Click vào đây</a></p>
         </div>
@@ -140,5 +138,6 @@
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/login.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
 </body>
 </html>

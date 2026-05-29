@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/register.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <header>
     <div class="top">
         <div class="logo">
@@ -86,7 +88,6 @@
             <input type="checkbox" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
             <label class="lbtoggle" for="toggle-password">Hiển thị mật khẩu</label>
         </div>
-        <p class="error-msg" style="color: red; font-style: italic; font-size: 12px">${error}</p>
         <div class="bt_regis">
             <button type="button" id="clear-btn" onclick="location.href='${pageContext.request.contextPath}/login.jsp'">Quay lại</button>
             <button type="submit" id="register-btn">Đăng ký</button>
@@ -127,5 +128,6 @@
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/register.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
 </body>
 </html>
