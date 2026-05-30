@@ -16,8 +16,29 @@ public class AdminPage7Servlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Banner> listBanner = bannerService.getAllBanners();
+        String pageStr = request.getParameter("page");
+        int page = 1;
+        int limit = 5;
+        try {
+            if (pageStr != null) {
+                page = Integer.parseInt(pageStr);
+                if (page < 1) page = 1;
+            }
+        } catch (NumberFormatException ignored) {}
+
+        int totalBanners = bannerService.countBanners();
+        int totalPages = (int) Math.ceil((double) totalBanners / limit);
+        if (totalPages == 0) totalPages = 1;
+
+        if (page > totalPages) page = totalPages;
+
+        int offset = (page - 1) * limit;
+        List<Banner> listBanner = bannerService.getBannersPaginated(limit, offset);
+
         request.setAttribute("listBanner", listBanner);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+
         request.getRequestDispatcher("/adminPage7.jsp").forward(request, response);
     }
 
@@ -26,28 +47,34 @@ public class AdminPage7Servlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
 
+        String pageStr = request.getParameter("page");
+        int page = 1;
+        try {
+            if (pageStr != null) page = Integer.parseInt(pageStr);
+        } catch (NumberFormatException ignored) {}
+
         if (action == null) {
-            response.sendRedirect(request.getContextPath() + "/admin/banner");
+            response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
 
         switch (action) {
             case "add":
-                handleAddBanner(request, response);
+                handleAddBanner(request, response, page);
                 break;
             case "update":
-                handleUpdateBanner(request, response);
+                handleUpdateBanner(request, response, page);
                 break;
             case "delete":
-                handleDeleteBanner(request, response);
+                handleDeleteBanner(request, response, page);
                 break;
             default:
-                response.sendRedirect(request.getContextPath() + "/admin/banner");
+                response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
                 break;
         }
     }
 
-    private void handleAddBanner(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleAddBanner(HttpServletRequest request, HttpServletResponse response, int page) throws IOException {
         HttpSession session = request.getSession();
         try {
             Banner b = new Banner();
@@ -58,6 +85,7 @@ public class AdminPage7Servlet extends HttpServlet {
 
             if (bannerService.addBanner(b)) {
                 session.setAttribute("notice", "Thêm thành công");
+                page = 1;
             } else {
                 session.setAttribute("notice", "Thêm thất bại");
             }
@@ -65,10 +93,10 @@ public class AdminPage7Servlet extends HttpServlet {
             e.printStackTrace();
             session.setAttribute("notice", "Thêm thất bại: Lỗi định dạng dữ liệu");
         }
-        response.sendRedirect(request.getContextPath() + "/admin/banner");
+        response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
     }
 
-    private void handleUpdateBanner(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleUpdateBanner(HttpServletRequest request, HttpServletResponse response, int page) throws IOException {
         HttpSession session = request.getSession();
         try {
             int bid = Integer.parseInt(request.getParameter("bid"));
@@ -89,10 +117,10 @@ public class AdminPage7Servlet extends HttpServlet {
             e.printStackTrace();
             session.setAttribute("notice_up", "Cập nhật thất bại: Lỗi định dạng");
         }
-        response.sendRedirect(request.getContextPath() + "/admin/banner");
+        response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
     }
 
-    private void handleDeleteBanner(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleDeleteBanner(HttpServletRequest request, HttpServletResponse response, int page) throws IOException {
         HttpSession session = request.getSession();
         try {
             int bid = Integer.parseInt(request.getParameter("bid"));
@@ -104,7 +132,7 @@ public class AdminPage7Servlet extends HttpServlet {
         } catch (NumberFormatException e) {
             session.setAttribute("noticeDel", "Lỗi: ID Banner không hợp lệ");
         }
-        response.sendRedirect(request.getContextPath() + "/admin/banner");
+        response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
     }
 
     private Timestamp parseDatetime(String datetimeLocal) {
