@@ -41,7 +41,7 @@
         <button id="add">+ Thêm banner</button>
     </div>
 
-    <div class="list-product">
+    <div class="list-banner">
         <h3>DANH SÁCH BANNER</h3>
         <table>
             <thead>
@@ -73,13 +73,34 @@
                         <form method="post" action="${pageContext.request.contextPath}/admin/banner">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="bid" value="${b.id}">
-                            <button type="submit"><i class="fa-solid fa-trash"></i></button>
+                            <input type="hidden" name="page" value="${currentPage}">
+                            <button type="submit" class="delete-banner"><i class="fa-solid fa-trash"></i></button>
                         </form>
                     </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+        <div class="pagination">
+            <a href="${currentPage > 1 ? pageContext.request.contextPath : ''}${currentPage > 1 ? '/admin/orders?page=' : '#'}${currentPage > 1 ? currentPage - 1 : ''}${currentPage > 1 ? '&startDate=' : ''}${currentPage > 1 ? startDate : ''}${currentPage > 1 ? '&endDate=' : ''}${currentPage > 1 ? endDate : ''}"
+               class="${currentPage <= 1 ? 'disabled' : ''}">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+
+            <c:forEach begin="1" end="${totalPages}" var="i">
+                <a href="${pageContext.request.contextPath}/admin/orders?page=${i}&startDate=${startDate}&endDate=${endDate}"
+                   class="${currentPage == i ? 'active' : ''}">
+                        ${i}
+                </a>
+            </c:forEach>
+
+            <a href="${currentPage < totalPages ? pageContext.request.contextPath : ''}${currentPage < totalPages ? '/admin/orders?page=' : '#'}${currentPage < totalPages ? currentPage + 1 : ''}${currentPage < totalPages ? '&startDate=' : ''}${currentPage < totalPages ? startDate : ''}${currentPage < totalPages ? '&endDate=' : ''}${currentPage < totalPages ? endDate : ''}"
+               class="${currentPage >= totalPages ? 'disabled' : ''}">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+    </div>
     </div>
 </div>
 
@@ -91,6 +112,7 @@
 
     <form class="main-form" method="post" action="${pageContext.request.contextPath}/admin/banner">
         <input type="hidden" name="action" value="add">
+        <input type="hidden" name="page" value="${currentPage}">
         <div class="p name-p">
             <label>URL Banner</label>
             <input type="text" name="banner_url" placeholder="Link ảnh banner">
@@ -130,6 +152,7 @@
     <form class="main-form" method="post" action="${pageContext.request.contextPath}/admin/banner">
         <input type="hidden" name="action" value="update">
         <input type="hidden" name="bid" id="up_bid">
+        <input type="hidden" name="page" value="${currentPage}">
         <div class="p name-p">
             <label>URL Banner</label>
             <input type="text" name="up_url">
@@ -187,6 +210,11 @@
             document.getElementById("form-remake").style.display = "block";
         }
     });
+    function changePage(page) {
+        let urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('page', page);
+        window.location.search = urlParams.toString();
+    }
 </script>
 <script src="${pageContext.request.contextPath}/assets/js/admin.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>

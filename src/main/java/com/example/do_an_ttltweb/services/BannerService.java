@@ -27,4 +27,10 @@ public class BannerService {
     public boolean deleteBanner(int bid) {
         return bannerDao.deleteBanner(bid);
     }
+
+    public int countBanners() { return bannerDao.countBanners(); }
+
+    public List<Banner> getBannersPaginated(int limit, int offset) {
+        return bannerDao.getBannersPaginated(limit, offset);
+    }
 }

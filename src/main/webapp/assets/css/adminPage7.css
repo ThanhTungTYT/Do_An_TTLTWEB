@@ -41,7 +41,8 @@
 
     /* Nút sửa */
     .list-banner button.remake {
-        background: #e6f2ff;
+        background: #c76739;
+        color: white;
         border: none;
         padding: 8px 12px;
         border-radius: 6px;
@@ -49,20 +50,17 @@
     }
 
     .list-banner button.remake:hover {
-        background: #cfe5ff;
+        background: #700000;
     }
 
     /* Nút xóa */
     .delete-banner {
-        margin-top: 20px;
         background: #dc3545;
-        border: none;
         color: white;
-        width: 160px;
-        height: 40px;
-        border-radius: 8px;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
         cursor: pointer;
-        font-weight: 500;
     }
 
     .delete-banner:hover {

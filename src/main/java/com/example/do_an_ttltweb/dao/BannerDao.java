@@ -6,7 +6,7 @@ import java.util.List;
 
 public class BannerDao extends BaseDao {
 
-    public List<Banner> getAllBanners() { // Đã sửa tên hàm
+    public List<Banner> getAllBanners() {
         return getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT * FROM banners")
                         .mapToBean(Banner.class)
@@ -50,6 +50,24 @@ public class BannerDao extends BaseDao {
                 handle.createUpdate("DELETE FROM banners WHERE id = :bid")
                         .bind("bid", bid)
                         .execute() > 0
+        );
+    }
+
+    public int countBanners() {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM banners")
+                        .mapTo(Integer.class)
+                        .one()
+        );
+    }
+
+    public List<Banner> getBannersPaginated(int limit, int offset) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT * FROM banners ORDER BY id DESC LIMIT :limit OFFSET :offset")
+                        .bind("limit", limit)
+                        .bind("offset", offset)
+                        .mapToBean(Banner.class)
+                        .list()
         );
     }
 }
