@@ -86,13 +86,11 @@ public class AdminPage7Servlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
-
         if (start.before(new Timestamp(now.getTime() - 60000))) {
             session.setAttribute("notice", "Thêm thất bại: Thời gian bắt đầu phải là hiện tại hoặc trong tương lai!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
-
         if (start.after(end) || start.equals(end)) {
             session.setAttribute("notice", "Thêm thất bại: Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
@@ -100,11 +98,16 @@ public class AdminPage7Servlet extends HttpServlet {
         }
 
         try {
+            String status = "active";
+            if (now.after(end) || now.before(start)) {
+                status = "inactive";
+            }
+
             Banner b = new Banner();
             b.setBanner_url(request.getParameter("banner_url"));
-            b.setStatus(request.getParameter("status"));
-            b.setStart_date(parseDatetime(request.getParameter("start")));
-            b.setEnd_date(parseDatetime(request.getParameter("end")));
+            b.setStatus(status);
+            b.setStart_date(start);
+            b.setEnd_date(end);
 
             if (bannerService.addBanner(b)) {
                 session.setAttribute("notice", "Thêm thành công");
@@ -124,13 +127,13 @@ public class AdminPage7Servlet extends HttpServlet {
 
         Timestamp upStart = parseDatetime(request.getParameter("up_start"));
         Timestamp upEnd = parseDatetime(request.getParameter("up_end"));
+        Timestamp now = new Timestamp(System.currentTimeMillis());
 
         if (upStart == null || upEnd == null) {
             session.setAttribute("notice_up", "Cập nhật thất bại: Vui lòng nhập đầy đủ thời gian!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
-
         if (upStart.after(upEnd) || upStart.equals(upEnd)) {
             session.setAttribute("notice_up", "Cập nhật thất bại: Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
@@ -139,11 +142,23 @@ public class AdminPage7Servlet extends HttpServlet {
 
         try {
             int bid = Integer.parseInt(request.getParameter("bid"));
+            String userStatus = request.getParameter("up_status");
+            String finalStatus;
+            if ("inactive".equals(userStatus)) {
+                finalStatus = "inactive";
+            } else {
+                if (now.after(upEnd) || now.before(upStart)) {
+                    finalStatus = "inactive";
+                } else {
+                    finalStatus = "active";
+                }
+            }
+
             Banner b = new Banner();
             b.setBanner_url(request.getParameter("up_url"));
-            b.setStatus(request.getParameter("up_status"));
-            b.setStart_date(parseDatetime(request.getParameter("up_start")));
-            b.setEnd_date(parseDatetime(request.getParameter("up_end")));
+            b.setStatus(finalStatus);
+            b.setStart_date(upStart);
+            b.setEnd_date(upEnd);
 
             if (bannerService.updateBanner(bid, b)) {
                 session.setAttribute("notice_up", "Cập nhật thành công");
