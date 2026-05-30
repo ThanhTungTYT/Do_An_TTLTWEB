@@ -25,14 +25,21 @@ public class FilterReviewByTime extends HttpServlet {
         String start = request.getParameter("start");
         String end = request.getParameter("end");
 
-        if(start == null && end == null){
+        boolean hasStart = start != null && !start.isEmpty();
+        boolean hasEnd = end != null && !end.isEmpty();
+
+        if (!hasStart && !hasEnd) {
             listReview = review.getAllReview();
-        }else {
-            listReview = review.getReviewByTime(start, end);
+        } else {
+            listReview = review.getReviewByTime(
+                    hasStart ? start : null,
+                    hasEnd ? end : null
+            );
         }
 
         request.setAttribute("listReview", listReview);
-
+        request.setAttribute("startDate", start);
+        request.setAttribute("endDate", end);
         request.getRequestDispatcher("adminPage6.jsp").forward(request, response);
     }
 

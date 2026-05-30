@@ -53,14 +53,30 @@ public class ReviewDao extends BaseDao {
         );
     }
 
-    public List<ProductReview> getReviewByTime(String start, String end){
-        return getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT r.*, p.name AS productname, u.full_name AS username FROM products_review r JOIN products p ON r.product_id = p.id JOIN users u ON r.user_id = u.id WHERE DATE(r.created_at) >= :start AND DATE(r.created_at) <= :end ORDER BY r.created_at DESC")
-                        .bind("start", start)
-                        .bind("end", end)
-                        .mapToBean(ProductReview.class)
-                        .list()
+    public List<ProductReview> getReviewByTime(String start, String end) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT r.*, p.name AS productname, u.full_name AS username " +
+                        "FROM products_review r " +
+                        "JOIN products p ON r.product_id = p.id " +
+                        "JOIN users u ON r.user_id = u.id " +
+                        "WHERE 1=1 "
         );
+
+        if (start != null && !start.isEmpty()) {
+            sql.append("AND DATE(r.created_at) >= :start ");
+        }
+        if (end != null && !end.isEmpty()) {
+            sql.append("AND DATE(r.created_at) <= :end ");
+        }
+
+        sql.append("ORDER BY r.created_at DESC");
+
+        return getJdbi().withHandle(handle -> {
+            var query = handle.createQuery(sql.toString());
+            if (start != null && !start.isEmpty()) query.bind("start", start);
+            if (end != null && !end.isEmpty()) query.bind("end", end);
+            return query.mapToBean(ProductReview.class).list();
+        });
     }
 
     public int getCountInMinute(int uid, int pid){
