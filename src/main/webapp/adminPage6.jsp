@@ -11,7 +11,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chăm sóc khách hàng</title>
+    <title>Quản lí đánh giá</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage6.css">
@@ -23,13 +23,35 @@
     </div>
     <div class="menu">
         <a href="${pageContext.request.contextPath}/admin/dashboard" class="menu-item">Tổng quan</a>
-        <a href="${pageContext.request.contextPath}/admin/products" class="menu-item">Quản lí sản phẩm</a>
-        <a href="${pageContext.request.contextPath}/admin/orders" class="menu-item">Quản lí đơn hàng</a>
-        <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
-        <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item active">Quản lí đánh giá</a>
-        <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
-        <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
-        <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_product')}">
+            <a href="${pageContext.request.contextPath}/admin/products" class="menu-item">Quản lí sản phẩm</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_order')}">
+            <a href="${pageContext.request.contextPath}/admin/orders" class="menu-item">Quản lí đơn hàng</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_user')}">
+            <a href="${pageContext.request.contextPath}/admin/users" class="menu-item">Quản lí tài khoản</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_review')}">
+            <a href="${pageContext.request.contextPath}/admin/reviews" class="menu-item active">Quản lí đánh giá</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_banner')}">
+            <a href="${pageContext.request.contextPath}/admin/banner" class="menu-item">Quản lí banner</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_promotion')}">
+            <a href="${pageContext.request.contextPath}/admin/promotion" class="menu-item">Quản lí mã giảm giá</a>
+        </c:if>
+
+        <c:if test="${sessionScope.user.hasPermission('manage_contact')}">
+            <a href="${pageContext.request.contextPath}/admin/contact" class="menu-item">Chăm sóc khách hàng</a>
+        </c:if>
+
         <a href="#" class="menu-item" onclick="location.href='${pageContext.request.contextPath}/logout'">Đăng xuất</a>
     </div>
     <div class="footer">
@@ -49,13 +71,16 @@
         <form class="main-menu-date" method="get" action="${pageContext.request.contextPath}/filter-review">
             <div class="start">
                 <label>Từ ngày</label>
-                <input name="start" type="date">
+                <input name="start" type="date" value="${startDate}">
             </div>
             <div class="end">
                 <label>Đến ngày</label>
-                <input name="end" type="date">
+                <input name="end" type="date" value="${endDate}">
             </div>
-            <button>Xác nhận</button>
+            <div class="action-buttons">
+                <button type="submit">Xác nhận</button>
+                <a href="${pageContext.request.contextPath}/admin/reviews" class="btn-reset">Đặt lại</a>
+            </div>
         </form>
         <div class="review">
             <h3 class="review-title">DANH SÁCH ĐÁNH GIÁ</h3>
