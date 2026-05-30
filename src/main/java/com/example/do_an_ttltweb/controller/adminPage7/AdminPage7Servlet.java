@@ -76,6 +76,29 @@ public class AdminPage7Servlet extends HttpServlet {
 
     private void handleAddBanner(HttpServletRequest request, HttpServletResponse response, int page) throws IOException {
         HttpSession session = request.getSession();
+
+        Timestamp start = parseDatetime(request.getParameter("start"));
+        Timestamp end = parseDatetime(request.getParameter("end"));
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        if (start == null || end == null) {
+            session.setAttribute("notice", "Thêm thất bại: Vui lòng nhập đầy đủ thời gian bắt đầu và kết thúc!");
+            response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
+            return;
+        }
+
+        if (start.before(new Timestamp(now.getTime() - 60000))) {
+            session.setAttribute("notice", "Thêm thất bại: Thời gian bắt đầu phải là hiện tại hoặc trong tương lai!");
+            response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
+            return;
+        }
+
+        if (start.after(end) || start.equals(end)) {
+            session.setAttribute("notice", "Thêm thất bại: Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
+            response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
+            return;
+        }
+
         try {
             Banner b = new Banner();
             b.setBanner_url(request.getParameter("banner_url"));
@@ -98,6 +121,22 @@ public class AdminPage7Servlet extends HttpServlet {
 
     private void handleUpdateBanner(HttpServletRequest request, HttpServletResponse response, int page) throws IOException {
         HttpSession session = request.getSession();
+
+        Timestamp upStart = parseDatetime(request.getParameter("up_start"));
+        Timestamp upEnd = parseDatetime(request.getParameter("up_end"));
+
+        if (upStart == null || upEnd == null) {
+            session.setAttribute("notice_up", "Cập nhật thất bại: Vui lòng nhập đầy đủ thời gian!");
+            response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
+            return;
+        }
+
+        if (upStart.after(upEnd) || upStart.equals(upEnd)) {
+            session.setAttribute("notice_up", "Cập nhật thất bại: Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
+            response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
+            return;
+        }
+
         try {
             int bid = Integer.parseInt(request.getParameter("bid"));
             Banner b = new Banner();
