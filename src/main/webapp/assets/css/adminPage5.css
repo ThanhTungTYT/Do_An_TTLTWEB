@@ -1,41 +1,231 @@
-    /* --- PAGE 5: LIÊN HỆ --- */
-    .contact {
-        padding: 25px;
-    }
+/*PAGE 5: CHĂM SÓC KHÁCH HÀNG */
 
-    .contact-title {
-        margin-top: 40px;
-        font-size: 18px;
-        font-weight: 600;
-        color: #495057;
-    }
+/* --- Khu vực wrapper chính --- */
+.contact {
+    padding: 25px;
+}
 
-    .contact table th {
-        text-align: center;
-    }
+/* --- Header: tiêu đề + nút xóa chọn --- */
+.contact-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
-    .contact table td {
-        text-align: center;
-    }
+.contact-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #495057;
+    margin: 0;
+}
 
-    .contact table td button {
-        font-weight: 500;
-        font-size: 15px;
-        margin-top: 5px;
-        margin-right: 10px;
-        color: white;
-        background: #c76739;
-        width: 30px;
-        height: 30px;
-        border-radius: 10px;
-        cursor: pointer;
-        border: none;
-    }
+/* --- Căn giữa bảng --- */
+.contact table th { text-align: center; }
+.contact table td {
+    text-align: center;
+    vertical-align: middle;
+}
 
-    .contact table td button:hover {
-        background: #8c4828;
-    }
+.contact table td .btn-action {
+    font-size: 13px;
+    font-weight: 500;
+    color: white;
+    width: 30px;
+    height: 30px;
+    margin-top: 4px;
+    margin-right: 4px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.1s;
+}
+.contact table td .btn-action:hover      { transform: scale(1.08); }
+.contact table td .btn-action.detail     { background: #c76739; }
+.contact table td .btn-action.detail:hover { background: #8c4828; }
+.contact table td .btn-action.btn-reply  { background: #c76739; }
+.contact table td .btn-action.btn-reply:hover { background: #8c4828; }
+.contact table td .btn-action.btn-delete-single { background: #c76739; }
+.contact table td .btn-action.btn-delete-single:hover { background: #8c4828; }
 
-    .contact table td button.btn-reply {
-        background-color: #c76739;
-    }
+/* --- Checkbox --- */
+.contact table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #c76739;
+}
+
+/* --- Nút xóa hàng loạt --- */
+.btn-delete-selected {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    background: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+.btn-delete-selected:hover {
+    background: #922b21;
+    transform: scale(1.03);
+}
+
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 25px 15px;
+}
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* ===================================================
+   POPUP CHI TIẾT LIÊN HỆ
+   =================================================== */
+.detail-p {
+    width: 520px;
+    max-width: 92vw;
+    max-height: 90vh;
+    padding: 32px 36px 28px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+    border-radius: 16px;
+    gap: 0;
+    border: none;
+    overflow-y: auto;
+    animation: popupFadeIn 0.22s ease;
+}
+
+@keyframes popupFadeIn {
+    from { opacity: 0; transform: translate(-50%, -46%); }
+    to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* --- Header popup --- */
+.detail-popup-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+.detail-icon {
+    font-size: 26px;
+    color: #c76739;
+}
+.detail-p .detail-popup-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c2c2c;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+    margin-bottom: 20px;
+    background: #f8f5f2;
+    border-radius: 10px;
+    padding: 16px 18px;
+    border: 1px solid #ede0d6;
+}
+.detail-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.detail-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.detail-label i  { color: #c76739; font-size: 12px; }
+.detail-value {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #2c2c2c;
+    word-break: break-word;
+}
+
+/* --- Khung nội dung tin nhắn --- */
+.detail-message-box {
+    background: #fff9f6;
+    border: 1px solid #e8d5c4;
+    border-left: 4px solid #c76739;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+}
+.detail-message-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #c76739;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.detail-message-box p {
+    margin: 0;
+    font-size: 14.5px;
+    color: #3a3a3a;
+    line-height: 1.7;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+/* --- Nút phản hồi ngay trong popup --- */
+.detail-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+.btn-reply-from-detail {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    background: #c76739;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+.btn-reply-from-detail:hover {
+    background: #8c4828;
+    transform: scale(1.03);
+}
