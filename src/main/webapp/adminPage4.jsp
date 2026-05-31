@@ -143,23 +143,73 @@
     </div>
 </div>
 
-<div class="form-add" id="form-add" style="display: none">
-    <div class="form-title"><p>THÊM TÀI KHOẢN</p><button id="take-off">X</button></div>
-    <form method="post" action="${pageContext.request.contextPath}/add-user" class="main-form">
-        <div class="p name-p"><label>Tên người dùng</label><input type="text" name="name"></div>
-        <div class="price-p"><label>Email</label><input type="email" name="email" required></div>
-        <div class="count-p"><label>Mật khẩu</label><input type="password" name="pass" required></div>
-        <div class="type-p">
-            <label>Quyền hạn chi tiết:</label>
-            <div class="permission-grid">
+<div class="form-add" id="form-add" style="display: none; width: 500px; max-height: 90vh; overflow-y: auto; padding: 0; border-radius: 12px;">
+    <div class="form-title" style="position: sticky; top: 0; background: #c76739; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0; z-index: 1;">
+        <p style="margin: 0; font-size: 1.1em; font-weight: bold;">THÊM TÀI KHOẢN</p>
+        <button id="take-off" style="background: transparent; border: none; color: white; font-size: 1.3em; cursor: pointer;">✕</button>
+    </div>
+
+    <form method="post" action="${pageContext.request.contextPath}/add-user"
+          style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+        <div>
+            <p style="font-weight: bold; margin-bottom: 10px; color: #333; border-bottom: 2px solid #c76739; padding-bottom: 6px;">
+                Thông tin tài khoản
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 0.88em; font-weight: 600; color: #555;">Tên người dùng</label>
+                    <input type="text" name="name" placeholder="Nhập họ và tên"
+                           style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9em; background: #f9f9f9; outline: none;"
+                           onfocus="this.style.borderColor='#c76739'" onblur="this.style.borderColor='#ddd'">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 0.88em; font-weight: 600; color: #555;">Email <span style="color:red">*</span></label>
+                    <input type="email" name="email" placeholder="Nhập email" required
+                           style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9em; background: #f9f9f9; outline: none;"
+                           onfocus="this.style.borderColor='#c76739'" onblur="this.style.borderColor='#ddd'">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 0.88em; font-weight: 600; color: #555;">Mật khẩu <span style="color:red">*</span></label>
+                    <input type="password" name="pass" placeholder="Nhập mật khẩu" required
+                           style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9em; background: #f9f9f9; outline: none;"
+                           onfocus="this.style.borderColor='#c76739'" onblur="this.style.borderColor='#ddd'">
+                </div>
+            </div>
+        </div>
+        <div>
+            <p style="font-weight: bold; margin-bottom: 10px; color: #333; border-bottom: 2px solid #c76739; padding-bottom: 6px;">
+                Phân quyền
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <c:forEach items="${allPermissions}" var="p">
-                    <label class="permission-item">
-                        <input type="checkbox" name="permissions" value="${p.id}"> ${p.permission_name}
+                    <label style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee; cursor: pointer;"
+                           onmouseover="this.style.background='#fff3ed'" onmouseout="this.style.background='#f9f9f9'">
+                        <c:choose>
+                            <c:when test="${p.permission_key eq 'shopping'}">
+                                <input type="checkbox" name="permissions"
+                                       value="${p.id}" checked disabled
+                                       style="accent-color: #c76739; width: 16px; height: 16px; flex-shrink: 0;">
+                                <input type="hidden" name="permissions" value="${p.id}">
+                            </c:when>
+                            <c:otherwise>
+                                <input type="checkbox" name="permissions"
+                                       value="${p.id}"
+                                       style="accent-color: #c76739; width: 16px; height: 16px; flex-shrink: 0;">
+                            </c:otherwise>
+                        </c:choose>
+                        <span style="font-size: 0.88em; color: #444; line-height: 1.3;">${p.permission_name}</span>
+                        <c:if test="${p.permission_key eq 'shopping'}">
+                            <span style="margin-left: auto; font-size: 0.75em; color: #aaa; white-space: nowrap;">mặc định</span>
+                        </c:if>
                     </label>
                 </c:forEach>
             </div>
         </div>
-        <button class="submit" type="submit">Thêm</button>
+        <button type="submit"
+                style="background: #c76739; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer;"
+                onmouseover="this.style.background='#a85530'" onmouseout="this.style.background='#c76739'">
+            + Thêm tài khoản
+        </button>
     </form>
 </div>
 

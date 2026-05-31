@@ -113,6 +113,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="${pageContext.request.contextPath}/admin/orders?status=Đang giao&startDate=${startDate}&endDate=${endDate}"
+                       class="status-item ${status == 'Đang giao' ? 'active' : ''}">
+                        Đang giao
+                    </a>
+                </li>
+                <li>
                     <a href="${pageContext.request.contextPath}/admin/orders?status=Đã giao&startDate=${startDate}&endDate=${endDate}"
                        class="status-item ${status == 'Đã giao' ? 'active' : ''}">
                         Đã giao
@@ -170,6 +176,7 @@
                                     <c:when test="${o.status == 'Đang giao'}">Đang giao</c:when>
                                     <c:when test="${o.status == 'Đã giao'}">Đã giao</c:when>
                                     <c:when test="${o.status == 'Đã hủy'}">Đã huỷ</c:when>
+                                    <c:when test="${o.status == 'Đã hủy'}">Đã huỷ</c:when>
                                 </c:choose>
                             </span>
                         </td>
@@ -216,28 +223,25 @@
     </div>
 </div>
 <c:forEach items="${orders}" var="o">
-    <div class="detail-p order-detail"
+    <div class="detail-p order-detail order-detail-popup"
          id="detail-${o.id}"
          style="display:none">
-
-        <button id="close" onclick="closeDetail()">X</button>
-
-        <!-- DANH SÁCH SẢN PHẨM -->
-        <div class="order">
-            <h3>DANH SÁCH SẢN PHẨM</h3>
-            <table>
+        <button id="close" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="order-section">
+            <h3 class="popup-section-title">DANH SÁCH SẢN PHẨM</h3>
+            <table class="order-product-table">
                 <thead>
                 <tr>
                     <th>Tên sản phẩm</th>
-                    <th>Giá (VND)</th>
-                    <th>Số lượng</th>
+                    <th style="width: 25%;">Giá (VND)</th>
+                    <th style="width: 20%;">Số lượng</th>
                 </tr>
                 </thead>
                 <tbody>
                 <c:forEach items="${orderItemsMap[o.id]}" var="i">
                     <tr>
-                        <td>${i.product.name}</td>
-                        <td>
+                        <td class="text-left">${i.product.name}</td>
+                        <td class="text-right">
                             <fmt:formatNumber value="${i.price}" type="number"/>đ
                         </td>
                         <td>${i.quantity}</td>
@@ -246,48 +250,44 @@
                 </tbody>
             </table>
         </div>
-        <!-- THÔNG TIN KHÁCH -->
-        <div class="info-customer">
-            <h3>THÔNG TIN KHÁCH HÀNG</h3>
-            <div class="info">
-                <div class="info-left">
-                    <p>Họ và tên: ${userMap[o.userId].full_name}</p>
-                    <p>SĐT: ${o.receiverPhone}</p>
+
+        <div class="order-section">
+            <h3 class="popup-section-title">THÔNG TIN KHÁCH HÀNG</h3>
+            <div class="info-customer-box">
+                <div class="info-row">
+                    <span class="info-label">Họ và tên:</span>
+                    <span class="info-value">${userMap[o.userId].full_name}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">SĐT:</span>
+                    <span class="info-value">${o.receiverPhone}</span>
                 </div>
             </div>
         </div>
 
-        <!-- TỔNG TIỀN -->
-        <div class="totalSum">
-            <h3>
-                TỔNG TIỀN SẢN PHẨM:
-                <span>
-                <fmt:formatNumber value="${o.totalAmount}" type="number"/> đ
-            </span>
-            </h3>
-            <h3>
-                GIẢM GIÁ (Tổng tiền sản phẩm):
-                <span>
-                <fmt:formatNumber value="${o.discountPercent * o.totalAmount /100}" type="number"/> đ
-            </span>
-            </h3>
-            <h3>
-                PHÍ VẬN CHUYỂN:
-                <span>
-                <fmt:formatNumber value="${o.shippingFee}" type="number"/> đ
-            </span>
-            </h3>
-            <h3>
-                TỔNG TIỀN ĐƠN HÀNG:
-                <span>
-                <fmt:formatNumber value="${o.finalAmount}" type="number"/> đ
-            </span>
-            </h3>
+        <div class="order-total-summary">
+            <div class="summary-row font-bold text-uppercase">
+                <span>Tổng tiền sản phẩm:</span>
+                <span class="summary-value"><fmt:formatNumber value="${o.totalAmount}" type="number"/> đ</span>
+            </div>
+            <div class="summary-row text-muted">
+                <span>Giảm giá (Tổng tiền sản phẩm):</span>
+                <span class="summary-value"><fmt:formatNumber value="${o.discountPercent * o.totalAmount /100}" type="number"/> đ</span>
+            </div>
+            <div class="summary-row text-muted">
+                <span>Phí vận chuyển:</span>
+                <span class="summary-value"><fmt:formatNumber value="${o.shippingFee}" type="number"/> đ</span>
+            </div>
+            <div class="summary-row highlight-total font-bold">
+                <span>Tổng tiền đơn hàng:</span>
+                <span class="summary-value"><fmt:formatNumber value="${o.finalAmount}" type="number"/> đ</span>
+            </div>
         </div>
+
         <c:if test="${o.status == 'Đang xử lý'}">
-            <form action="${pageContext.request.contextPath}/admin/orders" method="post">
+            <form action="${pageContext.request.contextPath}/admin/orders" method="post" class="invoice-action-form">
                 <input type="hidden" name="orderId" value="${o.id}">
-                <button type="submit">Xuất hóa đơn</button>
+                <button type="submit" class="btn-invoice">Xuất hóa đơn</button>
             </form>
         </c:if>
     </div>

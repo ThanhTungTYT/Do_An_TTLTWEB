@@ -72,6 +72,11 @@
         color: #721c24;
     }
 
+    .status.Đang.giao {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+
     /* Tổng tiền trong popup chi tiết đơn hàng */
     .detail-p .totalSum span {
         color: #A0522D;
@@ -134,4 +139,147 @@
         border-color: #8c4827;
         background-color: #c76739;
         color: #fff;
+    }
+
+    .order-detail-popup {
+        max-width: 500px !important;
+        width: 95% !important;
+        padding: 25px 20px !important;
+        border-radius: 12px !important;
+        gap: 15px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .order-detail-popup #close {
+        top: 12px !important;
+        right: 12px !important;
+        width: 24px !important;
+        height: 24px !important;
+        background: #f0f0f0 !important;
+        font-size: 11px !important;
+        color: #888 !important;
+    }
+
+    .order-detail-popup .popup-section-title {
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #8B4513 !important;
+        margin-bottom: 8px !important;
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+    }
+
+    .order-detail-popup .order-section {
+        width: 100%;
+    }
+
+    .order-product-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 5px;
+    }
+
+    .order-product-table th,
+    .order-product-table td {
+        padding: 8px 10px !important;
+        font-size: 13px !important;
+        border-bottom: 1px solid #f2f2f2 !important;
+        text-align: center;
+    }
+
+    .order-product-table th {
+        background-color: #f9f9f9 !important;
+        color: #777 !important;
+        font-weight: 600 !important;
+    }
+
+    .order-product-table td.text-left {
+        text-align: left;
+    }
+
+    .order-product-table td.text-right {
+        text-align: right;
+    }
+
+    .info-customer-box {
+        padding: 2px 0;
+        border-top: 1px solid #f2f2f2;
+        padding-top: 8px;
+    }
+
+    .info-customer-box .info-row {
+        display: flex;
+        margin-bottom: 6px;
+        font-size: 13.5px;
+        line-height: 1.4;
+    }
+
+    .info-customer-box .info-label {
+        color: #333;
+        font-weight: 500;
+        width: 85px;
+        flex-shrink: 0;
+    }
+
+    .info-customer-box .info-value {
+        color: #333;
+    }
+
+    .order-total-summary {
+        border-top: 1px solid #e0e0e0;
+        padding-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .order-total-summary .summary-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .order-total-summary .font-bold {
+        font-weight: 700;
+    }
+    .order-total-summary .text-uppercase {
+        text-transform: uppercase;
+    }
+    .order-total-summary .text-muted {
+        color: #666;
+    }
+
+    .order-total-summary .summary-row.highlight-total {
+        font-size: 15px;
+        color: #000;
+        margin-top: 2px;
+    }
+
+    .order-detail-popup .summary-value {
+        color: #8B4513 !important;
+        font-weight: 700;
+    }
+
+    .invoice-action-form {
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-invoice {
+        width: 100%;
+        padding: 10px;
+        background-color: #8B4513;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .btn-invoice:hover {
+        background-color: #69330c;
     }
