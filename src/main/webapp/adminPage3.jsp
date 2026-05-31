@@ -27,8 +27,10 @@
             transition: width 0.3s ease;
         }
     </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <div class="left-menu" id="left-menu">
     <div class="logo">
         <img src="${pageContext.request.contextPath}/assets/img/logo.png" onclick="location.href='${pageContext.request.contextPath}/'" width="300px" height="100px">

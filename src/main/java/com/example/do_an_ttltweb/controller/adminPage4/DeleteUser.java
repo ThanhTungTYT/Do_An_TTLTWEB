@@ -28,12 +28,17 @@ public class DeleteUser extends HttpServlet {
 
         if(user.getStatus().equals("active")){
             if(account.banUser(uid)){
-                response.sendRedirect(request.getContextPath() + "/admin/users");
+                request.getSession().setAttribute("success", "Đã khóa tài khoản!");
+            } else {
+                request.getSession().setAttribute("error", "Khóa tài khoản thất bại!");
             }
         }else {
             if(account.unBanUser(uid)){
-                response.sendRedirect(request.getContextPath() + "/admin/users");
+                request.getSession().setAttribute("success", "Đã mở khóa tài khoản!");
+            } else {
+                request.getSession().setAttribute("error", "Mở khóa tài khoản thất bại!");
             }
         }
+        response.sendRedirect(request.getContextPath() + "/admin/users");
     }
 }

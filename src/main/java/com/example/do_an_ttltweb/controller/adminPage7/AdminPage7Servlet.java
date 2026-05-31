@@ -82,17 +82,17 @@ public class AdminPage7Servlet extends HttpServlet {
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
         if (start == null || end == null) {
-            session.setAttribute("notice", "Thêm thất bại: Vui lòng nhập đầy đủ thời gian bắt đầu và kết thúc!");
+            session.setAttribute("error", "Thêm thất bại: Vui lòng nhập đầy đủ thời gian bắt đầu và kết thúc!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
         if (start.before(new Timestamp(now.getTime() - 60000))) {
-            session.setAttribute("notice", "Thêm thất bại: Thời gian bắt đầu phải là hiện tại hoặc trong tương lai!");
+            session.setAttribute("error", "Thêm thất bại: Thời gian bắt đầu phải là hiện tại hoặc trong tương lai!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
         if (start.after(end) || start.equals(end)) {
-            session.setAttribute("notice", "Thêm thất bại: Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
+            session.setAttribute("error", "Thêm thất bại: Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
@@ -110,14 +110,14 @@ public class AdminPage7Servlet extends HttpServlet {
             b.setEnd_date(end);
 
             if (bannerService.addBanner(b)) {
-                session.setAttribute("notice", "Thêm thành công");
+                session.setAttribute("success", "Thêm banner thành công");
                 page = 1;
             } else {
-                session.setAttribute("notice", "Thêm thất bại");
+                session.setAttribute("error", "Thêm banner thất bại");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("notice", "Thêm thất bại: Lỗi định dạng dữ liệu");
+            session.setAttribute("error", "Thêm banner thất bại: Lỗi định dạng dữ liệu");
         }
         response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
     }
@@ -130,12 +130,12 @@ public class AdminPage7Servlet extends HttpServlet {
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
         if (upStart == null || upEnd == null) {
-            session.setAttribute("notice_up", "Cập nhật thất bại: Vui lòng nhập đầy đủ thời gian!");
+            session.setAttribute("error", "Cập nhật thất bại: Vui lòng nhập đầy đủ thời gian!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
         if (upStart.after(upEnd) || upStart.equals(upEnd)) {
-            session.setAttribute("notice_up", "Cập nhật thất bại: Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
+            session.setAttribute("error", "Cập nhật thất bại: Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
             response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
             return;
         }
@@ -161,15 +161,15 @@ public class AdminPage7Servlet extends HttpServlet {
             b.setEnd_date(upEnd);
 
             if (bannerService.updateBanner(bid, b)) {
-                session.setAttribute("notice_up", "Cập nhật thành công");
+                session.setAttribute("success", "Cập nhật banner thành công");
             } else {
-                session.setAttribute("notice_up", "Cập nhật không thành công");
+                session.setAttribute("error", "Cập nhật banner không thành công");
             }
         } catch (NumberFormatException e) {
-            session.setAttribute("notice_up", "ID Banner không hợp lệ!");
+            session.setAttribute("error", "ID Banner không hợp lệ!");
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("notice_up", "Cập nhật thất bại: Lỗi định dạng");
+            session.setAttribute("error", "Cập nhật banner thất bại: Lỗi định dạng");
         }
         response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
     }
@@ -179,12 +179,12 @@ public class AdminPage7Servlet extends HttpServlet {
         try {
             int bid = Integer.parseInt(request.getParameter("bid"));
             if (bannerService.deleteBanner(bid)) {
-                session.setAttribute("noticeDel", "Xóa thành công");
+                session.setAttribute("success", "Xóa banner thành công");
             } else {
-                session.setAttribute("noticeDel", "Xóa thất bại");
+                session.setAttribute("error", "Xóa banner thất bại");
             }
         } catch (NumberFormatException e) {
-            session.setAttribute("noticeDel", "Lỗi: ID Banner không hợp lệ");
+            session.setAttribute("error", "Lỗi: ID Banner không hợp lệ");
         }
         response.sendRedirect(request.getContextPath() + "/admin/banner?page=" + page);
     }

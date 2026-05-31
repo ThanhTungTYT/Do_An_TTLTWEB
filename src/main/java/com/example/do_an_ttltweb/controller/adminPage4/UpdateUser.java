@@ -37,6 +37,7 @@ public class UpdateUser extends HttpServlet {
 
         authDao.updateUserPermissions(uid, permissionIds);
 
+        request.getSession().setAttribute("success", "Cập nhật tài khoản thành công!");
         response.sendRedirect(request.getContextPath() + "/admin/users");
     }
 }

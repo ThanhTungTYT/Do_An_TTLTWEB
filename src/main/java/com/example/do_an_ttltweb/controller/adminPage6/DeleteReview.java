@@ -24,7 +24,10 @@ public class DeleteReview extends HttpServlet {
         int rid = Integer.parseInt(request.getParameter("rid"));
 
         if(review.deleteReview(rid)){
-            response.sendRedirect(request.getContextPath() + "/admin/reviews");
+            request.getSession().setAttribute("success", "Xóa đánh giá thành công!");
+        } else {
+            request.getSession().setAttribute("error", "Xóa đánh giá thất bại!");
         }
+        response.sendRedirect(request.getContextPath() + "/admin/reviews");
     }
 }

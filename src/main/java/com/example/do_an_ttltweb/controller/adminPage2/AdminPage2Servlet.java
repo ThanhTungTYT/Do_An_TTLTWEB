@@ -133,7 +133,8 @@ public class AdminPage2Servlet  extends HttpServlet {
         boolean isSuccess = productService.addProductWithFiles(newProduct, imageParts, webappRealPath);
 
         if (isSuccess) {
-            response.sendRedirect(request.getContextPath() + "/admin/products?msg=success");
+            request.getSession().setAttribute("success", "Thêm sản phẩm thành công!");
+            response.sendRedirect(request.getContextPath() + "/admin/products");
         } else {
             request.setAttribute("error", "Thêm sản phẩm thất bại!");
             doGet(request, response);
@@ -166,21 +167,23 @@ public class AdminPage2Servlet  extends HttpServlet {
 
             productService.deleteListProducts(ids);
 
-            response.sendRedirect(request.getContextPath() + "/admin/products?msg=deleted_list_success");
+            request.getSession().setAttribute("success", "Xóa sản phẩm thành công!");
         } else {
-            response.sendRedirect(request.getContextPath() + "/admin/products?error=no_selection");
+            request.getSession().setAttribute("error", "Vui lòng chọn sản phẩm để xóa!");
         }
+        response.sendRedirect(request.getContextPath() + "/admin/products");
     }
 
     private void handleDeleteCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             int id = Integer.parseInt(request.getParameter("id"));
             categoryService.deleteCategory(id); // Gọi service để xóa
-            response.sendRedirect(request.getContextPath() + "/admin/products?msg=deleted_category");
+            request.getSession().setAttribute("success", "Xóa loại sản phẩm thành công!");
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/admin/products?error=invalid_id");
+            request.getSession().setAttribute("error", "ID loại sản phẩm không hợp lệ!");
         }
+        response.sendRedirect(request.getContextPath() + "/admin/products");
     }
     private void handleEditProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -211,17 +214,18 @@ public class AdminPage2Servlet  extends HttpServlet {
                     String webappRealPath = getServletContext().getRealPath("");
                     productService.updateProductImages(id, imageParts, webappRealPath);
                 }
-                response.sendRedirect(request.getContextPath() + "/admin/products?msg=update_success");
+                request.getSession().setAttribute("success", "Cập nhật sản phẩm thành công!");
             } else {
-                response.sendRedirect(request.getContextPath() + "/admin/products?error=update_failed");
+                request.getSession().setAttribute("error", "Cập nhật sản phẩm thất bại!");
             }
             System.out.println("STATE = [" + state + "]");
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/admin/products?error=invalid_data");
+            request.getSession().setAttribute("error", "Dữ liệu không hợp lệ!");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/admin/products?error=system_error");
+            request.getSession().setAttribute("error", "Lỗi hệ thống!");
         }
+        response.sendRedirect(request.getContextPath() + "/admin/products");
     }
 }

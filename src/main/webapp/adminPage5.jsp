@@ -10,8 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage5.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 
 <div class="left-menu" id="left-menu">
     <div class="logo">
@@ -62,15 +64,6 @@
     </div>
 
     <div class="main-content">
-        <c:if test="${not empty sessionScope.mailSuccess}">
-            <div class="alert alert-success"><i class="fa-solid fa-circle-check"></i> ${sessionScope.mailSuccess}</div>
-            <c:remove var="mailSuccess" scope="session"/>
-        </c:if>
-        <c:if test="${not empty sessionScope.mailError}">
-            <div class="alert alert-error"><i class="fa-solid fa-circle-xmark"></i> ${sessionScope.mailError}</div>
-            <c:remove var="mailError" scope="session"/>
-        </c:if>
-
         <form class="main-menu-date" action="${pageContext.request.contextPath}/admin/contact" method="get">
             <div class="start">
                 <label>Từ ngày</label>

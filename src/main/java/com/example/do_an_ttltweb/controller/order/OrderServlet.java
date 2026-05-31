@@ -132,7 +132,8 @@ public class OrderServlet extends HttpServlet {
                     String jsonResponse = "{\"success\":true,\"orderId\":" + order.getId() + ",\"finalAmount\":" + finalAmountLong + "}";
                     resp.getWriter().write(jsonResponse);
                 } else {
-                    resp.sendRedirect(req.getContextPath() + "/account?success=1");
+                    s.setAttribute("success", "Đặt hàng thành công!");
+                    resp.sendRedirect(req.getContextPath() + "/account");
                 }
             } else {
                 if (isBankTransfer) {

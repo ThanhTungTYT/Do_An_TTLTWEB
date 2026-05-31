@@ -82,16 +82,7 @@
 <div class="info-container">
     <h2>Thông tin cá nhân</h2>
 
-    <c:if test="${not empty message}">
-        <div style="color: #155724; background-color: #d4edda; padding: 12px; margin-bottom: 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-            <i class="fas fa-check-circle"></i> ${message}
-        </div>
-    </c:if>
-    <c:if test="${not empty error}">
-        <div style="color: #721c24; background-color: #f8d7da; padding: 12px; margin-bottom: 20px; border-radius: 4px; border: 1px solid #f5c6cb;">
-            <i class="fas fa-exclamation-triangle"></i> ${error}
-        </div>
-    </c:if>
+    <jsp:include page="/WEB-INF/includes/toast.jsp"/>
 
     <form id="userForm" action="${pageContext.request.contextPath}/update-info" method="post" class="info-form">
         <input type="hidden" name="id" value="${user.id}">
