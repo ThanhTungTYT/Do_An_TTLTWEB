@@ -79,21 +79,54 @@ public class AdminPage3Servlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        int orderId = Integer.parseInt(req.getParameter("orderId"));
+        try {
+            int orderId = Integer.parseInt(req.getParameter("orderId"));
+            String newStatus = req.getParameter("newStatus");
 
+            Order order = orderService.getOrderById(orderId);
+
+            if (order != null && newStatus != null) {
+                String currentStatus = order.getStatus();
+
+                if ("Đang xử lý".equals(currentStatus)) {
+                    if ("Đang giao".equals(newStatus)) {
+                        String ghnCode = callGHNService(order);
+                        orderService.updateOrderStatusAndGhn(orderId, "Đang giao", ghnCode);
+                    } else if ("Đã hủy".equals(newStatus)) {
+                        orderService.adminCancelOrder(orderId);
+                    }
+
+                } else if ("Đang giao".equals(currentStatus)) {
+                    if ("Yêu cầu hủy".equals(newStatus)) {
+                        orderService.updateOrderStatusById(orderId, "Yêu cầu hủy");
+                    }
+
+                } else if ("Yêu cầu hủy".equals(currentStatus)) {
+                    if ("Đang giao".equals(newStatus)) {
+                        String newGhnCode = callGHNService(order);
+                        orderService.updateOrderStatusAndGhn(orderId, "Đang giao", newGhnCode);
+                    } else if ("Đã hủy".equals(newStatus)) {
+                        orderService.adminCancelOrder(orderId);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        resp.sendRedirect(req.getContextPath() + "/admin/orders");
+    }
+
+    private String callGHNService(Order order) {
         String ghnCode = null;
         try {
-            Order order = orderService.getOrderById(orderId);
-            OrderAddress address = orderService.getAddressByOrderId(orderId);
-            List<OrderItem> items = orderService.getItemsByOrderId(orderId);
-
+            OrderAddress address = orderService.getAddressByOrderId(order.getId());
+            List<OrderItem> items = orderService.getItemsByOrderId(order.getId());
             GHNService ghnService = new GHNService();
             ghnCode = ghnService.createOrder(order, address, items);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        orderService.updateOrderStatusAndGhn(orderId, "Đang giao", ghnCode);
-        resp.sendRedirect(req.getContextPath() + "/admin/orders");
+        return ghnCode;
     }
 }

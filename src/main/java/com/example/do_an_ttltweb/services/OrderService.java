@@ -87,4 +87,8 @@ public class OrderService {
             return null;
         }
     }
+
+    public boolean adminCancelOrder(int orderId) {
+        return dao.adminCancelOrder(orderId);
+    }
 }
