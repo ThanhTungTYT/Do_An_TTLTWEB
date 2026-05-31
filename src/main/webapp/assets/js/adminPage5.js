@@ -25,7 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.addEventListener('click', function (e) {
         const formReply = document.getElementById('form-reply');
         if (!formReply || formReply.style.display !== 'block') return;
-        if (e.target.closest('#form-reply') || e.target.closest('.btn-reply')) return;
+        if (e.target.closest('#form-reply')
+            || e.target.closest('.btn-reply')
+            || e.target.closest('.btn-reply-from-detail')) return;
         closeFormReply();
     });
 
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+// Đóng form-reply và bỏ blur
 function closeFormReply() {
     const formReply = document.getElementById('form-reply');
     const content   = document.getElementById('right-content');
@@ -50,6 +53,7 @@ function closeFormReply() {
     if (content)   content.style.filter    = 'blur(0)';
 }
 
+// Mở popup phản hồi (gọi từ onclick của nút .btn-reply)
 function openReply(id, name, email) {
     currentContactId = id;
     document.getElementById('r-contact-id').value = id;
@@ -61,23 +65,27 @@ function openReply(id, name, email) {
     if (content) content.style.filter = 'blur(5px)';
 }
 
+// Mở phản hồi ngay từ trong popup chi tiết
 function openReplyFromDetail() {
     const name  = document.getElementById('d-name').innerText;
     const email = document.getElementById('d-email').innerText;
     openReply(currentContactId, name, email);
 }
 
+// Xóa một liên hệ
 function deleteSingle(id) {
     if (!confirm('Bạn có chắc muốn xóa liên hệ #' + id + ' không?')) return;
     document.getElementById('delete-single-id').value = id;
     document.getElementById('delete-single-form').submit();
 }
 
+// Checkbox chọn/bỏ chọn tất cả
 function toggleAll(source) {
     document.querySelectorAll('.row-check').forEach(cb => cb.checked = source.checked);
     updateDeleteBtn();
 }
 
+// Cập nhật trạng thái nút xóa hàng loạt
 function updateDeleteBtn() {
     const checked  = document.querySelectorAll('.row-check:checked');
     const all      = document.querySelectorAll('.row-check');
@@ -89,6 +97,7 @@ function updateDeleteBtn() {
     checkAll.checked       = all.length > 0 && checked.length === all.length;
 }
 
+// Xóa hàng loạt các liên hệ đã chọn
 function deleteSelected() {
     const checked = document.querySelectorAll('.row-check:checked');
     if (checked.length === 0) return;
