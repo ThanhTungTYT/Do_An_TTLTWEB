@@ -22,6 +22,11 @@ public class AdminSendMailServlet extends HttpServlet {
         String subject = request.getParameter("subject");
         String content = request.getParameter("content");
 
+        String contactId = request.getParameter("contactId");
+        String page      = request.getParameter("page");
+        String startDate = request.getParameter("startDate");
+        String endDate   = request.getParameter("endDate");
+
         String htmlContent = EmailUtil.buildReplyEmailTemplate(toName, content);
 
         HttpSession session = request.getSession();
@@ -35,6 +40,17 @@ public class AdminSendMailServlet extends HttpServlet {
             session.setAttribute("error", "Lỗi hệ thống khi thiết lập luồng gửi mail: " + e.getMessage());
         }
 
-        response.sendRedirect(request.getContextPath() + "/admin/contact");
+        StringBuilder url = new StringBuilder(request.getContextPath())
+                .append("/admin/contact/delete?id=")
+                .append(contactId != null ? contactId : "");
+
+        if (page != null && !page.isEmpty())
+            url.append("&page=").append(page);
+        if (startDate != null && !startDate.isEmpty())
+            url.append("&startDate=").append(startDate);
+        if (endDate != null && !endDate.isEmpty())
+            url.append("&endDate=").append(endDate);
+
+        response.sendRedirect(url.toString());
     }
 }

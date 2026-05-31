@@ -3,7 +3,9 @@ package com.example.do_an_ttltweb.services;
 import com.example.do_an_ttltweb.dao.ContactDao;
 import com.example.do_an_ttltweb.model.Contact;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ContactService {
 
@@ -23,5 +25,17 @@ public class ContactService {
 
     public int countContactsByUserToday(int id) {
         return contactDao.countContactsByUserToday(id);
+    }
+
+    public void deleteContact(int id) {
+        contactDao.deleteContact(id);
+    }
+
+    public void deleteContacts(String[] ids) {
+        if (ids == null || ids.length == 0) return;
+        List<Integer> idList = Arrays.stream(ids)
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        contactDao.deleteContacts(idList);
     }
 }

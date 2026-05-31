@@ -76,4 +76,30 @@ public class ContactDao extends BaseDao {
                         .one()
         );
     }
+
+    public void deleteContact(int id) {
+        getJdbi().useHandle(handle ->
+                handle.createUpdate("DELETE FROM contacts WHERE id = :id")
+                        .bind("id", id)
+                        .execute()
+        );
+    }
+
+
+    public void deleteContacts(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) return;
+
+        String placeholders = String.join(",",
+                java.util.Collections.nCopies(ids.size(), "?"));
+
+        getJdbi().useHandle(handle -> {
+            var update = handle.createUpdate(
+                    "DELETE FROM contacts WHERE id IN (" + placeholders + ")"
+            );
+            for (int i = 0; i < ids.size(); i++) {
+                update.bind(i, ids.get(i));
+            }
+            update.execute();
+        });
+    }
 }

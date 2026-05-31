@@ -26,27 +26,13 @@ public class AdminPage5Servlet extends HttpServlet {
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
 
-        int page = 1;
+        int page = parsePage(request.getParameter("page"));
         int pageSize = 25;
-
-        if (request.getParameter("page") != null) {
-            try {
-                page = Integer.parseInt(request.getParameter("page"));
-                if (page < 1) page = 1;
-            } catch (NumberFormatException e) {
-                page = 1;
-            }
-        }
-
         int offset = (page - 1) * pageSize;
 
         int totalContacts = contactService.getTotalContacts(startDate, endDate);
         List<Contact> contactList = contactService.getContactList(startDate, endDate, pageSize, offset);
-
-        int totalPages = (int) Math.ceil((double) totalContacts / pageSize);
-        if (totalPages < 1) {
-            totalPages = 1;
-        }
+        int totalPages = Math.max(1, (int) Math.ceil((double) totalContacts / pageSize));
 
         request.setAttribute("contactList", contactList);
         request.setAttribute("currentPage", page);
@@ -55,5 +41,14 @@ public class AdminPage5Servlet extends HttpServlet {
         request.setAttribute("endDate", endDate);
 
         request.getRequestDispatcher("/adminPage5.jsp").forward(request, response);
+    }
+    private int parsePage(String pageParam) {
+        if (pageParam == null) return 1;
+        try {
+            int p = Integer.parseInt(pageParam);
+            return p < 1 ? 1 : p;
+        } catch (NumberFormatException e) {
+            return 1;
+        }
     }
 }
