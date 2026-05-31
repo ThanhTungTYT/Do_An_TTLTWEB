@@ -29,7 +29,7 @@ public class ConfirmReceivedServlet extends HttpServlet {
         if (order != null
                 && order.getUserId() == user.getId()
                 && "Đang giao".equals(order.getStatus())) {
-            orderService.updateOrderStatusAndGhn(orderId, "Đã nhận", order.getGhnOrderCode());
+            orderService.updateOrderStatusAndGhn(orderId, "Đã giao", order.getGhnOrderCode());
             request.getSession().setAttribute("success", "Đã xác nhận nhận hàng!");
         } else {
             request.getSession().setAttribute("error", "Xác nhận nhận hàng thất bại!");

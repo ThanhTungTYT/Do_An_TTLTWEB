@@ -201,8 +201,8 @@
             const ward       = btn.getAttribute('data-ward') || '—';
             const address    = btn.getAttribute('data-address') || '—';
             const ghnCode    = btn.getAttribute('data-ghn');
-            const districtId = btn.getAttribute('data-district-id');  // ✅
-            const wardCode   = btn.getAttribute('data-ward-code');    // ✅
+            const districtId = btn.getAttribute('data-district-id');
+            const wardCode   = btn.getAttribute('data-ward-code');
 
             document.getElementById('d-order-id').textContent = orderId;
             document.getElementById('d-name').textContent = name;
