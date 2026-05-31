@@ -59,15 +59,22 @@ public class OrderHistoryServlet extends HttpServlet {
         }
 
         String orderIdStr = request.getParameter("orderId");
+        boolean cancelled = false;
         if (orderIdStr != null && !orderIdStr.isEmpty()) {
             try {
                 int orderId = Integer.parseInt(orderIdStr);
                 orderService.cancelOrder(orderId, authUser.getId());
+                cancelled = true;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
         }
 
+        if (cancelled) {
+            session.setAttribute("success", "Đã hủy đơn hàng thành công!");
+        } else {
+            session.setAttribute("error", "Hủy đơn hàng thất bại!");
+        }
         response.sendRedirect(request.getContextPath() + "/account");
     }
 }

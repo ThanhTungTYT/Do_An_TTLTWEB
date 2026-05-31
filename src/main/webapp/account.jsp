@@ -10,10 +10,15 @@
     <title>Thông tin tài khoản | Aroma Café</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/account.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<c:if test="${param.success == '1' and empty success}">
+    <c:set var="success" value="Đặt hàng thành công!" scope="request"/>
+</c:if>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <header>
     <div class="top">
         <div class="logo">

@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage8.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 
 <div class="left-menu" id="left-menu">
     <div class="logo">
@@ -59,18 +61,6 @@
         <button class="slider-menu" id="slider-menu"><i class="fa-solid fa-bars"></i></button>
         <p>QUẢN LÍ MÃ GIẢM GIÁ</p>
     </div>
-
-    <%
-        String sessionMsg = (String) session.getAttribute("sessionMessage");
-        if (sessionMsg != null) {
-    %>
-    <div style="background-color: #d4edda; color: #155724; font-weight: bold; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-        <%= sessionMsg %>
-    </div>
-    <%
-            session.removeAttribute("sessionMessage");
-        }
-    %>
 
     <form class="search-bar" action="${pageContext.request.contextPath}/admin/promotion/search" method="GET">
         <input type="text" name="search" placeholder="Tìm kiếm mã giảm giá (ID hoặc Code)" value="${searchKeyword}">
@@ -194,10 +184,6 @@
                 <option value="inactive">Inactive (Ngừng)</option>
             </select>
         </div>
-
-        <c:if test="${not empty errorMessage}">
-            <p class="form-error">${errorMessage}</p>
-        </c:if>
 
         <button class="submit" type="submit">Xác nhận</button>
 

@@ -19,15 +19,13 @@ public class DeletePromotionServlet extends HttpServlet {
                 int id = Integer.parseInt(idStr);
                 int result = PromotionService.getInstance().deletePromotionSafe(id);
 
-                String msg;
                 if (result == 1) {
-                    msg = "Đã xóa vĩnh viễn mã giảm giá.";
+                    request.getSession().setAttribute("success", "Đã xóa vĩnh viễn mã giảm giá.");
                 } else if (result == 2) {
-                    msg = "Mã đã có đơn hàng sử dụng. Đã chuyển sang trạng thái ngưng hoạt động.";
+                    request.getSession().setAttribute("success", "Mã đã có đơn hàng sử dụng. Đã chuyển sang trạng thái ngưng hoạt động.");
                 } else {
-                    msg = "Xóa thất bại!";
+                    request.getSession().setAttribute("error", "Xóa thất bại!");
                 }
-                request.getSession().setAttribute("sessionMessage", msg);
 
             } catch (NumberFormatException e) {
                 e.printStackTrace();

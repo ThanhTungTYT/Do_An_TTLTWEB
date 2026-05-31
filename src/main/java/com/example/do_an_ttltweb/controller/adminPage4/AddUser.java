@@ -38,7 +38,10 @@ public class AddUser extends HttpServlet {
                 String[] permissionIds = request.getParameterValues("permissions");
                 authDao.updateUserPermissions(newUser.getId(), permissionIds);
             }
-            response.sendRedirect(request.getContextPath() + "/admin/users");
+            request.getSession().setAttribute("success", "Thêm tài khoản thành công!");
+        } else {
+            request.getSession().setAttribute("error", "Thêm tài khoản thất bại!");
         }
+        response.sendRedirect(request.getContextPath() + "/admin/users");
     }
 }

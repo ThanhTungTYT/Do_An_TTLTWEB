@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage7.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <div class="left-menu" id="left-menu">
     <div class="logo">
         <img src="${pageContext.request.contextPath}/assets/img/logo.png" onclick="location.href='${pageContext.request.contextPath}/'" width="300px" height="100px">
@@ -156,12 +158,6 @@
             <input type="datetime-local" name="end">
         </div>
         <button class="submit" type="submit">Thêm Banner</button>
-        <c:if test="${not empty sessionScope.notice}">
-            <div class="notice">
-                    ${sessionScope.notice}
-            </div>
-            <c:remove var="notice" scope="session"/>
-        </c:if>
     </form>
 </div>
 
@@ -199,12 +195,6 @@
         </div>
 
         <button class="submit" type="submit">Lưu Thay Đổi</button>
-        <c:if test="${not empty sessionScope.notice_up}">
-            <div class="notice">
-                    ${sessionScope.notice_up}
-            </div>
-            <c:remove var="notice_up" scope="session"/>
-        </c:if>
     </form>
 </div>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>

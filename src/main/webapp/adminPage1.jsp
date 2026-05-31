@@ -11,9 +11,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage1.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <div class="left-menu" id="left-menu">
     <div class="logo">
         <img src="${pageContext.request.contextPath}/assets/img/logo.png" onclick="location.href='${pageContext.request.contextPath}/'" width="300px" height="100px">

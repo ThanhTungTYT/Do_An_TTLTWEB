@@ -1,20 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <div class="change-password-container">
     <h2>Đổi mật khẩu</h2>
-
-    <c:if test="${not empty error}">
-        <div style="color: #721c24; background-color: #f8d7da; padding: 12px; margin-bottom: 20px; border-radius: 4px;">
-            <i class="fas fa-exclamation-triangle"></i> ${error}
-        </div>
-    </c:if>
-
-    <c:if test="${not empty success}">
-        <div style="color: #155724; background-color: #d4edda; padding: 12px; margin-bottom: 20px; border-radius: 4px;">
-            <i class="fas fa-check-circle"></i> ${success}
-        </div>
-    </c:if>
 
     <form id="change-pass-form" action="${pageContext.request.contextPath}/change-password" method="post">
 

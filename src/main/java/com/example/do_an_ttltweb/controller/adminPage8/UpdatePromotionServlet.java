@@ -52,7 +52,7 @@ public class UpdatePromotionServlet extends HttpServlet {
             }
 
             if (error != null) {
-                request.setAttribute("errorMessage", error);
+                request.setAttribute("error", error);
                 request.setAttribute("listPromotions", PromotionService.getInstance().getAllPromotions());
                 request.getRequestDispatcher("/adminPage8.jsp").forward(request, response);
                 return;
@@ -70,11 +70,12 @@ public class UpdatePromotionServlet extends HttpServlet {
             p.setState(state);
 
             PromotionService.getInstance().updatePromotion(p);
+            request.getSession().setAttribute("success", "Cập nhật mã giảm giá thành công!");
             response.sendRedirect(request.getContextPath() + "/admin/promotion");
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("errorMessage", "Lỗi dữ liệu: " + e.getMessage());
+            request.setAttribute("error", "Lỗi dữ liệu: " + e.getMessage());
             request.setAttribute("listPromotions", PromotionService.getInstance().getAllPromotions());
             request.getRequestDispatcher("/adminPage8.jsp").forward(request, response);
         }
