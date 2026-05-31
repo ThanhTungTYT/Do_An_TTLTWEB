@@ -77,6 +77,12 @@
         color: #004085;
     }
 
+    .status.Yêu.cầu.hủy {
+        background-color: #ffe8cc;
+        color: #d9480f;
+        border: 1px solid #ffd8a8;
+    }
+
     /* Tổng tiền trong popup chi tiết đơn hàng */
     .detail-p .totalSum span {
         color: #A0522D;

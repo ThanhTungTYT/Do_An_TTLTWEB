@@ -125,6 +125,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="${pageContext.request.contextPath}/admin/orders?status=Yêu cầu hủy&startDate=${startDate}&endDate=${endDate}"
+                       class="status-item ${status == 'Yêu cầu hủy' ? 'active' : ''}">
+                        Yêu cầu hủy
+                    </a>
+                </li>
+                <li>
                     <a href="${pageContext.request.contextPath}/admin/orders?status=Đã hủy&startDate=${startDate}&endDate=${endDate}"
                        class="status-item ${status == 'Đã hủy' ? 'active' : ''}">
                         Đã huỷ
@@ -174,8 +180,8 @@
                                 <c:choose>
                                     <c:when test="${o.status == 'Đang xử lý'}">Đang xử lý</c:when>
                                     <c:when test="${o.status == 'Đang giao'}">Đang giao</c:when>
+                                    <c:when test="${o.status == 'Yêu cầu hủy'}">Yêu cầu hủy</c:when>
                                     <c:when test="${o.status == 'Đã giao'}">Đã giao</c:when>
-                                    <c:when test="${o.status == 'Đã hủy'}">Đã huỷ</c:when>
                                     <c:when test="${o.status == 'Đã hủy'}">Đã huỷ</c:when>
                                 </c:choose>
                             </span>
@@ -284,12 +290,54 @@
             </div>
         </div>
 
-        <c:if test="${o.status == 'Đang xử lý'}">
-            <form action="${pageContext.request.contextPath}/admin/orders" method="post" class="invoice-action-form">
+        <div class="order-section" style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
+            <h3 class="popup-section-title">XỬ LÝ TRẠNG THÁI</h3>
+            <form action="${pageContext.request.contextPath}/admin/orders" method="post" class="invoice-action-form" style="margin-top: 10px;">
                 <input type="hidden" name="orderId" value="${o.id}">
-                <button type="submit" class="btn-invoice">Xuất hóa đơn</button>
+                <c:choose>
+                    <c:when test="${o.status == 'Đang xử lý'}">
+                        <div style="display: flex; gap: 10px; width: 100%;">
+                            <button type="submit" name="newStatus" value="Đang giao" class="btn-invoice" style="flex: 2; background-color: #28a745; margin: 0;">
+                                Xác nhận & Giao hàng
+                            </button>
+                            <button type="submit" name="newStatus" value="Đã hủy" class="btn-invoice" style="flex: 1; background-color: #dc3545; margin: 0;" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
+                                Hủy đơn
+                            </button>
+                        </div>
+                    </c:when>
+                    <c:when test="${o.status == 'Đang giao'}">
+                        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                            <p style="color: #8a6d3b; background-color: #fcf8e3; border: 1px solid #faebcc; padding: 10px; border-radius: 4px; font-size: 13px; margin: 0; text-align: left;">
+                                Đơn hàng đang trên đường giao. Đơn sẽ tự động chuyển thành <strong>Đã giao</strong> khi khách xác nhận nhận hàng thành công.
+                            </p>
+                            <button type="submit" name="newStatus" value="Yêu cầu hủy" class="btn-invoice" style="background-color: #f0ad4e; margin: 0; width: 100%;">
+                                Báo lỗi vận chuyển / Yêu cầu hủy
+                            </button>
+                        </div>
+                    </c:when>
+                    <c:when test="${o.status == 'Yêu cầu hủy'}">
+                        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                            <p style="color: #a94442; background-color: #f2dede; border: 1px solid #ebccd1; padding: 10px; border-radius: 4px; font-size: 13px; margin: 0; text-align: left;">
+                                   <strong>Đơn hàng đang gặp sự cố!</strong> Vui lòng kiểm tra lại gói hàng hoặc đơn vị vận chuyển.
+                            </p>
+                            <div style="display: flex; gap: 10px; width: 100%;">
+                                <button type="submit" name="newStatus" value="Đang giao" class="btn-invoice" style="flex: 1; background-color: #0275d8; margin: 0;">
+                                    Gửi lại đơn (Xuất hóa đơn lại)
+                                </button>
+                                <button type="submit" name="newStatus" value="Đã hủy" class="btn-invoice" style="flex: 1; background-color: #d9534f; margin: 0;" onclick="return confirm('Xác nhận không thể giao lại, hủy đơn và hoàn trả số lượng vào kho?')">
+                                    Xác nhận Hủy đơn
+                                </button>
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <p style="text-align: center; color: #777; font-style: italic; font-size: 13px; margin: 5px 0;">
+                            Đơn hàng đã đóng. Trạng thái không thể chỉnh sửa.
+                        </p>
+                    </c:otherwise>
+                </c:choose>
             </form>
-        </c:if>
+        </div>
     </div>
 </c:forEach>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>

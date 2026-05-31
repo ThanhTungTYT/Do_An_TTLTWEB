@@ -443,4 +443,77 @@ public class OrderDao extends BaseDao {
                         .execute() > 0
         );
     }
+
+    public boolean adminCancelOrder(int orderId) {
+        return getJdbi().inTransaction(handle -> {
+
+            try {
+                String ghnOrderCode = handle.createQuery("SELECT ghn_order_code FROM orders WHERE id = :id")
+                        .bind("id", orderId)
+                        .mapTo(String.class)
+                        .findOne()
+                        .orElse(null);
+
+                if (ghnOrderCode != null && !ghnOrderCode.trim().isEmpty()) {
+                    com.example.do_an_ttltweb.services.GHNService ghnService = new com.example.do_an_ttltweb.services.GHNService();
+                    ghnService.cancelOrder(ghnOrderCode);
+                    System.out.println("Đã hủy thành công đơn hàng " + ghnOrderCode + " trên hệ thống GHN");
+                }
+            } catch (Exception e) {
+                System.err.println("Lỗi khi gọi API hủy đơn của GHN: " + e.getMessage());
+            }
+
+            int updateOrder = handle.createUpdate(
+                            "UPDATE orders SET status = 'Đã hủy' WHERE id = :id"
+                    )
+                    .bind("id", orderId)
+                    .execute();
+
+            if (updateOrder == 0) {
+                throw new RuntimeException("Không tìm thấy đơn hàng hoặc đơn hàng đã bị thay đổi.");
+            }
+
+            List<OrderItem> items = handle.createQuery(
+                            "SELECT product_id, quantity FROM order_items WHERE order_id = :oid"
+                    )
+                    .bind("oid", orderId)
+                    .mapToBean(OrderItem.class)
+                    .list();
+
+            for (OrderItem item : items) {
+                handle.createUpdate("UPDATE products " +
+                                "SET stock = stock + :qty, sold = sold - :qty " +
+                                "WHERE id = :pid"
+                        )
+                        .bind("qty", item.getQuantity())
+                        .bind("pid", item.getProductId())
+                        .execute();
+
+                handle.createUpdate("UPDATE products SET state = 'active' WHERE id = :pid AND stock > 0")
+                        .bind("pid", item.getProductId())
+                        .execute();
+            }
+
+            Integer promoId = handle.createQuery("SELECT promo_id FROM orders WHERE id = :oid")
+                    .bind("oid", orderId)
+                    .mapTo(Integer.class)
+                    .findOne()
+                    .orElse(null);
+
+            if (promoId != null) {
+                handle.createUpdate(
+                                "UPDATE promotions SET quantity = quantity + 1 WHERE id = :pid"
+                        )
+                        .bind("pid", promoId)
+                        .execute();
+
+                handle.createUpdate(
+                                "UPDATE promotions SET state = 'active' WHERE id = :pid AND quantity > 0"
+                        )
+                        .bind("pid", promoId)
+                        .execute();
+            }
+            return true;
+        });
+    }
 }
