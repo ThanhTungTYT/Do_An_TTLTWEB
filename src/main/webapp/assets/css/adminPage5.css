@@ -1,19 +1,15 @@
-/*PAGE 5: CHĂM SÓC KHÁCH HÀNG */
+/* ===================================================
+   PAGE 5: CHĂM SÓC KHÁCH HÀNG
+   =================================================== */
 
-/* --- Khu vực wrapper chính --- */
-.contact {
-    padding: 25px;
-}
+.contact { padding: 25px; }
 
-/* --- Header: tiêu đề + nút xóa chọn --- */
 .contact-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 40px;
     margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 10px;
 }
 
 .contact-title {
@@ -23,21 +19,16 @@
     margin: 0;
 }
 
-/* --- Căn giữa bảng --- */
+/* --- Bảng --- */
 .contact table th { text-align: center; }
-.contact table td {
-    text-align: center;
-    vertical-align: middle;
-}
+.contact table td { text-align: center; vertical-align: middle; }
 
 .contact table td .btn-action {
     font-size: 13px;
-    font-weight: 500;
     color: white;
     width: 30px;
     height: 30px;
-    margin-top: 4px;
-    margin-right: 4px;
+    margin: 2px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -46,40 +37,50 @@
     justify-content: center;
     transition: background 0.2s, transform 0.1s;
 }
-.contact table td .btn-action:hover      { transform: scale(1.08); }
-.contact table td .btn-action.detail     { background: #c76739; }
+.contact table td .btn-action:hover        { transform: scale(1.08); }
+.contact table td .btn-action.detail       { background: #c76739; }
 .contact table td .btn-action.detail:hover { background: #8c4828; }
-.contact table td .btn-action.btn-reply  { background: #c76739; }
+.contact table td .btn-action.btn-reply    { background: #c76739; }
 .contact table td .btn-action.btn-reply:hover { background: #8c4828; }
-.contact table td .btn-action.btn-delete-single { background: #c76739; }
-.contact table td .btn-action.btn-delete-single:hover { background: #8c4828; }
 
-/* --- Checkbox --- */
-.contact table input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: #c76739;
+
+/* --- Badge trạng thái --- */
+.state-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
 }
+.state-pending    { background: #fff3cd; color: #856404; }
+.state-done       { background: #d4edda; color: #155724; }
 
-/* --- Nút xóa hàng loạt --- */
-.btn-delete-selected {
-    display: inline-flex;
+/* --- Thanh lọc trạng thái bên dưới tiêu đề --- */
+.state-filter-bar {
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 7px 16px;
-    background: #c0392b;
-    color: white;
-    border: none;
-    border-radius: 8px;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.state-filter-bar label {
     font-size: 14px;
     font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
+    color: #495057;
+    white-space: nowrap;
 }
-.btn-delete-selected:hover {
-    background: #922b21;
-    transform: scale(1.03);
+.state-filter-bar select {
+    padding: 6px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    height: 36px;
+    transition: border-color 0.2s;
+}
+.state-filter-bar select:focus {
+    outline: none;
+    border-color: #c76739;
 }
 
 .alert {
@@ -92,22 +93,14 @@
     font-weight: 500;
     margin: 0 25px 15px;
 }
-.alert-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-.alert-error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
+.alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.alert-error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
 /* ===================================================
-   POPUP CHI TIẾT LIÊN HỆ
+   POPUP CHI TIẾT
    =================================================== */
 .detail-p {
-    width: 520px;
+    width: 700px;
     max-width: 92vw;
     max-height: 90vh;
     padding: 32px 36px 28px;
@@ -117,6 +110,7 @@
     border: none;
     overflow-y: auto;
     animation: popupFadeIn 0.22s ease;
+    left: 60% !important;
 }
 
 @keyframes popupFadeIn {
@@ -124,17 +118,13 @@
     to   { opacity: 1; transform: translate(-50%, -50%); }
 }
 
-/* --- Header popup --- */
 .detail-popup-header {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 22px;
 }
-.detail-icon {
-    font-size: 26px;
-    color: #c76739;
-}
+.detail-icon { font-size: 26px; color: #c76739; }
 .detail-p .detail-popup-header h3 {
     margin: 0;
     font-size: 20px;
@@ -146,19 +136,15 @@
 
 .detail-info-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px 20px;
+    grid-template-columns: 1fr;
+    gap: 14px;
     margin-bottom: 20px;
     background: #f8f5f2;
     border-radius: 10px;
     padding: 16px 18px;
     border: 1px solid #ede0d6;
 }
-.detail-info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+.detail-info-item { display: flex; flex-direction: column; gap: 5px; }
 .detail-label {
     font-size: 11.5px;
     font-weight: 600;
@@ -170,14 +156,8 @@
     gap: 5px;
 }
 .detail-label i  { color: #c76739; font-size: 12px; }
-.detail-value {
-    font-size: 14.5px;
-    font-weight: 500;
-    color: #2c2c2c;
-    word-break: break-word;
-}
+.detail-value { font-size: 14.5px; font-weight: 500; color: #2c2c2c; word-break: break-word; }
 
-/* --- Khung nội dung tin nhắn --- */
 .detail-message-box {
     background: #fff9f6;
     border: 1px solid #e8d5c4;
@@ -206,11 +186,7 @@
     white-space: pre-wrap;
 }
 
-/* --- Nút phản hồi ngay trong popup --- */
-.detail-actions {
-    display: flex;
-    justify-content: flex-end;
-}
+.detail-actions { display: flex; justify-content: flex-end; }
 .btn-reply-from-detail {
     display: inline-flex;
     align-items: center;
@@ -225,7 +201,146 @@
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
 }
-.btn-reply-from-detail:hover {
-    background: #8c4828;
-    transform: scale(1.03);
+.btn-reply-from-detail:hover { background: #8c4828; transform: scale(1.03); }
+
+/* ===================================================
+   POPUP GỬI PHẢN HỒI
+   =================================================== */
+.reply-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    background: #ffffff;
+    width: 700px;
+    max-width: 92vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px 36px 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+    animation: popupFadeIn 0.22s ease;
 }
+
+/* --- Header --- */
+.reply-popup-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    position: relative;
+}
+.reply-icon {
+    font-size: 26px;
+    color: #c76739;
+}
+.reply-popup-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c2c2c;
+    flex: 1;
+}
+.reply-close-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #f0f0f0;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+    cursor: pointer;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+.reply-close-btn:hover { background: #c0392b; color: white; }
+
+
+.reply-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+    margin-bottom: 18px;
+    background: #f8f5f2;
+    border-radius: 10px;
+    padding: 16px 18px;
+    border: 1px solid #ede0d6;
+}
+.reply-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+.reply-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.reply-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e0d5cc;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: #fff9f6;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+.reply-input:focus {
+    outline: none;
+    border-color: #c76739;
+}
+
+
+.reply-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 14px;
+    border: 1px solid #e0d5cc;
+    border-left: 4px solid #c76739;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #3a3a3a;
+    background: #fff9f6;
+    line-height: 1.7;
+    resize: none;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+.reply-textarea:focus {
+    outline: none;
+    border-color: #c76739;
+}
+.reply-textarea::placeholder { color: #bbb; }
+
+
+.reply-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
+.btn-send-mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: #c76739;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+.btn-send-mail:hover { background: #8c4828; transform: scale(1.03); }
+.btn-send-mail:disabled { background: #ccc; cursor: not-allowed; transform: none; }

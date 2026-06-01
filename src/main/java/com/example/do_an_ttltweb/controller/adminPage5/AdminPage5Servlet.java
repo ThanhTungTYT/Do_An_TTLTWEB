@@ -22,26 +22,31 @@ public class AdminPage5Servlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+        String endDate   = request.getParameter("endDate");
+        String state     = request.getParameter("state");
 
-        int page = parsePage(request.getParameter("page"));
+        int page     = parsePage(request.getParameter("page"));
         int pageSize = 25;
-        int offset = (page - 1) * pageSize;
+        int offset   = (page - 1) * pageSize;
 
-        int totalContacts = contactService.getTotalContacts(startDate, endDate);
-        List<Contact> contactList = contactService.getContactList(startDate, endDate, pageSize, offset);
-        int totalPages = Math.max(1, (int) Math.ceil((double) totalContacts / pageSize));
+        int totalContacts         = contactService.getTotalContacts(startDate, endDate, state);
+        List<Contact> contactList = contactService.getContactList(startDate, endDate, state, pageSize, offset);
+        int totalPages            = Math.max(1, (int) Math.ceil((double) totalContacts / pageSize));
 
         request.setAttribute("contactList", contactList);
         request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("startDate", startDate);
-        request.setAttribute("endDate", endDate);
+        request.setAttribute("totalPages",  totalPages);
+        request.setAttribute("startDate",   startDate);
+        request.setAttribute("endDate",     endDate);
+        request.setAttribute("state",       state);
 
         request.getRequestDispatcher("/adminPage5.jsp").forward(request, response);
     }
+
     private int parsePage(String pageParam) {
         if (pageParam == null) return 1;
         try {

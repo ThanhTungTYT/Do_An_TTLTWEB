@@ -9,8 +9,8 @@ public class ContactDao extends BaseDao {
     public void insertContact(Contact contact) {
         getJdbi().useHandle(handle ->
                 handle.createUpdate(
-                                "INSERT INTO contacts (user_id, full_name, email, message, sent_at) " +
-                                        "VALUES (:userId, :fullName, :email, :message, NOW())"
+                                "INSERT INTO contacts (user_id, full_name, email, message, sent_at, state) " +
+                                        "VALUES (:userId, :fullName, :email, :message, NOW(), 'PENDING')"
                         )
                         .bind("userId", contact.getUser_id())
                         .bind("fullName", contact.getFull_name())
@@ -20,22 +20,24 @@ public class ContactDao extends BaseDao {
         );
     }
 
-    public int countContacts(String startDate, String endDate) {
+    public int countContacts(String startDate, String endDate, String state) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM contacts WHERE 1=1 ");
 
         if (startDate != null && !startDate.isEmpty()) sql.append("AND DATE(sent_at) >= :start ");
         if (endDate != null && !endDate.isEmpty()) sql.append("AND DATE(sent_at) <= :end ");
+        if (state != null && !state.isEmpty()) sql.append("AND state = :state ");
 
         return getJdbi().withHandle(handle -> {
             var query = handle.createQuery(sql.toString());
             if (startDate != null && !startDate.isEmpty()) query.bind("start", startDate);
             if (endDate != null && !endDate.isEmpty()) query.bind("end", endDate);
+            if (state != null && !state.isEmpty()) query.bind("state", state);
             return query.mapTo(Integer.class).one();
         });
     }
 
-    public List<Contact> getContacts(String startDate, String endDate, int limit, int offset) {
-        StringBuilder sql = new StringBuilder("SELECT id, user_id, full_name, email, message, sent_at FROM contacts WHERE 1=1 ");
+    public List<Contact> getContacts(String startDate, String endDate, String state, int limit, int offset) {
+        StringBuilder sql = new StringBuilder("SELECT id, user_id, full_name, email, message, sent_at, state FROM contacts WHERE 1=1 ");
 
         if (startDate != null && !startDate.isEmpty()) {
             sql.append("AND DATE(sent_at) >= :start ");
@@ -43,7 +45,9 @@ public class ContactDao extends BaseDao {
         if (endDate != null && !endDate.isEmpty()) {
             sql.append("AND DATE(sent_at) <= :end ");
         }
-
+        if (state != null && !state.isEmpty()){
+            sql.append("AND state = :state ");
+        }
         sql.append("ORDER BY sent_at DESC LIMIT :limit OFFSET :offset");
 
         return getJdbi().withHandle(handle -> {
@@ -55,7 +59,9 @@ public class ContactDao extends BaseDao {
             if (endDate != null && !endDate.isEmpty()) {
                 query.bind("end", endDate);
             }
-
+            if (state != null && !state.isEmpty()){
+                query.bind("state", state);
+            }
             query.bind("limit", limit);
             query.bind("offset", offset);
 
@@ -77,29 +83,12 @@ public class ContactDao extends BaseDao {
         );
     }
 
-    public void deleteContact(int id) {
+    public void updateState(int id, String state) {
         getJdbi().useHandle(handle ->
-                handle.createUpdate("DELETE FROM contacts WHERE id = :id")
+                handle.createUpdate("UPDATE contacts SET state = :state WHERE id = :id")
+                        .bind("state", state)
                         .bind("id", id)
                         .execute()
         );
-    }
-
-
-    public void deleteContacts(List<Integer> ids) {
-        if (ids == null || ids.isEmpty()) return;
-
-        String placeholders = String.join(",",
-                java.util.Collections.nCopies(ids.size(), "?"));
-
-        getJdbi().useHandle(handle -> {
-            var update = handle.createUpdate(
-                    "DELETE FROM contacts WHERE id IN (" + placeholders + ")"
-            );
-            for (int i = 0; i < ids.size(); i++) {
-                update.bind(i, ids.get(i));
-            }
-            update.execute();
-        });
     }
 }

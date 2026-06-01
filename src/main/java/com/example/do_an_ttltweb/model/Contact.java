@@ -9,6 +9,7 @@ public class Contact {
     private String email;
     private String message;
     private Timestamp sent_at;
+    private String state;
 
     public Contact() {}
 
@@ -29,4 +30,7 @@ public class Contact {
 
     public Timestamp getSent_at() { return sent_at; }
     public void setSent_at(Timestamp sent_at) { this.sent_at = sent_at; }
+
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
 }
