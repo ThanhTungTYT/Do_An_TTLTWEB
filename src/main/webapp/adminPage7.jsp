@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,18 +81,26 @@
             </thead>
             <tbody>
             <c:forEach items="${listBanner}" var="b">
+                <c:set var="startDt"><fmt:formatDate value="${b.start_date}" pattern="yyyy-MM-dd'T'HH:mm"/></c:set>
+                <c:set var="endDt"><fmt:formatDate value="${b.end_date}" pattern="yyyy-MM-dd'T'HH:mm"/></c:set>
                 <tr>
-                    <input type="hidden" name="bid" value="${b.id}">
                     <td><img src="${b.banner_url}" width="200"></td>
                     <td>
                         <span class="status-text ${b.status == 'active' ? 'active' : 'inactive'}">
                                 ${b.status == 'active' ? 'Active' : 'Inactive'}
                         </span>
                     </td>
-                    <td>${b.start_date}</td>
-                    <td>${b.end_date}</td>
+                    <td><fmt:formatDate value="${b.start_date}" pattern="dd/MM/yyyy HH:mm"/></td>
+                    <td><fmt:formatDate value="${b.end_date}" pattern="dd/MM/yyyy HH:mm"/></td>
                     <td>
-                        <button class="remake"><i class="fa-solid fa-pen"></i></button>
+                        <button class="remake"
+                                data-bid="${b.id}"
+                                data-url="${b.banner_url}"
+                                data-status="${b.status}"
+                                data-start="${startDt}"
+                                data-end="${endDt}">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
                     </td>
                     <td>
                         <form method="post" action="${pageContext.request.contextPath}/admin/banner">
@@ -143,9 +152,10 @@
         </div>
         <div class="type-p">
             <label>Trạng thái</label>
-            <select name="status">
-                <option>active</option>
-                <option>inactive</option>
+            <select name="status" required>
+                <option value="" disabled selected>-- Chọn trạng thái --</option>
+                <option value="active">active</option>
+                <option value="inactive">inactive</option>
             </select>
         </div>
         <div class="p">
@@ -178,9 +188,10 @@
 
         <div class="type-p">
             <label>Trạng thái</label>
-            <select name="up_status">
-                <option>active</option>
-                <option>inactive</option>
+            <select name="up_status" required>
+                <option value="" disabled selected>-- Chọn trạng thái --</option>
+                <option value="active">active</option>
+                <option value="inactive">inactive</option>
             </select>
         </div>
 
@@ -202,24 +213,17 @@
 <script>
     document.querySelectorAll(".remake").forEach(btn => {
         btn.onclick = function () {
-            const row = btn.closest("tr");
+            const data = btn.dataset;
 
-            document.getElementById("up_bid").value =
-                row.querySelector("input[name='bid']").value;
+            document.getElementById("up_bid").value = data.bid;
+            document.querySelector("input[name='up_url']").value = data.url;
+            document.querySelector("input[name='up_start']").value = data.start;
+            document.querySelector("input[name='up_end']").value = data.end;
 
-            document.querySelector("input[name='up_url']").value =
-                row.querySelector("img").src;
+            // Status để rỗng — admin chủ động chọn lại (tránh giữ nguyên ngoài ý muốn)
+            document.querySelector("select[name='up_status']").value = "";
 
-            document.querySelector("select[name='up_status']").value =
-                row.children[1].innerText.trim().toLowerCase();
-
-            document.querySelector("input[name='up_start']").value =
-                row.children[2].innerText.trim().replace(' ', 'T').substring(0, 16);
-
-            document.querySelector("input[name='up_end']").value =
-                row.children[3].innerText.trim().replace(' ', 'T').substring(0, 16);
-
-            document.getElementById("form-remake").style.display = "block";
+            document.getElementById("form-remake").display = "block";
         }
     });
     function changePage(page) {
