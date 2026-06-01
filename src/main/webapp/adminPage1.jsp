@@ -10,9 +10,8 @@
     <title>Trang Quản Trị Aroma Café</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage1.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage1.css?v=3">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/includes/toast.jsp"/>
@@ -127,9 +126,76 @@
             </div>
 
         </div>
-    <div class="chart-card" style="padding-left: 5px">
-        <h3>Top sản phẩm bán chạy</h3>
-        <canvas id="topProductChart" height="120"></canvas>
+    <div class="product-stats-container">
+
+        <div class="table-card margin-zero">
+            <h3 class="title-top-products">
+                <i class="fa-solid fa-fire icon-margin"></i>Top 10 sản phẩm bán chạy
+            </h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="col-id">Mã SP</th>
+                    <th class="col-name">Tên sản phẩm</th>
+                    <th class="col-qty">Số lượng bán</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${topProducts}" var="row">
+                    <tr>
+                        <td class="text-center">#${row.product.id}</td>
+                        <td class="text-left font-bold">${row.product.name}</td>
+                        <td class="text-center">
+                        <span class="status completed badge-qty">
+                                ${row.totalSold}
+                        </span>
+                        </td>
+                    </tr>
+                </c:forEach>
+                <c:if test="${empty topProducts}">
+                    <tr>
+                        <td colspan="3" class="text-center">Không có dữ liệu</td>
+                    </tr>
+                </c:if>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-card margin-zero">
+            <h3 class="title-worst-products">
+                <i class="fa-solid fa-snowflake icon-margin"></i>Top 10 sản phẩm bán ế
+            </h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="col-id">Mã SP</th>
+                    <th class="col-name">Tên sản phẩm</th>
+                    <th class="col-days">Thời gian tồn</th>
+                    <th class="col-qty">Số lượng bán</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${worstProducts}" var="row">
+                    <tr>
+                        <td class="text-center">#${row.product.id}</td>
+                        <td class="text-left font-bold">${row.product.name}</td>
+                        <td class="text-center text-muted font-small">${row.daysInStock} ngày</td>
+                        <td class="text-center">
+                        <span class="status cancelled badge-qty">
+                                ${row.totalSold}
+                        </span>
+                        </td>
+                    </tr>
+                </c:forEach>
+                <c:if test="${empty worstProducts}">
+                    <tr>
+                        <td colspan="4" class="text-center">Không có dữ liệu</td>
+                    </tr>
+                </c:if>
+                </tbody>
+            </table>
+        </div>
+
     </div>
     <div class="table-card">
             <h3>Đơn hàng</h3>
@@ -172,66 +238,6 @@
         </div>
 </div>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
-<script>
-    const productLabels = [
-        <c:forEach items="${topProducts}" var="row" varStatus="i">
-        "${row.product.name}"<c:if test="${!i.last}">,</c:if>
-        </c:forEach>
-    ];
-
-    const productData = [
-        <c:forEach items="${topProducts}" var="row" varStatus="i">
-        ${row.totalSold}<c:if test="${!i.last}">,</c:if>
-        </c:forEach>
-    ];
-
-    const ctx = document.getElementById('topProductChart');
-
-    if (ctx && productLabels.length > 0) {
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: productLabels,
-                datasets: [{
-                    label: 'Số lượng bán',
-                    data: productData,
-                    backgroundColor: '#2ecc71',
-                    borderRadius: 6,
-                    barThickness: 20,
-                    categoryPercentage: 0.2,
-                    maxBarThickness: 20
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.raw + " sản phẩm";
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        offset: true
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            padding: 15
-                        }
-                    }
-                }
-            }
-        });
-    }
-</script>
 <script src="${pageContext.request.contextPath}/assets/js/admin.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 

@@ -24,7 +24,6 @@ public class AdminPage1Service {
         } else if ("quarter".equals(filter)) {
             cal.add(Calendar.MONTH, -3);
         } else {
-            // today
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);
@@ -56,6 +55,10 @@ public class AdminPage1Service {
         return orderDao.getTopProducts(getStartTime(filter), getEndTime());
     }
 
+    public List<Map<String, Object>> getWorstProducts(String filter) {
+        return orderDao.getWorstProducts(getStartTime(filter), getEndTime());
+    }
+
     public List<Order> getOrders(String filter) {
         return orderDao.getOrdersByDate(getStartTime(filter), getEndTime());
     }
@@ -78,6 +81,10 @@ public class AdminPage1Service {
 
     public List<Map<String, Object>> getTopProducts(Timestamp start, Timestamp end) {
         return orderDao.getTopProducts(start, end);
+    }
+
+    public List<Map<String, Object>> getWorstProducts(Timestamp start, Timestamp end) {
+        return orderDao.getWorstProducts(start, end);
     }
 
     public List<Order> getOrders(Timestamp start, Timestamp end) {
