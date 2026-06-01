@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let paymentPollingInterval = null;
 
+    let bankOrderCreated   = false;
+    let currentBankOrderId = null;
+
     function formatVND(amount) {
         return amount.toLocaleString('vi-VN') + " VND";
     }
@@ -275,6 +278,23 @@ document.addEventListener("DOMContentLoaded", function () {
             if(ewalletInfoPanel) ewalletInfoPanel.style.display = "block";
         }
 
+
+        if (bankOrderCreated && !BANK_METHODS.includes(val)) {
+            if (placeOrderBtn) {
+                placeOrderBtn.disabled = true;
+                placeOrderBtn.title    = "Đơn hàng chuyển khoản đang chờ thanh toán. Vui lòng hoàn tất hoặc tải lại trang để đặt đơn mới.";
+                placeOrderBtn.innerHTML = '<i class="fas fa-lock"></i> Đã có đơn hàng chờ thanh toán';
+            }
+        } else if (!bankOrderCreated) {
+            if (placeOrderBtn) {
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.title    = "";
+                if (placeOrderBtn.innerHTML.includes('fa-lock')) {
+                    placeOrderBtn.innerHTML = '<i class="fas fa-check-circle"></i> Đặt hàng';
+                }
+            }
+        }
+
         updateQrAmount();
         highlightSelectedPayment();
     }
@@ -314,6 +334,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (placeOrderBtn) {
         placeOrderBtn.addEventListener("click", function () {
+            if (bankOrderCreated) {
+                alert("Bạn đang có đơn hàng chuyển khoản chưa thanh toán. Vui lòng hoàn tất thanh toán hoặc tải lại trang để đặt đơn mới.");
+                return;
+            }
             if (!validateAll()) {
                 const firstError = document.querySelector('.input-error');
                 if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -326,6 +350,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (openBankModalBtn) {
         openBankModalBtn.addEventListener("click", function () {
+                        if (bankOrderCreated && currentBankOrderId) {
+                openBankModal(currentBankOrderId, parseFloat(modalAmountEl?.textContent?.replace(/[^\d]/g, '') || "0"));
+                return;
+            }
             if (!validateAll()) {
                 const firstError = document.querySelector('.input-error');
                 if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -359,6 +387,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const result = await res.json();
 
             if (result.success) {
+                bankOrderCreated   = true;
+                currentBankOrderId = result.orderId;
+                disableFormInputs();
+
                 openBankModal(result.orderId, result.finalAmount);
             } else {
                 alert("Lỗi đặt hàng: " + (result.message || "Vui lòng thử lại sau."));
@@ -368,6 +400,18 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Đã xảy ra lỗi hệ thống khi tạo đơn hàng. Vui lòng thử lại!");
         } finally {
             setButtonLoading(openBankModalBtn, false);
+        }
+    }
+
+    function disableFormInputs() {
+        const inputs = checkoutForm.querySelectorAll('input:not([type="hidden"]):not([type="radio"]), select, textarea');
+        inputs.forEach(el => {
+            el.disabled = true;
+        });
+        paymentRadios.forEach(r => r.disabled = true);
+
+        if (openBankModalBtn) {
+            openBankModalBtn.innerHTML = '<i class="fas fa-eye"></i> Xem thông tin thanh toán';
         }
     }
 
@@ -475,9 +519,11 @@ document.addEventListener("DOMContentLoaded", function () {
             btn.dataset.originalHtml = btn.innerHTML;
             btn.innerHTML = '<span class="spinner"></span> Đang xử lý...';
             btn.classList.add('btn-loading');
+            btn.disabled = true;
         } else {
             btn.innerHTML = btn.dataset.originalHtml || btn.innerHTML;
             btn.classList.remove('btn-loading');
+            btn.disabled = false;
         }
     }
 
@@ -526,7 +572,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.style.overflow = "";
     };
 
-    // Khởi chạy nạp dữ liệu ban đầu một cách duy nhất
+    window.loadDistricts = loadDistricts;
+    window.loadWards     = loadWards;
+    window.onWardChange  = onWardChange;
+
     loadProvinces();
     calculateTotal();
     onPaymentMethodChange();

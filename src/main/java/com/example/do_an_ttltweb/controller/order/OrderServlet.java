@@ -106,12 +106,19 @@ public class OrderServlet extends HttpServlet {
     private void handleProcessPayment(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         HttpSession s = req.getSession(false);
         String paymentMethodName = req.getParameter("paymentMethod");
-        boolean isBankTransfer   = "bank".equals(paymentMethodName);
-        if (s == null || s.getAttribute("user") == null || s.getAttribute("checkoutCart") == null) {
+        boolean isBankTransfer = "bank".equals(paymentMethodName);
+
+        if (s == null || s.getAttribute("user") == null) {
+            if (isBankTransfer) sendJsonError(resp, "Phiên làm việc đã hết hạn. Vui lòng thử lại.");
+            else resp.sendRedirect("login.jsp");
+            return;
+        }
+
+        if (s.getAttribute("checkoutCart") == null) {
             if (isBankTransfer) {
-                sendJsonError(resp, "Phiên làm việc đã hết hạn hoặc giỏ hàng trống. Vui lòng thử lại.");
+                sendJsonError(resp, "Giỏ hàng trống hoặc đã được xử lý. Vui lòng quay lại giỏ hàng.");
             } else {
-                resp.sendRedirect("login.jsp");
+                resp.sendRedirect("cart.jsp");
             }
             return;
         }
@@ -129,9 +136,11 @@ public class OrderServlet extends HttpServlet {
 
         try {
             if (orderService.create(order, address, checkoutCart)) {
-                cleanupAfterOrder(s, mainCart, checkoutCart, user);
 
                 if (isBankTransfer) {
+
+                    s.setAttribute("pendingBankOrderId", order.getId());
+
                     resp.setContentType("application/json");
                     resp.setCharacterEncoding("UTF-8");
 
@@ -139,6 +148,7 @@ public class OrderServlet extends HttpServlet {
                     String jsonResponse = "{\"success\":true,\"orderId\":" + order.getId() + ",\"finalAmount\":" + finalAmountLong + "}";
                     resp.getWriter().write(jsonResponse);
                 } else {
+                    cleanupAfterOrder(s, mainCart, checkoutCart, user);
                     s.setAttribute("success", "Đặt hàng thành công!");
                     resp.sendRedirect(req.getContextPath() + "/account");
                 }
