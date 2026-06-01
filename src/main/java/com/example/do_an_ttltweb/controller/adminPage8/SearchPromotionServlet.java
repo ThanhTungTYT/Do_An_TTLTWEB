@@ -26,6 +26,9 @@ public class SearchPromotionServlet extends HttpServlet {
 
         request.setAttribute("listPromotions", listPromotions);
         request.setAttribute("searchKeyword", keyword);
+        // Set default pagination attributes (search shows all results, no pagination needed)
+        request.setAttribute("currentPage", 1);
+        request.setAttribute("totalPages", 1);
 
         request.getRequestDispatcher("/adminPage8.jsp").forward(request, response);
     }

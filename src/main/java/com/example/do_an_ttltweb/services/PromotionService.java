@@ -24,6 +24,14 @@ public class PromotionService {
         return promotionDao.getAll();
     }
 
+    public List<Promotion> getPromotionsPaginated(int limit, int offset) {
+        return promotionDao.getPaginated(limit, offset);
+    }
+
+    public int countPromotions() {
+        return promotionDao.count();
+    }
+
     public List<Promotion> searchPromotions(String keyword) {
         return promotionDao.searchPromotions(keyword);
     }
