@@ -65,12 +65,19 @@ public class OrderServlet extends HttpServlet {
     private void handlePrepareCheckout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
         Cart mainCart = (Cart) session.getAttribute("cart");
+        HttpSession s = req.getSession(false);
+        Integer repayOrderId = (Integer) s.getAttribute("repayOrderId");
 
         if (mainCart == null || mainCart.getTotalQuantity() == 0) {
             resp.sendRedirect("cart.jsp");
             return;
         }
-
+        if (repayOrderId != null) {
+            s.removeAttribute("repayOrderId");
+            resp.setContentType("application/json");
+            resp.getWriter().write("{\"orderId\":" + repayOrderId + "}");
+            return;
+        }
         String[] selectedIds = req.getParameterValues("selectedIds");
 
         if (selectedIds == null || selectedIds.length == 0) {

@@ -39,7 +39,7 @@
                     <c:when test="${o.status == 'Đang giao'}"> Đang giao</c:when>
                     <c:when test="${o.status == 'Đã nhận'}"> Đã nhận</c:when>
                     <c:when test="${o.status == 'Đã hủy'}"> Đã hủy</c:when>
-                    <c:when test="${o.status == 'Đã hoàn trả'}">↩️ Đã hoàn trả</c:when>
+                    <c:when test="${o.status == 'Đã hoàn trả'}"> Đã hoàn trả</c:when>
                     <c:otherwise>${o.status}</c:otherwise>
                 </c:choose>
             </span>
@@ -98,8 +98,15 @@
                 </button>
             </form>
         </c:if>
+        <c:if test="${o.status == 'Chờ thanh toán'}">
+            <form action="${pageContext.request.contextPath}/repay" method="post" style="display:inline-block; margin-right:8px;">
+                <input type="hidden" name="orderId" value="${o.id}">
+                <button type="submit" style="background:#1dc856; color:white; width:auto; padding:7px 14px; border-radius:6px; border:none; cursor:pointer;">Thanh toán lại
+                </button>
+            </form>
+        </c:if>
 
-        <c:if test="${o.status == 'Đang xử lý'}">
+        <c:if test="${o.status == 'Đang xử lý' or o.status == 'Chờ thanh toán'}">
             <form action="${pageContext.request.contextPath}/cancel-order" method="post">
                 <input type="hidden" name="orderId" value="${o.id}">
                 <button type="button" onclick="openCancelModal('${o.id}')" style="background: red; color: white; width: auto; padding: 7px 14px; border-radius: 6px;">

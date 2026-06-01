@@ -183,19 +183,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div id="ewallet-info-panel" class="bank-info-panel ewallet-panel" style="display:none;">
-                        <div class="bank-info-header ewallet-header">
-                            <i class="fas fa-wallet"></i> Ví điện tử (Mô phỏng)
-                        </div>
-                        <div class="bank-info-body">
-                            <p style="color:#555; font-size:14px; margin:0;">
-                                <i class="fas fa-info-circle" style="color:#c76739"></i>
-                                Chức năng thanh toán qua ví điện tử đang được tích hợp.
-                                Hiện tại hệ thống sẽ ghi nhận đơn hàng và liên hệ xác nhận qua số điện thoại.
-                            </p>
-                        </div>
-                    </div>
                 </section>
 
             <section class="note-box">
