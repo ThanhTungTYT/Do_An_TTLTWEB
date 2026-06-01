@@ -90,6 +90,8 @@
             </thead>
             <tbody>
             <c:forEach items="${listPromotions}" var="p">
+                <c:set var="startDt"><fmt:formatDate value="${p.startDate}" pattern="yyyy-MM-dd'T'HH:mm"/></c:set>
+                <c:set var="endDt"><fmt:formatDate value="${p.endDate}" pattern="yyyy-MM-dd'T'HH:mm"/></c:set>
                 <tr>
                     <td>#${p.id}</td>
                     <td><strong>${p.code}</strong></td>
@@ -97,8 +99,8 @@
                     <td><fmt:formatNumber value="${p.minOrderValue}" type="currency" currencySymbol="" maxFractionDigits="0"/> VND</td>
                     <td><fmt:formatNumber value="${p.discountPercent}" type="number" maxFractionDigits="0"/>%</td>
                     <td style="text-align: center;">${p.quantity}</td>
-                    <td><fmt:formatDate value="${p.startDate}" pattern="dd/MM/yyyy"/></td>
-                    <td><fmt:formatDate value="${p.endDate}" pattern="dd/MM/yyyy"/></td>
+                    <td><fmt:formatDate value="${p.startDate}" pattern="dd/MM/yyyy HH:mm"/></td>
+                    <td><fmt:formatDate value="${p.endDate}" pattern="dd/MM/yyyy HH:mm"/></td>
 
                     <td style="text-align: center;">
                         <span class="status-text ${p.state == 'active' ? 'active' : 'inactive'}">
@@ -114,13 +116,13 @@
                                 data-min="<fmt:formatNumber value='${p.minOrderValue}' pattern='#' />"
                                 data-discount="<fmt:formatNumber value='${p.discountPercent}' pattern='#' />"
                                 data-quantity="${p.quantity}"
-                                data-start="<fmt:formatDate value='${p.startDate}' pattern='yyyy-MM-dd'/>"
-                                data-end="<fmt:formatDate value='${p.endDate}' pattern='yyyy-MM-dd'/>"
+                                data-start="${startDt}"
+                                data-end="${endDt}"
                                 data-state="${p.state}">
                             <i class="fa-solid fa-pen"></i>
                         </button>
 
-                        <a href="${pageContext.request.contextPath}/admin/promotion/delete?id=${p.id}"
+                        <a href="${pageContext.request.contextPath}/admin/promotion/delete?id=${p.id}&page=${currentPage}"
                            class="btn-action btn-delete"
                            onclick="return confirm('Bạn có chắc chắn muốn xóa mã này không? Nếu mã đã được sử dụng, hệ thống sẽ chỉ tắt kích hoạt.');">
                             <i class="fa-solid fa-trash"></i>
@@ -130,6 +132,27 @@
             </c:forEach>
             </tbody>
         </table>
+
+        <c:if test="${totalPages > 1}">
+            <div class="pagination">
+                <a href="${currentPage > 1 ? pageContext.request.contextPath : ''}${currentPage > 1 ? '/admin/promotion?page=' : '#'}${currentPage > 1 ? currentPage - 1 : ''}"
+                   class="${currentPage <= 1 ? 'disabled' : ''}">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+
+                <c:forEach begin="1" end="${totalPages}" var="i">
+                    <a href="${pageContext.request.contextPath}/admin/promotion?page=${i}"
+                       class="${currentPage == i ? 'active' : ''}">
+                        ${i}
+                    </a>
+                </c:forEach>
+
+                <a href="${currentPage < totalPages ? pageContext.request.contextPath : ''}${currentPage < totalPages ? '/admin/promotion?page=' : '#'}${currentPage < totalPages ? currentPage + 1 : ''}"
+                   class="${currentPage >= totalPages ? 'disabled' : ''}">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </div>
+        </c:if>
     </div>
 </div>
 
@@ -141,6 +164,7 @@
 
     <form class="main-form" id="main-form" method="POST" data-context="${pageContext.request.contextPath}/admin/promotion">
         <input type="hidden" name="id" id="input-id" value="">
+        <input type="hidden" name="page" value="${currentPage}">
 
         <div class="p name-p">
             <label>Mã Code</label>
@@ -169,17 +193,18 @@
 
         <div class="count-p">
             <label>Ngày bắt đầu</label>
-            <input type="date" name="startDate" id="input-start" required>
+            <input type="datetime-local" name="startDate" id="input-start" required>
         </div>
 
         <div class="count-p">
             <label>Hạn sử dụng</label>
-            <input type="date" name="endDate" id="input-end" required>
+            <input type="datetime-local" name="endDate" id="input-end" required>
         </div>
 
         <div class="type-p">
             <label>Trạng thái</label>
-            <select name="state" id="input-state">
+            <select name="state" id="input-state" required>
+                <option value="" disabled selected>-- Chọn trạng thái --</option>
                 <option value="active">Active (Hoạt động)</option>
                 <option value="inactive">Inactive (Ngừng)</option>
             </select>

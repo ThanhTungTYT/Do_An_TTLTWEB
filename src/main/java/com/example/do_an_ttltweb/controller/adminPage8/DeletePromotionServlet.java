@@ -14,6 +14,7 @@ public class DeletePromotionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idStr = request.getParameter("id");
+        String pageStr = request.getParameter("page");
         if (idStr != null) {
             try {
                 int id = Integer.parseInt(idStr);
@@ -31,6 +32,7 @@ public class DeletePromotionServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
-        response.sendRedirect(request.getContextPath() + "/admin/promotion");
+        String pageParam = (pageStr != null && !pageStr.isBlank()) ? "?page=" + pageStr : "";
+        response.sendRedirect(request.getContextPath() + "/admin/promotion" + pageParam);
     }
 }

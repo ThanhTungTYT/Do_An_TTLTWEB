@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @WebServlet(name = "AddPromotionServlet", urlPatterns = {"/admin/promotion/add"})
 public class AddPromotionServlet extends HttpServlet {
@@ -27,14 +27,14 @@ public class AddPromotionServlet extends HttpServlet {
         String startStr = request.getParameter("startDate");
         String endStr = request.getParameter("endDate");
         String state = request.getParameter("state");
+        String pageStr = request.getParameter("page");
 
         try {
             double minOrder = Double.parseDouble(minOrderStr);
             double discount = Double.parseDouble(discountStr);
             int quantity = Integer.parseInt(quantityStr);
-            LocalDate startDate = LocalDate.parse(startStr);
-            LocalDate endDate = LocalDate.parse(endStr);
-            LocalDate today = LocalDate.now();
+            LocalDateTime startDate = LocalDateTime.parse(startStr);
+            LocalDateTime endDate = LocalDateTime.parse(endStr);
 
             // Validate cho ADD
             if (PromotionService.getInstance().isCodeExist(code)) {
@@ -42,19 +42,12 @@ public class AddPromotionServlet extends HttpServlet {
             } else if (minOrder < 1) error = "Đơn hàng tối thiểu phải từ 1đ trở lên!";
             else if (discount < 1 || discount > 100) error = "Mức giảm giá phải từ 1% đến 100%!";
             else if (quantity < 0 || quantity > 1000000) error = "Số lượng mã phải từ 0 đến 1.000.000!";
-            else if (startDate.isBefore(today)) error = "Ngày bắt đầu không được ở quá khứ!";
-            else if (!endDate.isAfter(today)) error = "Ngày kết thúc phải từ ngày mai trở đi!";
             else if (endDate.isBefore(startDate)) error = "Ngày kết thúc không được nhỏ hơn ngày bắt đầu!";
-
-            if (error == null) {
-                if (quantity == 0) state = "inactive";
-                else if ("active".equals(state) && startDate.isAfter(today)) state = "inactive";
-            }
+            else if (state == null || state.isBlank()) error = "Vui lòng chọn trạng thái!";
 
             if (error != null) {
                 request.setAttribute("error", error);
-                request.setAttribute("listPromotions", PromotionService.getInstance().getAllPromotions());
-                request.getRequestDispatcher("/adminPage8.jsp").forward(request, response);
+                forwardWithList(request, response, pageStr);
                 return;
             }
 
@@ -64,19 +57,41 @@ public class AddPromotionServlet extends HttpServlet {
             p.setMinOrderValue(minOrder);
             p.setDiscountPercent(discount);
             p.setQuantity(quantity);
-            p.setStartDate(Timestamp.valueOf(startDate.atStartOfDay()));
-            p.setEndDate(Timestamp.valueOf(endDate.atStartOfDay()));
+            p.setStartDate(Timestamp.valueOf(startDate));
+            p.setEndDate(Timestamp.valueOf(endDate));
             p.setState(state);
 
             PromotionService.getInstance().addPromotion(p);
             request.getSession().setAttribute("success", "Thêm mã giảm giá thành công!");
-            response.sendRedirect(request.getContextPath() + "/admin/promotion");
+            // Sau khi thêm thì nhảy về trang 1 vì record mới ở đầu (ORDER BY id DESC)
+            response.sendRedirect(request.getContextPath() + "/admin/promotion?page=1");
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Lỗi dữ liệu: " + e.getMessage());
-            request.setAttribute("listPromotions", PromotionService.getInstance().getAllPromotions());
-            request.getRequestDispatcher("/adminPage8.jsp").forward(request, response);
+            forwardWithList(request, response, pageStr);
         }
+    }
+
+    private void forwardWithList(HttpServletRequest request, HttpServletResponse response, String pageStr)
+            throws ServletException, IOException {
+        int page = 1;
+        try {
+            if (pageStr != null) {
+                page = Integer.parseInt(pageStr);
+                if (page < 1) page = 1;
+            }
+        } catch (NumberFormatException ignored) {}
+
+        int total = PromotionService.getInstance().countPromotions();
+        int totalPages = (int) Math.ceil((double) total / 5);
+        if (totalPages == 0) totalPages = 1;
+        if (page > totalPages) page = totalPages;
+        int offset = (page - 1) * 5;
+
+        request.setAttribute("listPromotions", PromotionService.getInstance().getPromotionsPaginated(5, offset));
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.getRequestDispatcher("/adminPage8.jsp").forward(request, response);
     }
 }

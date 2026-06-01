@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if(inputQuantity) inputQuantity.value = "";
             if(inputStart) inputStart.value = "";
             if(inputEnd) inputEnd.value = "";
-            if(inputState) inputState.value = "active";
+            if(inputState) inputState.value = "";
 
             if(errorElement) errorElement.style.display = 'none';
 
@@ -105,7 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if(inputQuantity) inputQuantity.value = data.quantity;
             if(inputStart) inputStart.value = data.start;
             if(inputEnd) inputEnd.value = data.end;
-            if(inputState) inputState.value = data.state;
+            // State để rỗng — admin chủ động chọn lại (tránh giữ nguyên ngoài ý muốn)
+            if(inputState) inputState.value = "";
 
             if(errorElement) errorElement.style.display = 'none';
 

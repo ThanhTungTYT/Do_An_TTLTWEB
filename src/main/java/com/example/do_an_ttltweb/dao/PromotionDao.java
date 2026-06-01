@@ -21,16 +21,38 @@ public class PromotionDao extends BaseDao {
         );
     }
 
+    public List<Promotion> getPaginated(int limit, int offset) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT id, code, description, " +
+                                "discount_percent AS discountPercent, " +
+                                "min_order_value AS minOrderValue, " +
+                                "start_date AS startDate, " +
+                                "end_date AS endDate, " +
+                                "quantity, state " +
+                                "FROM promotions ORDER BY id DESC LIMIT :limit OFFSET :offset")
+                        .bind("limit", limit)
+                        .bind("offset", offset)
+                        .mapToBean(Promotion.class)
+                        .list()
+        );
+    }
+
+    public int count() {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM promotions")
+                        .mapTo(Integer.class)
+                        .one()
+        );
+    }
+
     public void autoUpdateStates() {
+        // Chỉ auto-deactivate khi mã đã hết hạn hoặc đã hết số lượng.
+        // KHÔNG auto-activate (tránh override quyết định manual của admin).
         getJdbi().useHandle(handle -> {
             String sqlInactive = "UPDATE promotions SET state = 'inactive' " +
-                    "WHERE (start_date > NOW() OR end_date < NOW() OR quantity <= 0) " +
+                    "WHERE (end_date < NOW() OR quantity <= 0) " +
                     "AND state != 'inactive'";
-            String sqlActive = "UPDATE promotions SET state = 'active' " +
-                    "WHERE start_date <= NOW() AND end_date >= NOW() AND quantity > 0 " +
-                    "AND state != 'active'";
             handle.createUpdate(sqlInactive).execute();
-            handle.createUpdate(sqlActive).execute();
         });
     }
 
