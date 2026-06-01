@@ -65,6 +65,7 @@ public class AdminPage1Servlet extends HttpServlet {
         request.setAttribute("pendingOrders", service.getPendingOrders(filter));
         request.setAttribute("newCustomers", service.getNewCustomers(filter));
         request.setAttribute("topProducts", service.getTopProducts(filter));
+        request.setAttribute("worstProducts", service.getWorstProducts(filter));
 
         List<Order> orders = service.getOrders(filter);
         request.setAttribute("orders", orders);
@@ -77,6 +78,7 @@ public class AdminPage1Servlet extends HttpServlet {
         request.setAttribute("pendingOrders", service.getPendingOrders(start, end));
         request.setAttribute("newCustomers", service.getNewCustomers(start, end));
         request.setAttribute("topProducts", service.getTopProducts(start, end));
+        request.setAttribute("worstProducts", service.getWorstProducts(start, end));
 
         List<Order> orders = service.getOrders(start, end);
         request.setAttribute("orders", orders);

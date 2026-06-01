@@ -271,7 +271,6 @@ public class OrderDao extends BaseDao {
     }
 
     public List<Map<String, Object>> getTopProducts(Timestamp start, Timestamp end) {
-
         return getJdbi().withHandle(handle ->
                 handle.createQuery(
                                 "SELECT " +
@@ -285,7 +284,7 @@ public class OrderDao extends BaseDao {
                                         "AND o.created_at BETWEEN :start AND :end " +
                                         "GROUP BY p.id, p.name " +
                                         "ORDER BY totalSold DESC " +
-                                        "LIMIT 5"
+                                        "LIMIT 10"
                         )
                         .bind("start", start)
                         .bind("end", end)
@@ -298,6 +297,45 @@ public class OrderDao extends BaseDao {
                             Map<String, Object> row = new HashMap<>();
                             row.put("product", product);
                             row.put("totalSold", rs.getInt("totalSold"));
+
+                            return row;
+                        })
+                        .list()
+        );
+    }
+
+    public List<Map<String, Object>> getWorstProducts(Timestamp start, Timestamp end) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery(
+                                "SELECT " +
+                                        "  p.id AS productId, " +
+                                        "  p.name AS productName, " +
+                                        "  p.created_at AS createdAt, " +
+                                        "  COALESCE(SUM(oi.quantity), 0) AS totalSold " +
+                                        "FROM products p " +
+                                        "LEFT JOIN order_items oi ON p.id = oi.product_id " +
+                                        "LEFT JOIN orders o ON oi.order_id = o.id " +
+                                        "  AND o.status = 'Đã giao' " +
+                                        "  AND o.created_at BETWEEN :start AND :end " +
+                                        "WHERE p.state = 'active' " +
+                                        "GROUP BY p.id, p.name, p.created_at " +
+                                        "ORDER BY totalSold ASC, p.created_at ASC " +
+                                        "LIMIT 10"
+                        )
+                        .bind("start", start)
+                        .bind("end", end)
+                        .map((rs, ctx) -> {
+                            Product product = new Product();
+                            product.setId(rs.getInt("productId"));
+                            product.setName(rs.getString("productName"));
+                            Timestamp createdAt = rs.getTimestamp("createdAt");
+                            long diffInMillies = Math.abs(end.getTime() - createdAt.getTime());
+                            long daysInStock = java.util.concurrent.TimeUnit.DAYS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);
+
+                            Map<String, Object> row = new HashMap<>();
+                            row.put("product", product);
+                            row.put("totalSold", rs.getInt("totalSold"));
+                            row.put("daysInStock", (int) daysInStock);
 
                             return row;
                         })
