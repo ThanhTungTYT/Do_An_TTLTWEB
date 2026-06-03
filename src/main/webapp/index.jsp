@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/index.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <header>
     <div class="top">
         <div class="logo">

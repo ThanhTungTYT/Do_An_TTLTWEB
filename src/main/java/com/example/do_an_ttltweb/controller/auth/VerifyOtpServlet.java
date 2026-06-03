@@ -54,7 +54,7 @@ public class VerifyOtpServlet extends HttpServlet {
 
             if (authService.register(user)) {
                 session.removeAttribute("reg_temp");
-                session.setAttribute("successMsg", "Đăng ký thành công! Vui lòng đăng nhập.");
+                session.setAttribute("success", "Đăng ký thành công! Vui lòng đăng nhập.");
                 response.sendRedirect(request.getContextPath() + "/login");
             } else {
                 request.setAttribute("error", "Lỗi hệ thống khi tạo tài khoản.");
