@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    ['form-add', 'form-remake', 'form-add-cat'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
 
     // 1. LẤY CÁC PHẦN TỬ CỐ ĐỊNH
     const menu = document.getElementById("left-menu");
@@ -114,8 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         modals.forEach(({ el, openSel }) => {
             if (!el) return;
-            const display = el.style.display;
-            if (display !== 'block' && display !== 'flex') return;
+            const isVisible = el.style.display === 'block' || el.style.display === 'flex';
+            if (!isVisible) return;
             if (e.target.closest(openSel)) return;
             if (el.contains(e.target)) return;
             el.style.display = 'none';

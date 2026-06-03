@@ -118,8 +118,12 @@
         </table>
     </div>
     <div class="list-product">
-        <h3>DANH SÁCH SẢN PHẨM</h3>
-        <table>
+        <div class="list-header">
+            <h3>DANH SÁCH SẢN PHẨM</h3>
+            <button type="button" class="btn-delete-checked" onclick="deleteCheckedProducts()">
+                <i class="fa-solid fa-trash"></i> Xóa đã chọn
+            </button>
+        </div>        <table>
             <thead>
             <tr>
                 <th style="width: 40px; text-align: center;">
@@ -247,11 +251,6 @@
             </c:if>
         </div>
 
-        <div style="margin-top: 15px;">
-            <button type="button" onclick="deleteCheckedProducts()">
-                Xóa sản phẩm
-            </button>
-        </div>
     </div>
 </div>
 <div class="form-add" id="form-add" style="display: none">
