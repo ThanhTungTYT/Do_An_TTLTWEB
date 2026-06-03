@@ -41,6 +41,8 @@ public class LoginServlet extends HttpServlet {
 
             if (remaining <= 0) {
                 request.setAttribute("error", "Bạn đã nhập sai quá 5 lần. Tài khoản bị tạm khóa trong 1 tiếng.");
+            } else {
+                request.setAttribute("error", "Email hoặc mật khẩu không đúng! Bạn còn " + remaining + " lần thử.");
             }
 
             request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -54,6 +56,7 @@ public class LoginServlet extends HttpServlet {
             Cart cart = cartDao.loadCart(user.getId());
             session.setAttribute("cart", cart);
 
+            session.setAttribute("success", "Đăng nhập thành công!");
             if (user.hasPermission("access_admin")) {
                 response.sendRedirect(request.getContextPath() + "/admin/dashboard");
             } else {
