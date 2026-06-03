@@ -88,10 +88,8 @@ function dongFormThemLoai() {
     }
 }
 function deleteCategory(id) {
-    if (confirm("CẢNH BÁO: Bạn có chắc chắn muốn xóa loại sản phẩm này?\n(Lưu ý: Nếu loại này đang chứa sản phẩm thì sẽ xóa các sản phẩm có loại này)")) {
         document.getElementById('input-cat-id').value = id;
         document.getElementById('form-delete-cat').submit();
-    }
 }
 
 function openEditModal(button) {
@@ -150,16 +148,32 @@ function deleteCheckedProducts() {
     const checkboxes = document.querySelectorAll('input[name="productIds"]:checked');
 
     if (checkboxes.length === 0) {
-        alert("Vui lòng tích chọn vào ô vuông đầu dòng các sản phẩm cần xóa!");
         return;
     }
 
-    if (confirm("Xóa " + checkboxes.length + " sản phẩm đã chọn?\n(Sản phẩm chưa bán sẽ xóa vĩnh viễn, đã bán sẽ bị ẩn)")) {
         let ids = [];
         checkboxes.forEach(cb => ids.push(cb.value));
 
         document.getElementById('delete-action').value = 'delete_list';
         document.getElementById('delete-ids-multi').value = ids.join(",");
         document.getElementById('delete-form').submit();
-    }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const formIds = ['form-add', 'form-remake', 'form-add-cat'];
+    formIds.forEach(function (id) {
+        const form = document.getElementById(id);
+        if (!form) return;
+        const scrollArea = form.querySelector('.main-form');
+        if (!scrollArea) return;
+
+        scrollArea.addEventListener('wheel', function (e) {
+            const atTop    = scrollArea.scrollTop === 0;
+            const atBottom = scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight;
+
+            if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) return;
+
+            e.stopPropagation();
+        }, { passive: true });
+    });
+});

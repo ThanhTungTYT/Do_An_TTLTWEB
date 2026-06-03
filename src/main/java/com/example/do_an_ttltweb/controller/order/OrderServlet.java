@@ -147,6 +147,7 @@ public class OrderServlet extends HttpServlet {
                     long finalAmountLong = Math.round(order.getFinalAmount());
                     String jsonResponse = "{\"success\":true,\"orderId\":" + order.getId() + ",\"finalAmount\":" + finalAmountLong + "}";
                     resp.getWriter().write(jsonResponse);
+                    cleanupAfterOrder(s, mainCart, checkoutCart, user);
                 } else {
                     cleanupAfterOrder(s, mainCart, checkoutCart, user);
                     s.setAttribute("success", "Đặt hàng thành công!");
