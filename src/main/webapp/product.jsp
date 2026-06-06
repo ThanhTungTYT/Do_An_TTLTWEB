@@ -128,7 +128,7 @@
             </div>
             <div class="des-right">
                 <div class="box-title">
-                    💬 Hỗ trợ khách hàng
+                    Hỗ trợ khách hàng
                 </div>
                 <div class="support-list">
                     <a href="#" class="item facebook">
@@ -152,8 +152,8 @@
                     </div>
                 </div>
                 <div class="support-footer">
-                    <button class="btn-chat">💬 Chat ngay</button>
-                    <button class="btn-call">📞 Gọi ngay</button>
+                    <button class="btn-chat">Chat ngay</button>
+                    <button class="btn-call">Gọi ngay</button>
                 </div>
             </div>
     </div>
@@ -220,8 +220,9 @@
             </div>
 
             <div class="review-list">
-                    <c:forEach items="${review}" var="r">
-                        <div class="review-item ${r.userId eq currentUserId ? 'my-review' : ''}">
+                <c:forEach items="${review}" var="r" varStatus="status">
+                    <div class="review-item ${r.userId eq currentUserId ? 'my-review' : ''} ${status.index >= 10 ? 'review-hidden' : ''}"
+                        ${status.index >= 10 ? 'style="display: none;"' : ''}>
                             <div class="review-header" style="display:flex; justify-content:space-between; align-items:center;">
                                 <div>
                     <span class="review-author" style="font-weight:bold;">
@@ -250,6 +251,15 @@
                             <p class="review-body">${r.comment}</p>
                         </div>
                     </c:forEach>
+
+                <c:if test="${fn:length(review) > 10}">
+                    <div id="load-more-reviews-wrapper" style="text-align: center; margin: 20px 0;">
+                        <button id="btn-load-more-reviews" onclick="loadMoreReviews()"
+                                style="padding: 10px 24px; background: #c76739; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 0.95em; font-weight: bold; transition: all 0.3s ease;">
+                            Xem thêm đánh giá (<span id="hidden-count">${fn:length(review) - 10}</span>)
+                        </button>
+                    </div>
+                </c:if>
 
                     <form id="delete-review-form" method="post"
                           action="${pageContext.request.contextPath}/deleteReview" style="display:none;">
@@ -396,6 +406,32 @@
     }
     document.getElementById("confirm-delete-overlay").onclick = function(e) {
         if (e.target === this) closeConfirm();
+    }
+
+    function loadMoreReviews() {
+        const hiddenReviews = document.querySelectorAll('.review-hidden');
+        let count = 0;
+
+        hiddenReviews.forEach(item => {
+            if (count < 10) {
+                item.style.display = 'block';
+                item.classList.remove('review-hidden');
+                count++;
+            }
+        });
+
+        const remaining = document.querySelectorAll('.review-hidden').length;
+        const hiddenCountSpan = document.getElementById('hidden-count');
+        if (hiddenCountSpan) {
+            hiddenCountSpan.textContent = remaining;
+        }
+
+        if (remaining === 0) {
+            const wrapper = document.getElementById('load-more-reviews-wrapper');
+            if (wrapper) {
+                wrapper.style.display = 'none';
+            }
+        }
     }
 
 </script>
