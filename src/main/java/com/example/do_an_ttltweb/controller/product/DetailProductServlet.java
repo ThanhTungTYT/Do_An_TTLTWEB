@@ -56,14 +56,12 @@ public class DetailProductServlet extends HttpServlet {
             }
             if (myReview != null) sortedReviews.add(myReview);
 
-            int count = 0;
             for (ProductReview r : allReviews) {
-                if (count >= 10) break;
                 if (r.getUserId() != currentUserId) {
                     sortedReviews.add(r);
-                    count++;
                 }
             }
+
             int totalCount = allReviews.size();
             double avg = 0;
             if (totalCount > 0) {
