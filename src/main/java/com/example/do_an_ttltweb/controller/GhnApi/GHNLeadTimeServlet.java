@@ -7,7 +7,7 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 
-@WebServlet(name = "GHNLeadTimeServlet ", value = "/api/ghn/leadtime ")
+@WebServlet(name = "GHNLeadTimeServlet ", value = "/api/ghn/leadtime")
 public class GHNLeadTimeServlet extends HttpServlet {
 
     private GHNService ghn = new GHNService();
