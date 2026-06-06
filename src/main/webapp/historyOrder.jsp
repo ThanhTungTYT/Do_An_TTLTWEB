@@ -91,12 +91,9 @@
         </c:if>
 
         <c:if test="${o.status == 'Đang giao'}">
-            <form action="${pageContext.request.contextPath}/confirm-received" method="post" style="display:inline-block; margin-left:5px;">
-                <input type="hidden" name="orderId" value="${o.id}">
-                <button type="submit" onclick="return confirm('Xác nhận đã nhận hàng?')" style="background: cornflowerblue; color: white; width: auto; padding: 7px 14px; border-radius: 6px;">
-                    Đã nhận hàng
-                </button>
-            </form>
+            <button type="button" onclick="openConfirmReceivedModal('${o.id}')" style="background: cornflowerblue; color: white; width: auto; padding: 7px 14px; border-radius: 6px; border: none; cursor: pointer; margin-left: 5px;">
+                Đã nhận hàng
+            </button>
         </c:if>
         <c:if test="${o.status == 'Chờ thanh toán'}">
             <form action="${pageContext.request.contextPath}/repay" method="post" style="display:inline-block; margin-right:8px;">
@@ -192,6 +189,26 @@
             <button class="btn-confirm-cancel" id="btn-confirm-cancel"
                     onclick="submitCancel()" disabled>
                 Xác nhận hủy đơn
+            </button>
+        </div>
+    </div>
+</div>
+
+<form id="confirm-received-form" action="${pageContext.request.contextPath}/confirm-received" method="post" style="display:none;">
+    <input type="hidden" name="orderId" id="confirm-received-order-id">
+</form>
+
+<div class="cancel-overlay" id="confirm-received-overlay" onclick="closeConfirmReceivedIfOutside(event)">
+    <div class="cancel-modal" style="text-align: center;">
+        <h3>Xác nhận đã nhận hàng</h3>
+        <p style="margin: 15px 0;">Bạn có chắc chắn đã nhận được đơn hàng <strong>#DH<span id="confirm-order-display-id"></span></strong>?</p>
+
+        <div class="cancel-modal-actions" style="display: flex; justify-content: center; gap: 10px;">
+            <button type="button" class="btn-back" onclick="closeConfirmReceivedModal()" style="margin: 0; min-width: 100px;">
+                Hủy
+            </button>
+            <button type="button" class="btn-confirm-cancel" onclick="submitConfirmReceived()" style="background: cornflowerblue; color: white; margin: 0; min-width: 100px; opacity: 1;" id="btn-confirm-received">
+                Xác nhận
             </button>
         </div>
     </div>
@@ -330,5 +347,25 @@
         } else {
             emptyMsg.style.display = 'none';
         }
+    }
+
+    function openConfirmReceivedModal(orderId) {
+        document.getElementById('confirm-received-order-id').value = orderId;
+        document.getElementById('confirm-order-display-id').textContent = orderId;
+        document.getElementById('confirm-received-overlay').classList.add('show');
+    }
+
+    function closeConfirmReceivedModal() {
+        document.getElementById('confirm-received-overlay').classList.remove('show');
+    }
+
+    function closeConfirmReceivedIfOutside(event) {
+        if (event.target === document.getElementById('confirm-received-overlay')) {
+            closeConfirmReceivedModal();
+        }
+    }
+
+    function submitConfirmReceived() {
+        document.getElementById('confirm-received-form').submit();
     }
 </script>
