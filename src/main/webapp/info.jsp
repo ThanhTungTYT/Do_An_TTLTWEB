@@ -57,11 +57,32 @@
         font-size: 16px;
         cursor: pointer;
         transition: background 0.3s;
-        width: 100%;
+        flex: 1;
         font-weight: bold;
     }
     .btn-update:hover {
         background-color: #a0522d;
+    }
+    .btn-cancel {
+        background-color: #888;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+        flex: 1;
+        font-weight: bold;
+        display: none;
+    }
+    .btn-cancel:hover {
+        background-color: #555;
+    }
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
     }
 
     /* CSS MỚI CHO VALIDATION */
@@ -98,14 +119,21 @@
         <input type="text" id="phone" name="phone" class="editable input-fixed" value="${user.phone}" readonly required placeholder="Nhập số điện thoại">
         <small class="error-msg" id="err-phone"></small>
 
-        <input type="hidden" name="city" id="hidden_city" value="${addr != null ? addr.province : ''}">
-        <input type="hidden" name="district" id="hidden_district" value="${addr != null ? addr.ward : ''}">
+        <input type="hidden" name="province" id="hidden_province" value="${addr != null ? addr.province : ''}">
+        <input type="hidden" name="district" id="hidden_district" value="${addr != null ? addr.district : ''}">
+        <input type="hidden" name="ward" id="hidden_ward" value="${addr != null ? addr.ward : ''}">
 
         <label>Tỉnh/Thành phố:</label>
         <select id="citySelect" class="editable input-fixed" disabled>
             <option value="">${addr != null && not empty addr.province ? addr.province : '-- Chọn Tỉnh/Thành phố --'}</option>
         </select>
         <small class="error-msg" id="err-city"></small>
+
+        <label>Quận/Huyện:</label>
+        <select id="districtSelect" class="editable input-fixed" disabled>
+            <option value="">${addr != null && not empty addr.district ? addr.district : '-- Chọn Quận/Huyện --'}</option>
+        </select>
+        <small class="error-msg" id="err-district"></small>
 
         <label>Phường/Xã:</label>
         <select id="wardSelect" class="editable input-fixed" disabled>
@@ -119,8 +147,12 @@
 
         <input type="hidden" name="addressId" value="${addr != null ? addr.id : 0}">
 
-        <button type="button" id="btnToggle" class="btn-update">Cập nhật thông tin</button>
+        <div class="form-actions">
+            <button type="button" id="btnToggle" class="btn-update">Cập nhật thông tin</button>
+            <button type="button" id="btnCancel" class="btn-cancel">Hủy</button>
+        </div>
     </form>
 </div>
 
+<script>window.appCtx = '${pageContext.request.contextPath}';</script>
 <script src="${pageContext.request.contextPath}/assets/js/info.js"></script>

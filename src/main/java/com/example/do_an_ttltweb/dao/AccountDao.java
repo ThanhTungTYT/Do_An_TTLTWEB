@@ -20,7 +20,7 @@ public class AccountDao extends BaseDao {
 
     public Address getAddressByUserId(int userId) {
         return getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT id, user_id, country, province, ward, address FROM user_addresses WHERE user_id = :uid")
+                handle.createQuery("SELECT id, user_id, country, province, district, ward, address FROM user_addresses WHERE user_id = :uid")
                         .bind("uid", userId)
                         .mapToBean(Address.class)
                         .findFirst()
@@ -28,7 +28,8 @@ public class AccountDao extends BaseDao {
         );
     }
 
-    public boolean updateUser(int userId, String fullName, String phone, int addressId, String city, String district, String streetAddress) {
+    public boolean updateUser(int userId, String fullName, String phone, int addressId,
+                              String province, String district, String ward, String streetAddress) {
         return getJdbi().withHandle(handle -> {
             int userRows = handle.createUpdate("UPDATE users SET full_name = :name, phone = :phone WHERE id = :id")
                     .bind("name", fullName)
@@ -38,17 +39,19 @@ public class AccountDao extends BaseDao {
 
             int addrRows = 0;
             if (addressId > 0) {
-                addrRows = handle.createUpdate("UPDATE user_addresses SET province = :city, ward = :ward, address = :addr WHERE id = :aid")
-                        .bind("city", city)
-                        .bind("ward", district)
+                addrRows = handle.createUpdate("UPDATE user_addresses SET province = :province, district = :district, ward = :ward, address = :addr WHERE id = :aid")
+                        .bind("province", province)
+                        .bind("district", district)
+                        .bind("ward", ward)
                         .bind("addr", streetAddress)
                         .bind("aid", addressId)
                         .execute();
             } else {
-                addrRows = handle.createUpdate("INSERT INTO user_addresses (user_id, country, province, ward, address) VALUES (:uid, 'VN', :city, :ward, :addr)")
+                addrRows = handle.createUpdate("INSERT INTO user_addresses (user_id, country, province, district, ward, address) VALUES (:uid, 'VN', :province, :district, :ward, :addr)")
                         .bind("uid", userId)
-                        .bind("city", city)
-                        .bind("ward", district)
+                        .bind("province", province)
+                        .bind("district", district)
+                        .bind("ward", ward)
                         .bind("addr", streetAddress)
                         .execute();
             }

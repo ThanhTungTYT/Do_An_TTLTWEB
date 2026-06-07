@@ -5,17 +5,19 @@ public class Address {
     private int user_id;
     private String country;
     private String province;
+    private String district;
     private String ward;
     private String address;
 
     public Address() {
     }
 
-    public Address(int id, int user_id, String country, String province, String ward, String address) {
+    public Address(int id, int user_id, String country, String province, String district, String ward, String address) {
         this.id = id;
         this.user_id = user_id;
         this.country = country;
         this.province = province;
+        this.district = district;
         this.ward = ward;
         this.address = address;
     }
@@ -42,6 +44,12 @@ public class Address {
     }
     public void setProvince(String province) {
         this.province = province;
+    }
+    public String getDistrict() {
+        return district;
+    }
+    public void setDistrict(String district) {
+        this.district = district;
     }
     public String getWard() {
         return ward;
