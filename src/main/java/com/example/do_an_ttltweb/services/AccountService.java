@@ -22,8 +22,9 @@ public class AccountService {
         return accountDao.getAddressByUserId(userId);
     }
 
-    public boolean updateUserInfo(int userId, String fullName, String phone, int addressId, String city, String district, String streetAddress) {
-        return accountDao.updateUser(userId, fullName, phone, addressId, city, district, streetAddress);
+    public boolean updateUserInfo(int userId, String fullName, String phone, int addressId,
+                                  String province, String district, String ward, String streetAddress) {
+        return accountDao.updateUser(userId, fullName, phone, addressId, province, district, ward, streetAddress);
     }
 
 

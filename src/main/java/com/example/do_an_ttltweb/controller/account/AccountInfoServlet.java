@@ -53,13 +53,14 @@ public class AccountInfoServlet extends HttpServlet {
 
         String fullName = request.getParameter("fullname");
         String phone = request.getParameter("phone");
-        String city = request.getParameter("city");
+        String province = request.getParameter("province");
         String district = request.getParameter("district");
+        String ward = request.getParameter("ward");
         String streetAddress = request.getParameter("address");
         String addressIdStr = request.getParameter("addressId");
         int addressId = (addressIdStr != null && !addressIdStr.isEmpty()) ? Integer.parseInt(addressIdStr) : 0;
 
-        boolean isUpdated = accountService.updateUserInfo(authUser.getId(), fullName, phone, addressId, city, district, streetAddress);
+        boolean isUpdated = accountService.updateUserInfo(authUser.getId(), fullName, phone, addressId, province, district, ward, streetAddress);
 
         if (isUpdated) {
             authUser.setFull_name(fullName);
