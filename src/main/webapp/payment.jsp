@@ -94,9 +94,9 @@
                     <input type="text" id="phone" name="phone" placeholder="Số điện thoại"
                            value="${sessionScope.user.phone}">
                     <input type="hidden" name="country" value="Việt Nam">
-                    <input type="hidden" id="hidden_province" name="province" value="">
-                    <input type="hidden" id="hidden_district" name="district" value="">
-                    <input type="hidden" id="hidden_ward" name="ward" value="">
+                    <input type="hidden" id="hidden_province" name="province" value="${requestScope.userAddress.province}">
+                    <input type="hidden" id="hidden_district" name="district" value="${requestScope.userAddress.district}">
+                    <input type="hidden" id="hidden_ward"     name="ward"     value="${requestScope.userAddress.ward}">
                     <input type="hidden" id="hidden_district_id" name="district_id" value="">
                     <input type="hidden" id="hidden_ward_code" name="ward_code" value="">
                     <input type="hidden" id="hidden_shipping_fee" name="shippingFee" value="30000">
@@ -180,7 +180,24 @@
 
             <section class="note-box">
                 <h3>Ghi chú</h3>
-                <textarea name="note" placeholder="Nhập ghi chú cho đơn hàng (nếu có)"></textarea>
+                <textarea name="note" id="order-note" maxlength="300"
+                          placeholder="Nhập ghi chú cho đơn hàng (nếu có) — tối đa 300 ký tự"></textarea>
+                <small id="note-counter" style="display:block; text-align:right; color:#888; font-size:13px; margin-top:4px;">0 / 300 ký tự</small>
+                <script>
+                    (function () {
+                        const ta = document.getElementById('order-note');
+                        const counter = document.getElementById('note-counter');
+                        if (!ta || !counter) return;
+                        const MAX = 300;
+                        function update() {
+                            const len = ta.value.length;
+                            counter.textContent = len + ' / ' + MAX + ' ký tự';
+                            counter.style.color = len > MAX ? '#dc3545' : (len >= MAX * 0.9 ? '#e67e22' : '#888');
+                        }
+                        ta.addEventListener('input', update);
+                        update();
+                    })();
+                </script>
             </section>
         </div>
 

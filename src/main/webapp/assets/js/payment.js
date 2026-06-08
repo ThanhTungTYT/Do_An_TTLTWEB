@@ -119,9 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (phoneInput)    phoneInput.addEventListener('input', validatePhone);
     if (addressInput)  addressInput.addEventListener('input', validateAddress);
 
-    // ==========================================================
-    // KHỐI HÀM CALL API NỘI BỘ GHN CHUẨN (FIX KHỚP VALUE ID)
-    // ==========================================================
     async function loadProvinces() {
         try {
             const res = await fetch(`${ctx}/api/ghn/provinces`);
@@ -130,10 +127,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 citySelect.innerHTML = '<option value="">-- Chọn Tỉnh/Thành phố --</option>';
                 data.forEach(p => {
                     const opt = document.createElement('option');
-                    opt.value = p.ProvinceID; // Trả về ID số của GHN (VD: 214)
+                    opt.value = p.ProvinceID;
                     opt.text = p.ProvinceName;
                     citySelect.appendChild(opt);
                 });
+
+                const savedProvinceName = hiddenProvince ? hiddenProvince.value.trim() : '';
+                if (savedProvinceName) {
+                    const match = data.find(p => p.ProvinceName === savedProvinceName);
+                    if (match) {
+                        citySelect.value = match.ProvinceID;
+                        await loadDistricts(match.ProvinceID, match.ProvinceName);
+                    }
+                }
             }
         } catch (e) { console.error('Lỗi tải danh sách Tỉnh:', e); }
     }
@@ -141,6 +147,8 @@ document.addEventListener("DOMContentLoaded", function () {
     async function loadDistricts(provinceId, provinceName) {
         if (!provinceId) return;
         if (hiddenProvince) hiddenProvince.value = provinceName;
+
+        const savedDistrictName = hiddenDistrict ? hiddenDistrict.value.trim() : '';
 
         if (districtSelect) {
             districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
@@ -162,6 +170,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     districtSelect.appendChild(opt);
                 });
                 districtSelect.disabled = false;
+
+                if (savedDistrictName) {
+                    const match = data.find(d => d.DistrictName === savedDistrictName);
+                    if (match) {
+                        districtSelect.value = match.DistrictID;
+                        await loadWards(match.DistrictID, match.DistrictName);
+                    }
+                }
             }
         } catch (e) { console.error('Lỗi tải danh sách Huyện:', e); }
         validateLocation();
@@ -173,6 +189,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const hiddenDistrictId = document.getElementById('hidden_district_id');
         if (hiddenDistrictId) hiddenDistrictId.value = districtId;
+
+        const savedWardName = hiddenWard ? hiddenWard.value.trim() : '';
 
         if (wardSelect) {
             wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
@@ -190,6 +208,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     wardSelect.appendChild(opt);
                 });
                 wardSelect.disabled = false;
+
+                if (savedWardName) {
+                    const match = data.find(w => w.WardName === savedWardName);
+                    if (match) {
+                        wardSelect.value = match.WardCode;
+                        await onWardChange(match.WardCode, match.WardName);
+                    }
+                }
             }
         } catch (e) { console.error('Lỗi tải danh sách Xã:', e); }
         validateLocation();
@@ -225,7 +251,6 @@ document.addEventListener("DOMContentLoaded", function () {
         validateLocation();
     }
 
-    // Gắn sự kiện lắng nghe thay đổi ô select
     if (citySelect) {
         citySelect.addEventListener("change", function () {
             if (this.value) {
