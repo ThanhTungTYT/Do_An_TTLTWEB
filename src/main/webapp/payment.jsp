@@ -134,13 +134,6 @@
                     </span>
                 </label>
 
-                    <label class="radio-item payment-option">
-                        <input type="radio" name="paymentMethod" value="Ví điện tử">
-                        <span class="payment-label">
-                            <i class="fas fa-wallet payment-icon"></i> Ví điện tử (Momo, ZaloPay)
-                        </span>
-                    </label>
-
                     <div id="bank-info-panel" class="bank-info-panel" style="display:none;">
                         <div class="bank-info-header">
                             <i class="fas fa-info-circle"></i> Thông tin chuyển khoản
