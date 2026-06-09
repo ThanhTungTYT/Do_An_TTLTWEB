@@ -18,6 +18,11 @@ $(document).ready(function () {
         loadContent(urlToLoad);
     });
 
+    $(document).on('click', '.pagination a', function (e) {
+        e.preventDefault();
+        loadContent($(this).attr('href'));
+    });
+
     $(document).on('submit', '#change-pass-form', function(e) {
         e.preventDefault();
 
