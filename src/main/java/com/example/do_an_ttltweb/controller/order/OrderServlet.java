@@ -123,6 +123,24 @@ public class OrderServlet extends HttpServlet {
             return;
         }
 
+        Integer repayOrderId = (Integer) s.getAttribute("repayOrderId");
+        if (repayOrderId != null) {
+            s.removeAttribute("repayOrderId");
+            s.removeAttribute("checkoutCart");
+            if (isBankTransfer) {
+                Order existingOrder = orderService.getOrderById(repayOrderId);
+                long finalAmount = existingOrder != null ? Math.round(existingOrder.getFinalAmount()) : 0;
+                resp.setContentType("application/json");
+                resp.setCharacterEncoding("UTF-8");
+                resp.getWriter().write("{\"success\":true,\"orderId\":" + repayOrderId + ",\"finalAmount\":" + finalAmount + "}");
+            } else {
+                orderService.updateOrderStatusById(repayOrderId, "Đang xử lý");
+                s.setAttribute("success", "Đặt hàng thành công!");
+                resp.sendRedirect(req.getContextPath() + "/account");
+            }
+            return;
+        }
+
         User user = (User) s.getAttribute("user");
         Cart checkoutCart = (Cart) s.getAttribute("checkoutCart");
         Cart mainCart = (Cart) s.getAttribute("cart");
