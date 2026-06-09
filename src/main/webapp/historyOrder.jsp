@@ -114,6 +114,28 @@
     </div>
 </c:forEach>
 
+<%-- Phân trang --%>
+<c:if test="${totalPages > 1}">
+    <div class="pagination" style="display:flex; justify-content:center; align-items:center; gap:6px; margin:24px 0;">
+        <c:if test="${currentPage > 1}">
+            <a href="${pageContext.request.contextPath}/his-order?page=${currentPage - 1}"
+               style="padding:6px 12px; border:1px solid #ccc; border-radius:5px; text-decoration:none; color:#333;">&laquo;</a>
+        </c:if>
+        <c:forEach begin="1" end="${totalPages}" var="i">
+            <a href="${pageContext.request.contextPath}/his-order?page=${i}"
+               style="padding:6px 12px; border:1px solid #ccc; border-radius:5px; text-decoration:none;
+               <c:choose>
+               <c:when test="${i == currentPage}">background:#c76739; color:white; border-color:#c76739;</c:when>
+               <c:otherwise>color:#333;</c:otherwise>
+                       </c:choose>">${i}</a>
+        </c:forEach>
+        <c:if test="${currentPage < totalPages}">
+            <a href="${pageContext.request.contextPath}/his-order?page=${currentPage + 1}"
+               style="padding:6px 12px; border:1px solid #ccc; border-radius:5px; text-decoration:none; color:#333;">&raquo;</a>
+        </c:if>
+    </div>
+</c:if>
+
 <div class="overlay" id="detail-overlay" onclick="closeDetailIfOutside(event)">
     <div class="detail-modal">
         <button class="close-modal-btn" onclick="closeDetail()">✕</button>

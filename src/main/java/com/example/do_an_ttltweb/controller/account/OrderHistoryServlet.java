@@ -19,6 +19,7 @@ import java.util.List;
 @WebServlet(name = "OrderHistoryServlet", urlPatterns = {"/his-order", "/cancel-order"})
 public class OrderHistoryServlet extends HttpServlet {
 
+    private static final int PAGE_SIZE = 5;
     private OrderService orderService = new OrderService();
 
     @Override
@@ -34,7 +35,23 @@ public class OrderHistoryServlet extends HttpServlet {
             return;
         }
 
-        List<Order> orders = orderService.getOrdersByUserId(authUser.getId());
+        // Phân trang
+        int page = 1;
+        try {
+            String p = request.getParameter("page");
+            if (p != null) page = Integer.parseInt(p);
+        } catch (NumberFormatException ignored) {}
+
+        List<Order> allOrders = orderService.getOrdersByUserId(authUser.getId());
+        int totalOrders = allOrders.size();
+        int totalPages  = (int) Math.ceil((double) totalOrders / PAGE_SIZE);
+        if (page < 1) page = 1;
+        if (totalPages > 0 && page > totalPages) page = totalPages;
+
+        int from = (page - 1) * PAGE_SIZE;
+        int to   = Math.min(from + PAGE_SIZE, totalOrders);
+        List<Order> orders = allOrders.subList(from, to);
+
         Map<Integer, OrderAddress> orderAddressMap = new HashMap<>();
         for (Order o : orders) {
             OrderAddress addr = orderService.getAddressByOrderId(o.getId());
@@ -42,6 +59,8 @@ public class OrderHistoryServlet extends HttpServlet {
         }
         request.setAttribute("orderAddressMap", orderAddressMap);
         request.setAttribute("orders", orders);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
 
         request.getRequestDispatcher("/historyOrder.jsp").forward(request, response);
     }
