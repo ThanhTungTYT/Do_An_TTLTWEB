@@ -300,7 +300,7 @@
                             <button type="submit" name="newStatus" value="Đang giao" class="btn-invoice" style="flex: 2; background-color: #28a745; margin: 0;">
                                 Xác nhận & Giao hàng
                             </button>
-                            <button type="submit" name="newStatus" value="Đã hủy" class="btn-invoice" style="flex: 1; background-color: #dc3545; margin: 0;" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
+                            <button type="submit" name="newStatus" value="Đã hủy" class="btn-invoice" style="flex: 1; background-color: #dc3545; margin: 0;" onclick="">
                                 Hủy đơn
                             </button>
                         </div>
@@ -324,7 +324,7 @@
                                 <button type="submit" name="newStatus" value="Đang giao" class="btn-invoice" style="flex: 1; background-color: #0275d8; margin: 0;">
                                     Gửi lại đơn (Xuất hóa đơn lại)
                                 </button>
-                                <button type="submit" name="newStatus" value="Đã hủy" class="btn-invoice" style="flex: 1; background-color: #d9534f; margin: 0;" onclick="return confirm('Xác nhận không thể giao lại, hủy đơn và hoàn trả số lượng vào kho?')">
+                                <button type="submit" name="newStatus" value="Đã hủy" class="btn-invoice" style="flex: 1; background-color: #d9534f; margin: 0;" onclick="">
                                     Xác nhận Hủy đơn
                                 </button>
                             </div>
