@@ -42,7 +42,11 @@ public class UserDeleteReview extends HttpServlet {
         int pid = Integer.parseInt(pidParam);
 
         boolean result = reviewService.deleteReview(rid);
-        System.out.println("Delete result: " + result);
+        if (result) {
+            request.getSession().setAttribute("success", "Đã xóa đánh giá");
+        } else {
+            request.getSession().setAttribute("error", "Xóa đánh giá thất bại!");
+        }
 
         response.sendRedirect(request.getContextPath() + "/product?pid=" + pid);
     }
