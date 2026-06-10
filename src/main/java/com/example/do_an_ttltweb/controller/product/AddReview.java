@@ -29,7 +29,7 @@ public class AddReview extends HttpServlet {
 
         int productId = Integer.parseInt(request.getParameter("pid"));
         if (user == null) {
-            session.setAttribute("reviewNotice", "Bạn cần đăng nhập để gửi đánh giá");
+            session.setAttribute("error", "Bạn cần đăng nhập để gửi đánh giá");
             response.sendRedirect(
                     request.getContextPath() + "/product?pid=" + productId
             );
@@ -43,7 +43,7 @@ public class AddReview extends HttpServlet {
         review.setComment(request.getParameter("comment"));
 
         if(!reviewService.isBuy(user.getId(), productId)){
-            session.setAttribute("reviewNotice", "Bạn cần mua sản phẩm để tiến hành đánh giá.");
+            session.setAttribute("error", "Bạn cần mua sản phẩm để tiến hành đánh giá.");
             response.sendRedirect(
                     request.getContextPath() + "/product?pid=" + productId
             );
@@ -51,7 +51,7 @@ public class AddReview extends HttpServlet {
         }
 
         if(reviewService.isSpam(user.getId(), productId)){
-            session.setAttribute("reviewNotice", "Bạn đang đánh giá quá nhanh, vui lòng chờ 1 phút.");
+            session.setAttribute("error", "Bạn đang đánh giá quá nhanh, vui lòng chờ 1 phút.");
             response.sendRedirect(
                     request.getContextPath() + "/product?pid=" + productId
             );
@@ -59,9 +59,9 @@ public class AddReview extends HttpServlet {
         }
 
         if (!reviewService.addReview(review)) {
-            session.setAttribute("reviewNotice", "Đã xảy ra lỗi!");
+            session.setAttribute("error", "Đã xảy ra lỗi khi gửi đánh giá!");
         } else {
-            session.setAttribute("reviewNotice", "Gửi đánh giá thành công");
+            session.setAttribute("success", "Gửi đánh giá thành công");
         }
 
         response.sendRedirect(
