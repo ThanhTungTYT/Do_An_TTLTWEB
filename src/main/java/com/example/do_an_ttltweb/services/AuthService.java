@@ -18,6 +18,15 @@ public class AuthService {
         return null;
     }
 
+    public boolean isBan(String email){
+        User u = authDao.isBan(email);
+
+        if(u != null){
+            return true;
+        }
+        return false;
+    }
+
     public boolean existsByEmail(String email) {
         return authDao.exists(email);
     }

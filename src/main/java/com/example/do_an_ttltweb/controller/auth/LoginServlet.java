@@ -32,6 +32,12 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
+        if(authService.isBan(email)){
+            request.setAttribute("error", "Tài khoản của bạn đã bị cấm!");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
+
         User user = authService.login(email, password);
 
         if (user == null) {
