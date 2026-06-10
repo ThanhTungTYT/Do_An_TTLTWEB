@@ -1,7 +1,3 @@
-const minus = document.getElementById("count-minus");
-const add = document.getElementById("count-add");
-const count = document.getElementById("num-count");
-
 document.addEventListener("DOMContentLoaded", function () {
     const toggleBtn = document.getElementById('readMoreBtn');
     const content = document.getElementById('contentToCollapse');
@@ -75,3 +71,111 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(updateButtons, 50);
     }
 });
+
+(function () {
+    const numCount = document.getElementById("num-count");
+    const qInput = document.getElementById("q");
+    const addBtn = document.getElementById("count-add");
+    const minusBtn = document.getElementById("count-minus");
+
+    if (addBtn && minusBtn && numCount && qInput) {
+        addBtn.onclick = () => {
+            let v = parseInt(numCount.innerText) + 1;
+            numCount.innerText = v;
+            qInput.value = v;
+        };
+        minusBtn.onclick = () => {
+            let v = Math.max(1, parseInt(numCount.innerText) - 1);
+            numCount.innerText = v;
+            qInput.value = v;
+        };
+    }
+})();
+
+function confirmDelete(rid, pid) {
+    document.getElementById("delete-rid").value = rid;
+    document.getElementById("delete-pid").value = pid;
+    const overlay = document.getElementById("confirm-delete-overlay");
+    overlay.style.display = "flex";
+}
+
+function closeConfirm() {
+    document.getElementById("confirm-delete-overlay").style.display = "none";
+}
+
+function submitDelete() {
+    document.getElementById("delete-review-form").submit();
+}
+
+(function () {
+    const overlay = document.getElementById("confirm-delete-overlay");
+    if (overlay) {
+        overlay.onclick = function (e) {
+            if (e.target === this) closeConfirm();
+        };
+    }
+})();
+
+function loadMoreReviews() {
+    const hiddenReviews = document.querySelectorAll('.review-hidden');
+    let count = 0;
+
+    hiddenReviews.forEach(item => {
+        if (count < 10) {
+            item.style.display = 'block';
+            item.classList.remove('review-hidden');
+            count++;
+        }
+    });
+
+    const remaining = document.querySelectorAll('.review-hidden').length;
+    const hiddenCountSpan = document.getElementById('hidden-count');
+    if (hiddenCountSpan) {
+        hiddenCountSpan.textContent = remaining;
+    }
+
+    if (remaining === 0) {
+        const wrapper = document.getElementById('load-more-reviews-wrapper');
+        if (wrapper) {
+            wrapper.style.display = 'none';
+        }
+    }
+}
+
+(function () {
+    const form = document.getElementById('review-form');
+    const ta = document.getElementById('review-comment');
+    const counter = document.getElementById('review-counter');
+    const err = document.getElementById('review-error');
+    if (!form || !ta) return;
+
+    const MAX = 500;
+    const MIN = 1;
+
+    function updateCounter() {
+        const len = ta.value.length;
+        counter.textContent = len + ' / ' + MAX + ' ký tự';
+        counter.style.color = len > MAX ? '#dc3545' : (len >= MAX * 0.9 ? '#e67e22' : '#888');
+    }
+    ta.addEventListener('input', updateCounter);
+    updateCounter();
+
+    form.addEventListener('submit', function (e) {
+        const val = ta.value.trim();
+        if (val.length < MIN) {
+            e.preventDefault();
+            err.textContent = 'Đánh giá phải có ít nhất ' + MIN + ' ký tự.';
+            err.style.display = 'block';
+            ta.focus();
+            return;
+        }
+        if (val.length > MAX) {
+            e.preventDefault();
+            err.textContent = 'Đánh giá không được quá ' + MAX + ' ký tự.';
+            err.style.display = 'block';
+            ta.focus();
+            return;
+        }
+        err.style.display = 'none';
+    });
+})();
