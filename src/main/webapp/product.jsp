@@ -9,16 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/product.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 <body>
-<c:if test="${not empty sessionScope.success or not empty sessionScope.error}">
-    <div id="toast-notification" class="toast ${not empty sessionScope.success ? 'toast-success' : 'toast-error'}">
-        <i class="${not empty sessionScope.success ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'}"></i>
-        <span>${not empty sessionScope.success ? sessionScope.success : sessionScope.error}</span>
-    </div>
-    <c:remove var="success" scope="session"/>
-    <c:remove var="error" scope="session"/>
-</c:if>
+<jsp:include page="/WEB-INF/includes/toast.jsp"/>
 <header>
     <div class="top">
         <div class="logo">
@@ -284,7 +278,7 @@
                             </div>
                         </div>
                     </div>
-                <form class="review-form" method="post"
+                <form class="review-form" id="review-form" method="post"
                       action="${pageContext.request.contextPath}/addReview">
                     <input type="hidden" name="pid" value="${product.id}">
                     <h4>Viết đánh giá của bạn</h4>
@@ -299,17 +293,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-        <textarea name="comment" rows="5"
-                  placeholder="Hãy chia sẻ cảm nhận của bạn..."></textarea>
+        <textarea name="comment" id="review-comment" rows="5" maxlength="500"
+                  placeholder="Hãy chia sẻ cảm nhận của bạn... (tối đa 500 ký tự)"></textarea>
+                        <small id="review-counter" style="display:block; text-align:right; color:#888; font-size:13px; margin-top:4px;">0 / 500 ký tự</small>
+                        <small id="review-error" style="display:none; color:#dc3545; font-size:13px; font-style:italic;"></small>
                     </div>
                     <button type="submit">Gửi đánh giá</button>
                 </form>
-                <c:if test="${not empty sessionScope.reviewNotice}">
-                    <div class="notice" style="text-align: center;">
-                        <p style="padding: 5px; margin-top: 5px">${sessionScope.reviewNotice}</p>
-                    </div>
-                    <c:remove var="reviewNotice" scope="session"/>
-                </c:if>
             </div>
         </div>
         <div class="product-relative">
@@ -340,7 +330,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <footer class="footer">
     <div class="footer-top">
         <div class="foot-content left">
@@ -376,64 +366,6 @@
 
 <script src="${pageContext.request.contextPath}/assets/js/product.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
-<script>
-    const numCount = document.getElementById("num-count");
-    const qInput = document.getElementById("q");
-
-    document.getElementById("count-add").onclick = () => {
-        let v = parseInt(numCount.innerText) + 1;
-        numCount.innerText = v;
-        qInput.value = v;
-    };
-
-    document.getElementById("count-minus").onclick = () => {
-        let v = Math.max(1, parseInt(numCount.innerText) - 1);
-        numCount.innerText = v;
-        qInput.value = v;
-    };
-
-    function confirmDelete(rid, pid) {
-        document.getElementById("delete-rid").value = rid;
-        document.getElementById("delete-pid").value = pid;
-        const overlay = document.getElementById("confirm-delete-overlay");
-        overlay.style.display = "flex";
-    }
-    function closeConfirm() {
-        document.getElementById("confirm-delete-overlay").style.display = "none";
-    }
-    function submitDelete() {
-        document.getElementById("delete-review-form").submit();
-    }
-    document.getElementById("confirm-delete-overlay").onclick = function(e) {
-        if (e.target === this) closeConfirm();
-    }
-
-    function loadMoreReviews() {
-        const hiddenReviews = document.querySelectorAll('.review-hidden');
-        let count = 0;
-
-        hiddenReviews.forEach(item => {
-            if (count < 10) {
-                item.style.display = 'block';
-                item.classList.remove('review-hidden');
-                count++;
-            }
-        });
-
-        const remaining = document.querySelectorAll('.review-hidden').length;
-        const hiddenCountSpan = document.getElementById('hidden-count');
-        if (hiddenCountSpan) {
-            hiddenCountSpan.textContent = remaining;
-        }
-
-        if (remaining === 0) {
-            const wrapper = document.getElementById('load-more-reviews-wrapper');
-            if (wrapper) {
-                wrapper.style.display = 'none';
-            }
-        }
-    }
-
-</script>
+<script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
 </body>
 </html>
