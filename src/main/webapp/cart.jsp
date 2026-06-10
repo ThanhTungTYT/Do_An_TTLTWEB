@@ -68,6 +68,18 @@
         </div>
         <% session.removeAttribute("error"); %>
     </c:if>
+    <c:if test="${item.quantity > item.product.stock}">
+        <p style="color: red; font-size: 0.85em; margin-top: 4px;">
+            <i class="fas fa-exclamation-triangle"></i>
+            Chỉ còn ${item.product.stock} sản phẩm trong kho!
+        </p>
+    </c:if>
+    <c:if test="${item.product.stock == 0 or item.product.state == 'inactive'}">
+        <p style="color: red; font-size: 0.85em; margin-top: 4px;">
+            <i class="fas fa-times-circle"></i>
+            Sản phẩm này đã hết hàng!
+        </p>
+    </c:if>
 
     <c:if test="${empty sessionScope.cart or empty sessionScope.cart.list}">
         <div style="text-align: center; margin: 50px 0;">

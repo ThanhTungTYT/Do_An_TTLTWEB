@@ -18,7 +18,7 @@ public class AuthDao extends BaseDao {
 
     public User isBan(String email) {
         return getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT * FROM users WHERE email = :e AND status = 'active'")
+                handle.createQuery("SELECT * FROM users WHERE email = :e AND status = 'ban'")
                         .bind("e", email)
                         .mapToBean(User.class)
                         .findOne()

@@ -4,6 +4,8 @@ import com.example.do_an_ttltweb.helper.base.BaseDao;
 import com.example.do_an_ttltweb.model.Product;
 import com.example.do_an_ttltweb.model.cart.Cart;
 import com.example.do_an_ttltweb.model.cart.CartItem;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CartDao extends BaseDao {
 
@@ -81,5 +83,26 @@ public class CartDao extends BaseDao {
                     .forEach(item -> cart.addItemDirectly(item));
             return cart;
         });
+    }
+
+    public List<String> validateStock(Cart cart) {
+        List<String> errors = new ArrayList<>();
+        getJdbi().useHandle(h -> {
+            for (CartItem item : cart.getList()) {
+                Integer stock = h.createQuery(
+                                "SELECT stock FROM products WHERE id = :pid AND state = 'active'")
+                        .bind("pid", item.getProduct().getId())
+                        .mapTo(Integer.class)
+                        .findOne()
+                        .orElse(null);
+
+                if (stock == null) {
+                    errors.add("Sản phẩm \"" + item.getProduct().getName() + "\" không còn tồn tại.");
+                } else if (stock < item.getQuantity()) {
+                    errors.add("Sản phẩm \"" + item.getProduct().getName() + "\" chỉ còn " + stock + " sản phẩm, không đủ cho yêu cầu " + item.getQuantity() + " sản phẩm.");
+                }
+            }
+        });
+        return errors;
     }
 }
