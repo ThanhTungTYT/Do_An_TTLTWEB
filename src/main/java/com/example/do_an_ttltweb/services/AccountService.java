@@ -5,6 +5,7 @@ import com.example.do_an_ttltweb.dao.AuthDao;
 import com.example.do_an_ttltweb.dao.OrderDao;
 import com.example.do_an_ttltweb.helper.hash.MD5Util;
 import com.example.do_an_ttltweb.model.Address;
+import com.example.do_an_ttltweb.model.Banner;
 import com.example.do_an_ttltweb.model.User;
 
 import java.util.List;
@@ -57,5 +58,12 @@ public class AccountService {
     }
     public List<Map<String, Object>> getAllPermissions() {
         return new AuthDao().getAllPermissions();
+    }
+    public int countUsers(){
+        return accountDao.countUsers();
+    }
+
+    public List<User> getUsersPaginated(int limit, int offset) {
+        return accountDao.getUsersPaginated(limit, offset);
     }
 }

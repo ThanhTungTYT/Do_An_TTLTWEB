@@ -1,6 +1,7 @@
 package com.example.do_an_ttltweb.controller.adminPage4;
 
 import com.example.do_an_ttltweb.dao.AuthDao;
+import com.example.do_an_ttltweb.model.Banner;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.services.AccountService;
 import jakarta.servlet.ServletException;
@@ -19,10 +20,25 @@ public class AdminPage4Servlet extends HttpServlet {
     private AuthDao authDao = new AuthDao();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pageStr = request.getParameter("page");
+        int page = 1;
+        int limit = 25;
+        try {
+            if (pageStr != null) {
+                page = Integer.parseInt(pageStr);
+                if (page < 1) page = 1;
+            }
+        } catch (NumberFormatException ignored) {}
 
-        List<User> listUsers = a.getAllUser();
+        int totalUsers = a.countUsers();
+        int totalPages = (int) Math.ceil((double) totalUsers / limit);
+        if (totalPages == 0) totalPages = 1;
+
+        if (page > totalPages) page = totalPages;
+
+        int offset = (page - 1) * limit;
+        List<User> listUsers = a.getUsersPaginated(limit, offset);
 
         listUsers.forEach(u -> {
             List<String> perms = authDao.getPermissionsByUserId(u.getId());
@@ -31,6 +47,8 @@ public class AdminPage4Servlet extends HttpServlet {
         });
 
         request.setAttribute("listUsers", listUsers);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("listNew", a.getNewUser());
         request.setAttribute("allPermissions", authDao.getAllPermissions());
 

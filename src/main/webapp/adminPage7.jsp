@@ -220,7 +220,6 @@
             document.querySelector("input[name='up_start']").value = data.start;
             document.querySelector("input[name='up_end']").value = data.end;
 
-            // Status để rỗng — admin chủ động chọn lại (tránh giữ nguyên ngoài ý muốn)
             document.querySelector("select[name='up_status']").value = "";
 
             document.getElementById("form-remake").display = "block";

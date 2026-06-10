@@ -140,6 +140,24 @@
             </c:forEach>
             </tbody>
         </table>
+        <div class="pagination">
+            <a href="${currentPage > 1 ? pageContext.request.contextPath : ''}${currentPage > 1 ? '/admin/users?page=' : '#'}${currentPage > 1 ? currentPage - 1 : ''}${currentPage > 1 ? '&startDate=' : ''}${currentPage > 1 ? startDate : ''}${currentPage > 1 ? '&endDate=' : ''}${currentPage > 1 ? endDate : ''}"
+               class="${currentPage <= 1 ? 'disabled' : ''}">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+
+            <c:forEach begin="1" end="${totalPages}" var="i">
+                <a href="${pageContext.request.contextPath}/admin/users?page=${i}&startDate=${startDate}&endDate=${endDate}"
+                   class="${currentPage == i ? 'active' : ''}">
+                        ${i}
+                </a>
+            </c:forEach>
+
+            <a href="${currentPage < totalPages ? pageContext.request.contextPath : ''}${currentPage < totalPages ? '/admin/users?page=' : '#'}${currentPage < totalPages ? currentPage + 1 : ''}${currentPage < totalPages ? '&startDate=' : ''}${currentPage < totalPages ? startDate : ''}${currentPage < totalPages ? '&endDate=' : ''}${currentPage < totalPages ? endDate : ''}"
+               class="${currentPage >= totalPages ? 'disabled' : ''}">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -290,6 +308,11 @@
             document.getElementById("form-remake").style.display = "block";
         }
     });
+    function changePage(page) {
+        let urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('page', page);
+        window.location.search = urlParams.toString();
+    }
 
     document.getElementById("close-remake").onclick = () => document.getElementById("form-remake").style.display = "none";
     document.getElementById("add").onclick = () => document.getElementById("form-add").style.display = "block";
