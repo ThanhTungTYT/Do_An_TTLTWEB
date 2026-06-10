@@ -122,11 +122,11 @@
                             <i class="fa-solid fa-pen"></i>
                         </button>
 
-                        <a href="${pageContext.request.contextPath}/admin/promotion/delete?id=${p.id}&page=${currentPage}"
-                           class="btn-action btn-delete"
-                           onclick="return confirm('Bạn có chắc chắn muốn xóa mã này không? Nếu mã đã được sử dụng, hệ thống sẽ chỉ tắt kích hoạt.');">
+                        <button type="button" class="btn-action btn-delete"
+                                onclick="openDeleteConfirm('${p.id}', '${currentPage}')"
+                                style="border: none; cursor: pointer;">
                             <i class="fa-solid fa-trash"></i>
-                        </a>
+                        </button>
                     </td>
                 </tr>
             </c:forEach>
@@ -213,6 +213,30 @@
         <button class="submit" type="submit">Xác nhận</button>
 
     </form>
+</div>
+
+<form id="delete-promotion-form" method="GET" action="${pageContext.request.contextPath}/admin/promotion/delete">
+    <input type="hidden" name="id" id="delete-promo-id">
+    <input type="hidden" name="page" id="delete-promo-page">
+</form>
+
+<div id="confirm-delete-overlay" class="delete-overlay">
+    <div class="delete-modal-box">
+        <i class="fas fa-exclamation-triangle delete-icon"></i>
+        <h3 class="delete-title">Xóa mã giảm giá?</h3>
+        <p class="delete-message">
+            Bạn có chắc chắn muốn xóa mã này không?<br>
+            <span class="delete-note">Nếu mã đã được sử dụng, hệ thống sẽ tự động chuyển sang trạng thái tắt kích hoạt (Inactive).</span>
+        </p>
+        <div class="delete-actions">
+            <button type="button" onclick="closeConfirm()" class="btn-confirm-cancel">
+                Hủy
+            </button>
+            <button type="button" onclick="submitDelete()" class="btn-confirm-delete">
+                Xác nhận xóa
+            </button>
+        </div>
+    </div>
 </div>
 
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>

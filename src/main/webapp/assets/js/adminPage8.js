@@ -121,3 +121,26 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+function openDeleteConfirm(promoId, currentPage) {
+    document.getElementById("delete-promo-id").value = promoId;
+    document.getElementById("delete-promo-page").value = currentPage;
+
+    const overlay = document.getElementById("confirm-delete-overlay");
+    overlay.style.display = "flex";
+
+    const content = document.getElementById("right-content");
+    if(content) content.style.filter = "blur(3px)";
+}
+
+function closeConfirm() {
+    const overlay = document.getElementById("confirm-delete-overlay");
+    overlay.style.display = "none";
+
+    const content = document.getElementById("right-content");
+    if(content) content.style.filter = "none";
+}
+
+function submitDelete() {
+    document.getElementById("delete-promotion-form").submit();
+}
