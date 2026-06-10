@@ -6,7 +6,7 @@ import java.util.List;
 
 public class BannerService {
 
-    private final BannerDao bannerDao = new BannerDao(); // Đổi tên biến cho rõ nghĩa
+    private final BannerDao bannerDao = new BannerDao();
 
     public List<Banner> getAllBanners() {
         return bannerDao.getAllBanners();

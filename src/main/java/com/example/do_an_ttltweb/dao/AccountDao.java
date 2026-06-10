@@ -136,4 +136,22 @@ public class AccountDao extends BaseDao {
                         .one()
         );
     }
+
+    public int countUsers() {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM users")
+                        .mapTo(Integer.class)
+                        .one()
+        );
+    }
+
+    public List<User> getUsersPaginated(int limit, int offset) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT * FROM users ORDER BY id DESC LIMIT :limit OFFSET :offset")
+                        .bind("limit", limit)
+                        .bind("offset", offset)
+                        .mapToBean(User.class)
+                        .list()
+        );
+    }
 }
