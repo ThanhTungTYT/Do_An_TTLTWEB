@@ -122,7 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!isVisible) return;
             if (e.target.closest(openSel)) return;
             if (el.contains(e.target)) return;
-            el.style.display = 'none';
+            if (el.id === 'detail-p' && typeof window.closeReviewModal === 'function') {
+                window.closeReviewModal();
+            } else {
+                el.style.display = 'none';
+            }
             if (content) content.style.filter = 'blur(0)';
         });
 

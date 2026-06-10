@@ -58,3 +58,75 @@
     .list-discount td a.btn-action.btn-edit:hover {
         background-color: #8c4828;
     }
+
+    #delete-promotion-form {
+        display: none;
+    }
+
+    .delete-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .delete-modal-box {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 30px;
+        width: 380px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .delete-icon {
+        font-size: 2.5em;
+        color: #e74c3c;
+        margin-bottom: 15px;
+    }
+
+    .delete-title {
+        margin-bottom: 10px;
+        font-family: sans-serif;
+    }
+
+    .delete-message {
+        color: #666666;
+        margin-bottom: 20px;
+        font-size: 0.95em;
+        line-height: 1.4;
+    }
+
+    .delete-note {
+        font-size: 0.85em;
+        color: #999999;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .delete-actions button {
+        padding: 10px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.95em;
+    }
+
+    .btn-confirm-cancel {
+        border: 1px solid #dddddd;
+        background: #ffffff;
+        color: #333333;
+    }
+
+    .btn-confirm-delete {
+        background: #e74c3c;
+        color: #ffffff;
+        border: none;
+        font-weight: bold;
+    }

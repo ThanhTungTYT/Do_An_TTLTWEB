@@ -180,6 +180,11 @@
     function closeReviewModal() {
         document.getElementById("detail-p").style.display = "none";
         document.getElementById("modal-backdrop").style.display = "none";
+
+        const content = document.getElementById("right-content");
+        if (content) {
+            content.style.filter = "blur(0)";
+        }
     }
 </script>
 </body>

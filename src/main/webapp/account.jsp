@@ -73,7 +73,7 @@
                     <li>
                         <a href="${pageContext.request.contextPath}/admin/dashboard"
                            class="sidebar-link"
-                           style="color:#c76739; font-weight:bold;"
+                           style="color:#e74c3c; font-weight:bold;"
                            onclick="window.location.href=this.href; return false;">
                             <i class="fas fa-shield-alt"></i> Trang quản trị
                         </a>
