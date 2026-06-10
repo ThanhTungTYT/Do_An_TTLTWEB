@@ -23,6 +23,8 @@ public class AdminPage1Service {
             cal.add(Calendar.MONTH, -1);
         } else if ("quarter".equals(filter)) {
             cal.add(Calendar.MONTH, -3);
+        } else if ("all".equals(filter)) {
+            cal.add(Calendar.YEAR, -100);
         } else {
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
