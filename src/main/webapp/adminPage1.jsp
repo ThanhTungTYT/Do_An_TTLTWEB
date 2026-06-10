@@ -77,6 +77,7 @@
         <div class="filter-section">
             <form method="get" action="${pageContext.request.contextPath}/admin/dashboard">
                 <select name="filter" onchange="this.form.submit()">
+                    <option value="all" ${filter == 'all' ? 'selected' : ''}>Tất cả</option>
                     <option value="today" ${filter == 'today' ? 'selected' : ''}>Hôm nay</option>
                     <option value="week" ${filter == 'week' ? 'selected' : ''}>7 ngày</option>
                     <option value="month" ${filter == 'month' ? 'selected' : ''}>30 ngày</option>

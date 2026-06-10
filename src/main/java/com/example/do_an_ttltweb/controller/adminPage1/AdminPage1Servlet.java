@@ -36,25 +36,38 @@ public class AdminPage1Servlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+        String startDateStr = request.getParameter("startDate");
+        String endDateStr = request.getParameter("endDate");
 
-        if (startDate != null && !startDate.isEmpty()
-                && endDate != null && !endDate.isEmpty()) {
+        if ((startDateStr != null && !startDateStr.isEmpty()) || (endDateStr != null && !endDateStr.isEmpty())) {
 
-            Timestamp start = Timestamp.valueOf(startDate + " 00:00:00");
-            Timestamp end = Timestamp.valueOf(endDate + " 23:59:59");
+            Timestamp start;
+            Timestamp end;
+
+            if (startDateStr != null && !startDateStr.isEmpty()) {
+                start = Timestamp.valueOf(startDateStr + " 00:00:00");
+                request.setAttribute("startDate", startDateStr);
+            } else {
+                start = Timestamp.valueOf("1970-01-01 00:00:00");
+                request.setAttribute("startDate", "");
+            }
+
+            if (endDateStr != null && !endDateStr.isEmpty()) {
+                end = Timestamp.valueOf(endDateStr + " 23:59:59");
+                request.setAttribute("endDate", endDateStr);
+            } else {
+                end = new Timestamp(System.currentTimeMillis());
+
+                String nowStr = new java.text.SimpleDateFormat("yyyy-MM-dd").format(end);
+                request.setAttribute("endDate", nowStr);
+            }
 
             loadByDate(request, start, end);
-
-            request.setAttribute("startDate", startDate);
-            request.setAttribute("endDate", endDate);
             request.setAttribute("filter", "custom");
         } else {
             loadByFilter(request, "today");
             request.setAttribute("filter", "today");
         }
-
         request.getRequestDispatcher("/adminPage1.jsp").forward(request, response);
     }
 
