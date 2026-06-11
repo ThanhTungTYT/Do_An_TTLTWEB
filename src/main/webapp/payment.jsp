@@ -291,7 +291,7 @@
         <div class="modal-body">
 
             <div class="modal-order-summary">
-                <p class="modal-label">Mã đơn hàng (tạm thời)</p>
+                <p class="modal-label">Mã đơn hàng</p>
                 <p class="modal-order-id" id="modal-order-ref">AROMACAFE-${sessionScope.user.id}-<span id="modal-timestamp"></span></p>
             </div>
 

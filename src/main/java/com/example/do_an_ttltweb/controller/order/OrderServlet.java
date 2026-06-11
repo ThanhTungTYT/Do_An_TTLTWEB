@@ -39,6 +39,17 @@ public class OrderServlet extends HttpServlet {
             resp.sendRedirect("cart.jsp");
             return;
         }
+
+        Integer pendingBankOrderId = (Integer) s.getAttribute("pendingBankOrderId");
+        if (pendingBankOrderId != null) {
+            Order pendingOrder = orderService.getOrderById(pendingBankOrderId);
+            if (pendingOrder == null || !"Ch\u1EDD thanh to\u00E1n".equals(pendingOrder.getStatus())) {
+                s.removeAttribute("pendingBankOrderId");
+                s.removeAttribute("checkoutCart");
+                resp.sendRedirect("cart.jsp");
+                return;
+            }
+        }
         User user = (User) s.getAttribute("user");
         Address defaultAddress = accountService.getUserAddress(user.getId());
 
@@ -167,8 +178,13 @@ public class OrderServlet extends HttpServlet {
                     long finalAmountLong = Math.round(order.getFinalAmount());
                     String jsonResponse = "{\"success\":true,\"orderId\":" + order.getId() + ",\"finalAmount\":" + finalAmountLong + "}";
                     resp.getWriter().write(jsonResponse);
-                    cleanupAfterOrder(s, mainCart, checkoutCart, user);
                 } else {
+
+                    Integer pendingBankOrderId = (Integer) s.getAttribute("pendingBankOrderId");
+                    if (pendingBankOrderId != null) {
+                        orderService.adminCancelOrder(pendingBankOrderId);
+                        s.removeAttribute("pendingBankOrderId");
+                    }
                     cleanupAfterOrder(s, mainCart, checkoutCart, user);
                     s.setAttribute("success", "Đặt hàng thành công!");
                     resp.sendRedirect(req.getContextPath() + "/account");
