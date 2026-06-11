@@ -303,20 +303,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if(ewalletInfoPanel) ewalletInfoPanel.style.display = "block";
         }
 
-
-        if (bankOrderCreated && !BANK_METHODS.includes(val)) {
-            if (placeOrderBtn) {
-                placeOrderBtn.disabled = true;
-                placeOrderBtn.title    = "Đơn hàng chuyển khoản đang chờ thanh toán. Vui lòng hoàn tất hoặc tải lại trang để đặt đơn mới.";
-                placeOrderBtn.innerHTML = '<i class="fas fa-lock"></i> Đã có đơn hàng chờ thanh toán';
-            }
-        } else if (!bankOrderCreated) {
-            if (placeOrderBtn) {
+        if (placeOrderBtn && !BANK_METHODS.includes(val)) {
                 placeOrderBtn.disabled = false;
                 placeOrderBtn.title    = "";
                 if (placeOrderBtn.innerHTML.includes('fa-lock')) {
                     placeOrderBtn.innerHTML = '<i class="fas fa-check-circle"></i> Đặt hàng';
-                }
             }
         }
 
@@ -359,10 +350,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (placeOrderBtn) {
         placeOrderBtn.addEventListener("click", function () {
-            if (bankOrderCreated) {
-                alert("Bạn đang có đơn hàng chuyển khoản chưa thanh toán. Vui lòng hoàn tất thanh toán hoặc tải lại trang để đặt đơn mới.");
-                return;
-            }
             if (!validateAll()) {
                 const firstError = document.querySelector('.input-error');
                 if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -415,7 +402,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 bankOrderCreated   = true;
                 currentBankOrderId = result.orderId;
                 disableFormInputs();
-
                 openBankModal(result.orderId, result.finalAmount);
             } else {
                 alert("Lỗi đặt hàng: " + (result.message || "Vui lòng thử lại sau."));
@@ -430,16 +416,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function disableFormInputs() {
         const inputs = checkoutForm.querySelectorAll('input:not([type="hidden"]):not([type="radio"]), select, textarea');
-        inputs.forEach(el => {
-            el.disabled = true;
-        });
-        paymentRadios.forEach(r => r.disabled = true);
+        inputs.forEach(el => { el.disabled = true; });
 
         if (openBankModalBtn) {
             openBankModalBtn.innerHTML = '<i class="fas fa-eye"></i> Xem thông tin thanh toán';
         }
     }
 
+    function enableFormInputs() {
+        const inputs = checkoutForm.querySelectorAll('input:not([type="hidden"]):not([type="radio"]), select, textarea');
+        inputs.forEach(el => { el.disabled = false; });
+        if (openBankModalBtn) {
+            openBankModalBtn.innerHTML = '<i class="fas fa-university"></i> Thanh toán chuyển khoản';
+        }
+    }
     function openBankModal(orderId, finalAmount) {
         if (!modal) return;
         const amountInt = Math.round(finalAmount);
@@ -515,6 +505,10 @@ document.addEventListener("DOMContentLoaded", function () {
             clearInterval(paymentPollingInterval);
             paymentPollingInterval = null;
         }
+
+        bankOrderCreated   = false;
+        currentBankOrderId = null;
+        enableFormInputs();
     }
 
     if (modalCloseX) modalCloseX.addEventListener("click", closeModal);

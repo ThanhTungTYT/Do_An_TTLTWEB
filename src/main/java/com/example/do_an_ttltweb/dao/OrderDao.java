@@ -50,6 +50,8 @@ public class OrderDao extends BaseDao {
                                 "VALUES (:orderId, :productId, :price, :quantity)"
                 );
 
+                boolean isPendingPayment = "Chờ thanh toán".equals(order.getStatus());
+
                 for (CartItem i : checkoutCart.getList()) {
 
                     batch.bind("orderId", orderId)
@@ -57,7 +59,7 @@ public class OrderDao extends BaseDao {
                             .bind("price", i.getPrice())
                             .bind("quantity", i.getQuantity())
                             .add();
-
+                    if (!isPendingPayment) {
                     int updateProduct = h.createUpdate(
                                     "UPDATE products " +
                                             "SET stock = stock - :qty, sold = sold + :qty " +
@@ -73,6 +75,7 @@ public class OrderDao extends BaseDao {
                     h.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :pid AND stock <= 0")
                             .bind("pid", i.getProduct().getId())
                             .execute();
+                    }
                 }
                 batch.execute();
 
@@ -460,14 +463,44 @@ public class OrderDao extends BaseDao {
     }
 
     public boolean updateOrderStatusAndGhn(int orderId, String status, String ghnCode) {
-        return getJdbi().withHandle(h ->
-                h.createUpdate(
-                                "UPDATE orders SET status = :status, ghn_order_code = :ghnCode WHERE id = :id")
-                        .bind("status", status)
-                        .bind("ghnCode", ghnCode)
-                        .bind("id", orderId)
-                        .execute() > 0
-        );
+        return getJdbi().inTransaction(h -> {
+            int updated = h.createUpdate(
+                            "UPDATE orders SET status = :status, ghn_order_code = :ghnCode " +
+                                    "WHERE id = :id AND status = 'Ch\u1EDD thanh to\u00E1n'")
+                    .bind("status", status)
+                    .bind("ghnCode", ghnCode)
+                    .bind("id", orderId)
+                    .execute();
+
+            if (updated == 0) {
+                return false;
+            }
+
+            List<OrderItem> items = h.createQuery(
+                            "SELECT product_id, quantity FROM order_items WHERE order_id = :oid")
+                    .bind("oid", orderId)
+                    .mapToBean(OrderItem.class)
+                    .list();
+
+            for (OrderItem item : items) {
+                int rows = h.createUpdate(
+                                "UPDATE products SET stock = stock - :qty, sold = sold + :qty " +
+                                        "WHERE id = :pid AND stock >= :qty AND state = 'active'")
+                        .bind("qty", item.getQuantity())
+                        .bind("pid", item.getProductId())
+                        .execute();
+
+                if (rows == 0) {
+                    throw new RuntimeException("San pham id=" + item.getProductId() + " khong du hang khi xac nhan thanh toan.");
+                }
+
+                h.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :pid AND stock <= 0")
+                        .bind("pid", item.getProductId())
+                        .execute();
+            }
+
+            return true;
+        });
     }
     public boolean updateOrderStatusById(int orderId, String status) {
         return getJdbi().withHandle(handle ->
@@ -480,6 +513,47 @@ public class OrderDao extends BaseDao {
                         .bind("orderId", orderId)
                         .execute() > 0
         );
+    }
+
+
+    public boolean confirmPaymentAndDeductStock(int orderId, String newStatus) {
+        return getJdbi().inTransaction(h -> {
+            int updated = h.createUpdate(
+                            "UPDATE orders SET status = :status " +
+                                    "WHERE id = :orderId AND status = 'Chờ thanh toán'")
+                    .bind("status", newStatus)
+                    .bind("orderId", orderId)
+                    .execute();
+
+            if (updated == 0) {
+                return false;
+            }
+
+            List<OrderItem> items = h.createQuery(
+                            "SELECT product_id, quantity FROM order_items WHERE order_id = :oid")
+                    .bind("oid", orderId)
+                    .mapToBean(OrderItem.class)
+                    .list();
+
+            for (OrderItem item : items) {
+                int rows = h.createUpdate(
+                                "UPDATE products SET stock = stock - :qty, sold = sold + :qty " +
+                                        "WHERE id = :pid AND stock >= :qty AND state = 'active'")
+                        .bind("qty", item.getQuantity())
+                        .bind("pid", item.getProductId())
+                        .execute();
+
+                if (rows == 0) {
+                    throw new RuntimeException("Sản phẩm id=" + item.getProductId() + " không đủ hàng khi xác nhận thanh toán.");
+                }
+
+                h.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :pid AND stock <= 0")
+                        .bind("pid", item.getProductId())
+                        .execute();
+            }
+
+            return true;
+        });
     }
 
     public boolean adminCancelOrder(int orderId) {
