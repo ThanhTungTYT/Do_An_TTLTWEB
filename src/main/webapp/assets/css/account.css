@@ -158,7 +158,7 @@
 .order-item[data-status="Chờ thanh toán"] .order-status { background: #fff3cd; color: #856404; }
 .order-item[data-status="Đang xử lý"]    .order-status { background: #cfe2ff; color: #084298; }
 .order-item[data-status="Đang giao"]     .order-status { background: #d1ecf1; color: #0c5460; }
-.order-item[data-status="Đã nhận"]      .order-status { background: #d4edda; color: #155724; }
+.order-item[data-status="Đã giao"]      .order-status { background: #d4edda; color: #155724; }
 .order-item[data-status="Đã hủy"]       .order-status { background: #f8d7da; color: #721c24; }
 .order-item[data-status="Đã hoàn trả"]  .order-status { background: #e2d9f3; color: #432874; }
 
