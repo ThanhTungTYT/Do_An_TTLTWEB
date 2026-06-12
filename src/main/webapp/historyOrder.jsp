@@ -20,7 +20,6 @@
         <button class="filter-btn ${statusFilter == 'Đang giao' ? 'active' : ''}" onclick="filterOrders('Đang giao', this)">Đang giao</button>
         <button class="filter-btn ${statusFilter == 'Đã giao' ? 'active' : ''}" onclick="filterOrders('Đã giao', this)">Đã nhận</button>
         <button class="filter-btn ${statusFilter == 'Đã hủy' ? 'active' : ''}" onclick="filterOrders('Đã hủy', this)">Đã hủy</button>
-        <button class="filter-btn ${statusFilter == 'Đã hoàn trả' ? 'active' : ''}" onclick="filterOrders('Đã hoàn trả', this)">Đã hoàn trả</button>
     </div>
 </div>
 
