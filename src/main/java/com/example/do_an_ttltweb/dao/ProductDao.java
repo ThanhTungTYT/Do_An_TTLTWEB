@@ -155,7 +155,7 @@ public class ProductDao extends BaseDao {
             } else {
                 sql.append("ORDER BY p.name ASC ");
             }
-            sql.append("LIMIT 25 OFFSET :offset");
+            sql.append("LIMIT 27 OFFSET :offset");
 
             var query = handle.createQuery(sql.toString())
                     .bind("minPrice", minPrice)

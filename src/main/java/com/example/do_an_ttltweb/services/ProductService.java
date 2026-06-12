@@ -36,13 +36,13 @@ public class ProductService {
 
     public List<Product> getProductsForCatalog(int cid, String sort, int page, double minPrice, double maxPrice) {
         if (sort == null) sort = "default";
-        int offset = (page - 1) * 25;
+        int offset = (page - 1) * 27;
         return productDao.getFilteredProducts(cid, sort, offset, minPrice, maxPrice);
     }
 
     public int getTotalPages(int cid, double minPrice, double maxPrice) {
         int totalProducts = productDao.countProducts(cid, minPrice, maxPrice);
-        return (int) Math.ceil((double) totalProducts / 25);
+        return (int) Math.ceil((double) totalProducts / 27);
     }
     // ---------------------------
 

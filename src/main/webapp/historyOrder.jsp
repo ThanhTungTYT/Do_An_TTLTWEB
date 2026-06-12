@@ -18,7 +18,7 @@
         <button class="filter-btn" onclick="filterOrders('Đang xử lý', this)">Đang xử lý</button>
         <button class="filter-btn" onclick="filterOrders('Chờ thanh toán', this)">Chờ thanh toán</button>
         <button class="filter-btn" onclick="filterOrders('Đang giao', this)">Đang giao</button>
-        <button class="filter-btn" onclick="filterOrders('Đã giao', this)">Đã nhận</button>
+        <button class="filter-btn" onclick="filterOrders('Đã giao', this)">Đã giao</button>
         <button class="filter-btn" onclick="filterOrders('Đã hủy', this)">Đã hủy</button>
         <button class="filter-btn" onclick="filterOrders('Đã hoàn trả', this)">Đã hoàn trả</button>
     </div>
@@ -37,7 +37,7 @@
                     <c:when test="${o.status == 'Chờ thanh toán'}"> Chờ thanh toán</c:when>
                     <c:when test="${o.status == 'Đang xử lý'}"> Đang xử lý</c:when>
                     <c:when test="${o.status == 'Đang giao'}"> Đang giao</c:when>
-                    <c:when test="${o.status == 'Đã giao'}"> Đã nhận</c:when>
+                    <c:when test="${o.status == 'Đã giao'}"> Đã giao</c:when>
                     <c:when test="${o.status == 'Đã hủy'}"> Đã hủy</c:when>
                     <c:when test="${o.status == 'Đã hoàn trả'}"> Đã hoàn trả</c:when>
                     <c:otherwise>${o.status}</c:otherwise>
