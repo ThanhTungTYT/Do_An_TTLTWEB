@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const contentArea = $('#content-area');
 
-    function loadContent(url) {
+    window.loadContent = function loadContent(url) {
         contentArea.html('<div style="text-align:center; padding:50px; color:#666;">Đang tải dữ liệu... <i class="fas fa-spinner fa-spin"></i></div>');
         contentArea.load(url, function (response, status, xhr) {
             if (status == "error") {
