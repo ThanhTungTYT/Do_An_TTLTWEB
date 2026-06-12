@@ -14,19 +14,22 @@
 <div class="status-filter-wrapper">
     <p class="status-filter-title">Trạng thái đơn hàng</p>
     <div class="status-filter">
-        <button class="filter-btn active" onclick="filterOrders('all', this)">Tất cả</button>
-        <button class="filter-btn" onclick="filterOrders('Đang xử lý', this)">Đang xử lý</button>
-        <button class="filter-btn" onclick="filterOrders('Chờ thanh toán', this)">Chờ thanh toán</button>
-        <button class="filter-btn" onclick="filterOrders('Đang giao', this)">Đang giao</button>
-        <button class="filter-btn" onclick="filterOrders('Đã giao', this)">Đã giao</button>
-        <button class="filter-btn" onclick="filterOrders('Đã hủy', this)">Đã hủy</button>
-        <button class="filter-btn" onclick="filterOrders('Đã hoàn trả', this)">Đã hoàn trả</button>
+        <button class="filter-btn ${statusFilter == 'all' ? 'active' : ''}" onclick="filterOrders('all', this)">Tất cả</button>
+        <button class="filter-btn ${statusFilter == 'Đang xử lý' ? 'active' : ''}" onclick="filterOrders('Đang xử lý', this)">Đang xử lý</button>
+        <button class="filter-btn ${statusFilter == 'Chờ thanh toán' ? 'active' : ''}" onclick="filterOrders('Chờ thanh toán', this)">Chờ thanh toán</button>
+        <button class="filter-btn ${statusFilter == 'Đang giao' ? 'active' : ''}" onclick="filterOrders('Đang giao', this)">Đang giao</button>
+        <button class="filter-btn ${statusFilter == 'Đã giao' ? 'active' : ''}" onclick="filterOrders('Đã giao', this)">Đã nhận</button>
+        <button class="filter-btn ${statusFilter == 'Đã hủy' ? 'active' : ''}" onclick="filterOrders('Đã hủy', this)">Đã hủy</button>
+        <button class="filter-btn ${statusFilter == 'Đã hoàn trả' ? 'active' : ''}" onclick="filterOrders('Đã hoàn trả', this)">Đã hoàn trả</button>
     </div>
 </div>
 
-<p id="empty-filter-msg" style="display:none; color:#999; text-align:center; padding:20px;">
-    Không có đơn hàng nào trong trạng thái này.
-</p>
+
+<c:if test="${empty orders}">
+    <p id="empty-filter-msg" style="color:#999; text-align:center; padding:20px;">
+        Không có đơn hàng nào trong trạng thái này.
+    </p>
+</c:if>
 
 <c:forEach items="${orders}" var="o">
     <div class="order-item" data-status="${o.status}" style="border:1px solid #ccc;padding:15px;margin-bottom:20px">
@@ -37,7 +40,7 @@
                     <c:when test="${o.status == 'Chờ thanh toán'}"> Chờ thanh toán</c:when>
                     <c:when test="${o.status == 'Đang xử lý'}"> Đang xử lý</c:when>
                     <c:when test="${o.status == 'Đang giao'}"> Đang giao</c:when>
-                    <c:when test="${o.status == 'Đã giao'}"> Đã giao</c:when>
+                    <c:when test="${o.status == 'Đã giao'}"> Đã nhận</c:when>
                     <c:when test="${o.status == 'Đã hủy'}"> Đã hủy</c:when>
                     <c:when test="${o.status == 'Đã hoàn trả'}"> Đã hoàn trả</c:when>
                     <c:otherwise>${o.status}</c:otherwise>
@@ -114,15 +117,17 @@
     </div>
 </c:forEach>
 
-<%-- Phân trang --%>
 <c:if test="${totalPages > 1}">
+    <c:url value="/his-order" var="pageBase">
+        <c:param name="status" value="${statusFilter}"/>
+    </c:url>
     <div class="pagination" style="display:flex; justify-content:center; align-items:center; gap:6px; margin:24px 0;">
         <c:if test="${currentPage > 1}">
-            <a href="${pageContext.request.contextPath}/his-order?page=${currentPage - 1}"
+            <a href="${pageBase}&page=${currentPage - 1}"
                style="padding:6px 12px; border:1px solid #ccc; border-radius:5px; text-decoration:none; color:#333;">&laquo;</a>
         </c:if>
         <c:forEach begin="1" end="${totalPages}" var="i">
-            <a href="${pageContext.request.contextPath}/his-order?page=${i}"
+            <a href="${pageBase}&page=${i}"
                style="padding:6px 12px; border:1px solid #ccc; border-radius:5px; text-decoration:none;
                <c:choose>
                <c:when test="${i == currentPage}">background:#c76739; color:white; border-color:#c76739;</c:when>
@@ -130,7 +135,7 @@
                        </c:choose>">${i}</a>
         </c:forEach>
         <c:if test="${currentPage < totalPages}">
-            <a href="${pageContext.request.contextPath}/his-order?page=${currentPage + 1}"
+            <a href="${pageBase}&page=${currentPage + 1}"
                style="padding:6px 12px; border:1px solid #ccc; border-radius:5px; text-decoration:none; color:#333;">&raquo;</a>
         </c:if>
     </div>
@@ -349,25 +354,12 @@
     }
 
     function filterOrders(status, btn) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        document.querySelectorAll('.order-item').forEach(item => {
-            if (status === 'all' || item.getAttribute('data-status') === status) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-
-        const visible = [...document.querySelectorAll('.order-item')]
-            .filter(item => item.style.display !== 'none');
-
-        const emptyMsg = document.getElementById('empty-filter-msg');
-        if (visible.length === 0) {
-            emptyMsg.style.display = 'block';
+        const contextPath = '${pageContext.request.contextPath}';
+        const url = contextPath + '/his-order?page=1&status=' + encodeURIComponent(status);
+        if (typeof window.loadContent === 'function') {
+            window.loadContent(url);
         } else {
-            emptyMsg.style.display = 'none';
+            window.location.href = url;
         }
     }
 

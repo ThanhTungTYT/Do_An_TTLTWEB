@@ -6,6 +6,7 @@ import com.example.do_an_ttltweb.services.OrderService;
 import com.example.do_an_ttltweb.model.OrderAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -35,6 +36,9 @@ public class OrderHistoryServlet extends HttpServlet {
             return;
         }
 
+        String statusFilter = request.getParameter("status");
+        if (statusFilter == null || statusFilter.trim().isEmpty()) statusFilter = "all";
+
         // Phân trang
         int page = 1;
         try {
@@ -43,6 +47,14 @@ public class OrderHistoryServlet extends HttpServlet {
         } catch (NumberFormatException ignored) {}
 
         List<Order> allOrders = orderService.getOrdersByUserId(authUser.getId());
+
+        if (!"all".equals(statusFilter)) {
+            final String sf = statusFilter;
+            allOrders = allOrders.stream()
+                    .filter(o -> sf.equals(o.getStatus()))
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
         int totalOrders = allOrders.size();
         int totalPages  = (int) Math.ceil((double) totalOrders / PAGE_SIZE);
         if (page < 1) page = 1;
@@ -61,6 +73,7 @@ public class OrderHistoryServlet extends HttpServlet {
         request.setAttribute("orders", orders);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("statusFilter", statusFilter);
 
         request.getRequestDispatcher("/historyOrder.jsp").forward(request, response);
     }
