@@ -17,7 +17,6 @@ public class AdminPage8Servlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PromotionService promotionService = PromotionService.getInstance();
-        // Bỏ autoUpdateStatus() — admin toàn quyền quyết định state, không auto override
 
         int page = 1;
         try {

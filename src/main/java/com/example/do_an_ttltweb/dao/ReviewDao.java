@@ -2,6 +2,7 @@ package com.example.do_an_ttltweb.dao;
 
 import com.example.do_an_ttltweb.helper.base.BaseDao;
 import com.example.do_an_ttltweb.model.ProductReview;
+import com.example.do_an_ttltweb.model.Promotion;
 
 import java.util.List;
 
@@ -89,5 +90,21 @@ public class ReviewDao extends BaseDao {
         );
     }
 
+    public int count() {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM products_review")
+                        .mapTo(Integer.class)
+                        .one()
+        );
+    }
 
+    public List<ProductReview> getPaginated(int limit, int offset) {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT r.*, p.name AS productname, u.full_name AS username FROM products_review r JOIN products p ON r.product_id = p.id JOIN users u ON r.user_id = u.id ORDER BY r.created_at DESC LIMIT :limit OFFSET :offset")
+                        .bind("limit", limit)
+                        .bind("offset", offset)
+                        .mapToBean(ProductReview.class)
+                        .list()
+        );
+    }
 }
