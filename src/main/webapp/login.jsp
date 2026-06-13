@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/login.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/includes/toast.jsp"/>
@@ -80,7 +81,8 @@
         <div class="forgot-password">
             <p>Quên mật khẩu? <a href="${pageContext.request.contextPath}/forgot-password">Click vào đây</a></p>
         </div>
-
+        <div class="g-recaptcha" data-sitekey="6LebghwtAAAAABCQgdvY_26FSv_aiHomwyOYv8lJ" style="margin-bottom: 5px"></div>
+        <small class="error-msg" id="err-captcha" style="color:red;"></small>
         <button type="submit" id="b-login">Đăng nhập</button>
     </form>
 

@@ -1,6 +1,7 @@
 package com.example.do_an_ttltweb.controller.auth;
 
 import com.example.do_an_ttltweb.dao.CartDao;
+import com.example.do_an_ttltweb.helper.util.CaptchaUtil;
 import com.example.do_an_ttltweb.model.User;
 import com.example.do_an_ttltweb.model.cart.Cart;
 import com.example.do_an_ttltweb.services.AuthService;
@@ -25,6 +26,13 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+
+        String captchaResponse = request.getParameter("g-recaptcha-response");
+        if (!CaptchaUtil.verify(captchaResponse)) {
+            request.setAttribute("error", "Vui lòng xác nhận bạn không phải robot!");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
 
         if (authService.isLocked(email)) {
             request.setAttribute("error", "Tài khoản bị tạm khóa do đăng nhập sai quá 5 lần. Vui lòng thử lại sau 1 tiếng.");
