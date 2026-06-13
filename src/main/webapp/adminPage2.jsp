@@ -72,15 +72,12 @@
         <button type="submit"><i class="fas fa-search"></i></button>
     </form>
     <div class="main-menu">
-        <form method="get" action="${pageContext.request.contextPath}/admin/products">
-            <select name="filter" onchange="this.form.submit()">
-                <option value="0" ${currentFilter == 0 ? 'selected' : ''}>-Chọn dòng sản phẩm-</option>
-                <option value="1" ${currentFilter == 1 ? 'selected' : ''}>Cà phê rang nguyên hạt</option>
-                <option value="2" ${currentFilter == 2 ? 'selected' : ''}>Cà phê xay nguyên chất</option>
-                <option value="3" ${currentFilter == 3 ? 'selected' : ''}>Cà phê hữu cơ</option>
-                <option value="4" ${currentFilter == 4 ? 'selected' : ''}>Các sản phẩm đặc</option>
-            </select>
-        </form>
+        <select onchange="changeCid(this.value)" style="float: left;">
+            <option value="0" ${currentFilter == 0 ? 'selected' : ''}>Tất cả sản phẩm</option>
+            <c:forEach items="${categories}" var="c">
+                <option value="${c.id}" ${currentFilter == c.id ? 'selected' : ''}>${c.name}</option>
+            </c:forEach>
+        </select>
         <button type="button" onclick="addCat()" id="add-cat-btn">
             + Thêm loại sản phẩm
         </button>
@@ -97,25 +94,28 @@
                 <th>Hành động</th>
             </tr>
             </thead>
-            <tbody>
-            <c:forEach items="${categories}" var="c">
-                <tr>
+            <tbody id="cat-tbody">
+            <c:forEach items="${allCategories}" var="c" varStatus="status">
+                <tr class="cat-row" style="${status.index >= 5 ? 'display:none;' : ''}">
                     <td>${c.id}</td>
                     <td>${c.name}</td>
                     <td>
-                        <span class="status-text active">${c.state}</span>
+                        <span class="status-text ${c.state eq 'Inactive' ? 'inactive' : 'active'}">${c.state}</span>
                     </td>
                     <td>
-                        <button type="button"
-                                onclick="deleteCategory(${c.id})"
-                                title="Xóa loại này">
-                            <i class="fa-solid fa-trash"></i>
+                        <button type="button" onclick="toggleCategoryState(${c.id}, '${c.state}')" title="Đổi trạng thái">
+                            <i class="fa-solid fa-pen"></i>
                         </button>
                     </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+        <div style="text-align: center; margin-top: 12px;">
+            <button type="button" id="btn-show-more-cat" onclick="showMoreCat()" style="display:none;  width: 100px;font-size: ">
+                <i class="fa-solid fa-chevron-down"></i> Xem thêm
+            </button>
+        </div>
     </div>
     <div class="list-product">
         <div class="list-header">
@@ -448,13 +448,14 @@
         <button class="submit" type="submit">Thêm</button>
     </form>
 </div>
-<form id="form-delete-cat" action="${pageContext.request.contextPath}/admin/products" method="post" style="display: none;">
-    <input type="hidden" name="action" value="delete_category">
-    <input type="hidden" name="id" id="input-cat-id">
-</form>
 <form id="delete-form" action="${pageContext.request.contextPath}/admin/products" method="post" style="display: none;">
     <input type="hidden" name="action" id="delete-action">
     <input type="hidden" name="ids" id="delete-ids-multi">
+</form>
+<form id="form-toggle-cat" action="${pageContext.request.contextPath}/admin/products" method="post" style="display: none;">
+    <input type="hidden" name="action" value="toggle_category">
+    <input type="hidden" name="id" id="input-cat-id">
+    <input type="hidden" name="state" id="input-cat-state">
 </form>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 <script src="${pageContext.request.contextPath}/assets/js/admin.js"></script>

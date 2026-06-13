@@ -117,17 +117,7 @@ public class ProductService {
         for (String idStr : ids) {
             try {
                 int id = Integer.parseInt(idStr.trim());
-                int sold = productDao.getSoldCount(id);
-
-                if (sold > 0) {
-                    productDao.softDeleteProduct(id);
-                } else {
-                    try {
-                        productDao.hardDeleteProduct(id);
-                    } catch (Exception e) {
-                        productDao.softDeleteProduct(id);
-                    }
-                }
+                productDao.softDeleteProduct(id);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }

@@ -136,7 +136,7 @@ public class ProductDao extends BaseDao {
                             "FROM products p " +
                             "JOIN categories c ON p.category_id = c.id " +
                             "LEFT JOIN products_review r ON p.id = r.product_id " +
-                            "WHERE p.state = 'active' AND p.stock > 0 " +
+                            "WHERE p.state = 'active' AND p.stock > 0 AND c.state ='Active' " +
                             "AND p.price >= :minPrice AND p.price <= :maxPrice "
             );
 
@@ -209,18 +209,6 @@ public class ProductDao extends BaseDao {
                         .bind("id", id)
                         .execute() > 0
         );
-    }
-
-    public boolean hardDeleteProduct(int id) {
-        return getJdbi().withHandle(handle -> {
-            handle.createUpdate("DELETE FROM product_images WHERE product_id = :id")
-                    .bind("id", id)
-                    .execute();
-
-            return handle.createUpdate("DELETE FROM products WHERE id = :id")
-                    .bind("id", id)
-                    .execute() > 0;
-        });
     }
 
 
