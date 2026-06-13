@@ -124,6 +124,24 @@
                 </c:forEach>
                 </tbody>
             </table>
+            <div class="pagination">
+                <a href="${currentPage > 1 ? pageContext.request.contextPath : ''}${currentPage > 1 ? '/admin/reviews?page=' : '#'}${currentPage > 1 ? currentPage - 1 : ''}${currentPage > 1 ? '&startDate=' : ''}${currentPage > 1 ? startDate : ''}${currentPage > 1 ? '&endDate=' : ''}${currentPage > 1 ? endDate : ''}"
+                   class="${currentPage <= 1 ? 'disabled' : ''}">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+
+                <c:forEach begin="1" end="${totalPages}" var="i">
+                    <a href="${pageContext.request.contextPath}/admin/reviews?page=${i}&startDate=${startDate}&endDate=${endDate}"
+                       class="${currentPage == i ? 'active' : ''}">
+                            ${i}
+                    </a>
+                </c:forEach>
+
+                <a href="${currentPage < totalPages ? pageContext.request.contextPath : ''}${currentPage < totalPages ? '/admin/reviews?page=' : '#'}${currentPage < totalPages ? currentPage + 1 : ''}${currentPage < totalPages ? '&startDate=' : ''}${currentPage < totalPages ? startDate : ''}${currentPage < totalPages ? '&endDate=' : ''}${currentPage < totalPages ? endDate : ''}"
+                   class="${currentPage >= totalPages ? 'disabled' : ''}">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -185,6 +203,11 @@
         if (content) {
             content.style.filter = "blur(0)";
         }
+    }
+    function changePage(page) {
+        let urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('page', page);
+        window.location.search = urlParams.toString();
     }
 </script>
 </body>

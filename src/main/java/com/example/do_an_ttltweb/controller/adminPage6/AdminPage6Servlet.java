@@ -18,10 +18,28 @@ public class AdminPage6Servlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<ProductReview> listReview = review.getAllReview();
+        String pageStr = request.getParameter("page");
+        int page = 1;
+        int limit = 10;
+        try {
+            if (pageStr != null) {
+                page = Integer.parseInt(pageStr);
+                if (page < 1) page = 1;
+            }
+        } catch (NumberFormatException ignored) {}
+
+        int totalReview = review.countReviews();
+        int totalPages = (int) Math.ceil((double) totalReview / limit);
+        if (totalPages == 0) totalPages = 1;
+        if (page > totalPages) page = totalPages;
+
+        int offset = (page - 1) * limit;
+
+        List<ProductReview> listReview = review.getPaginated(limit, offset);
 
         request.setAttribute("listReview", listReview);
-
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("/adminPage6.jsp").forward(request, response);
     }
 

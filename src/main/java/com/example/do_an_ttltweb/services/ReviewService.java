@@ -3,6 +3,7 @@ package com.example.do_an_ttltweb.services;
 import com.example.do_an_ttltweb.dao.OrderDao;
 import com.example.do_an_ttltweb.dao.ReviewDao;
 import com.example.do_an_ttltweb.model.ProductReview;
+import com.example.do_an_ttltweb.model.Promotion;
 
 import java.util.List;
 
@@ -50,5 +51,11 @@ public class ReviewService {
             return true;
         }
         return false;
+    }
+    public int countReviews() {
+        return reviewDao.count();
+    }
+    public List<ProductReview> getPaginated(int limit, int offset) {
+        return reviewDao.getPaginated(limit, offset);
     }
 }
