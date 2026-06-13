@@ -111,6 +111,13 @@ public class AdminPage2Servlet  extends HttpServlet {
         }
     }
     private void handleAddProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        if(request.getParameter("name") == null || request.getParameter("price") == null || request.getParameter("stock") == null || request.getParameter("category_id") == null || request.getParameter("weight") == null){
+            request.setAttribute("error", "Vui lòng điền đầy đủ thông tin.");
+            doGet(request, response);
+            return;
+        }
+
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         double price = Double.parseDouble(request.getParameter("price"));
@@ -129,6 +136,24 @@ public class AdminPage2Servlet  extends HttpServlet {
 
         Map<Integer, Part> imageParts = readImageParts(request);
         String webappRealPath = getServletContext().getRealPath("");
+
+        if(stock <= 0){
+            request.setAttribute("error", "Số lượng sản phẩm không được nhỏ hơn 0.");
+            doGet(request, response);
+            return;
+        }
+
+        if(price < 1000){
+            request.setAttribute("error", "Giá tiền không hợp lệ.");
+            doGet(request, response);
+            return;
+        }
+
+        if(weight <= 0){
+            request.setAttribute("error", "Khối lượng sản phẩm không hợp lệ.");
+            doGet(request, response);
+            return;
+        }
 
         boolean isSuccess = productService.addProductWithFiles(newProduct, imageParts, webappRealPath);
 
@@ -187,6 +212,13 @@ public class AdminPage2Servlet  extends HttpServlet {
     }
     private void handleEditProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+
+            if(request.getParameter("name") == null || request.getParameter("price") == null || request.getParameter("stock") == null || request.getParameter("category_id") == null || request.getParameter("weight") == null){
+                request.setAttribute("error", "Vui lòng điền đầy đủ thông tin.");
+                doGet(request, response);
+                return;
+            }
+
             int id = Integer.parseInt(request.getParameter("id"));
             String name = request.getParameter("name");
             String description = request.getParameter("description");
@@ -205,6 +237,24 @@ public class AdminPage2Servlet  extends HttpServlet {
             p.setCategory_id(categoryId);
             p.setWeight_grams(weight);
             p.setState(state);
+
+            if(stock <= 0){
+                request.setAttribute("error", "Số lượng sản phẩm không được nhỏ hơn 0.");
+                doGet(request, response);
+                return;
+            }
+
+            if(price < 1000){
+                request.setAttribute("error", "Giá tiền không hợp lệ.");
+                doGet(request, response);
+                return;
+            }
+
+            if(weight <= 0){
+                request.setAttribute("error", "Khối lượng sản phẩm không hợp lệ.");
+                doGet(request, response);
+                return;
+            }
 
             boolean isSuccess = productService.updateProduct(p);
 
