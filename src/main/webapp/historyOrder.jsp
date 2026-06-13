@@ -7,9 +7,6 @@
 <h2>Lịch sử mua hàng</h2>
 <p>Danh sách các đơn hàng gần đây của bạn:</p>
 
-<c:if test="${empty orders}">
-    <p>Bạn chưa có đơn hàng nào.</p>
-</c:if>
 
 <div class="status-filter-wrapper">
     <p class="status-filter-title">Trạng thái đơn hàng</p>
@@ -116,6 +113,7 @@
     </div>
 </c:forEach>
 
+<%-- Phân trang --%>
 <c:if test="${totalPages > 1}">
     <c:url value="/his-order" var="pageBase">
         <c:param name="status" value="${statusFilter}"/>
@@ -355,12 +353,28 @@
     function filterOrders(status, btn) {
         const contextPath = '${pageContext.request.contextPath}';
         const url = contextPath + '/his-order?page=1&status=' + encodeURIComponent(status);
+        _ajaxLoadHisOrder(url);
+    }
+
+    function _ajaxLoadHisOrder(url) {
         if (typeof window.loadContent === 'function') {
             window.loadContent(url);
+            return;
+        }
+        const $area = $('#content-area');
+        if ($area.length) {
+            $area.html('<div style="text-align:center;padding:50px;color:#666;">Đang tải... <i class="fas fa-spinner fa-spin"></i></div>');
+            $area.load(url);
         } else {
             window.location.href = url;
         }
     }
+
+    $(document).off('click.hisorder', '.pagination a').on('click.hisorder', '.pagination a', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        _ajaxLoadHisOrder($(this).attr('href'));
+    });
 
     function openConfirmReceivedModal(orderId) {
         document.getElementById('confirm-received-order-id').value = orderId;
