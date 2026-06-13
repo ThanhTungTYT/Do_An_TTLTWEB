@@ -113,6 +113,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="${pageContext.request.contextPath}/admin/orders?status=Chờ Thanh Toán&startDate=${startDate}&endDate=${endDate}"
+                       class="status-item ${status == 'Chờ thanh toán' ? 'active' : ''}">
+                        Chờ thanh toán
+                    </a>
+                </li>
+                <li>
                     <a href="${pageContext.request.contextPath}/admin/orders?status=Đang giao&startDate=${startDate}&endDate=${endDate}"
                        class="status-item ${status == 'Đang giao' ? 'active' : ''}">
                         Đang giao
@@ -179,6 +185,7 @@
                             <span class="status ${o.status}">
                                 <c:choose>
                                     <c:when test="${o.status == 'Đang xử lý'}">Đang xử lý</c:when>
+                                    <c:when test="${o.status == 'Chờ thanh toán'}">Chờ thanh toán</c:when>
                                     <c:when test="${o.status == 'Đang giao'}">Đang giao</c:when>
                                     <c:when test="${o.status == 'Yêu cầu hủy'}">Yêu cầu hủy</c:when>
                                     <c:when test="${o.status == 'Đã giao'}">Đã giao</c:when>

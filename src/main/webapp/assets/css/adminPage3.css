@@ -58,12 +58,15 @@
 
     /* Trạng thái đơn hàng (page 3 dùng class theo tên tiếng Việt) */
     .status.Đang.xử.lý {
+        background: #cfe2ff;
+        color: #084298;
+    }
+    .status.Chờ.thanh.toán {
         background-color: #fff3cd;
         color: #856404;
     }
-
     .status.Đã.giao {
-        background-color: #d4edda;
+        background: #d4edda;
         color: #155724;
     }
 
@@ -73,8 +76,8 @@
     }
 
     .status.Đang.giao {
-        background-color: #cce5ff;
-        color: #004085;
+        background: #d1ecf1;
+        color: #0c5460;
     }
 
     .status.Yêu.cầu.hủy {
