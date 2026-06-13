@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 
@@ -91,7 +92,8 @@
                     <small class="error"></small>
                     <div class="char-counter" id="char-counter">0/500</div>
                 </div>
-
+                <div class="g-recaptcha" data-sitekey="6LebghwtAAAAABCQgdvY_26FSv_aiHomwyOYv8lJ" style="margin-bottom: 5px"></div>
+                <small class="error-msg" id="err-captcha" style="color:red;"></small>
                 <button type="submit">Liên hệ ngay</button>
             </form>
         </div>

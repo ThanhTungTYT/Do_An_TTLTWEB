@@ -1,5 +1,6 @@
 package com.example.do_an_ttltweb.controller.contact;
 
+import com.example.do_an_ttltweb.helper.util.CaptchaUtil;
 import com.example.do_an_ttltweb.services.ContactService;
 import com.example.do_an_ttltweb.model.Contact;
 import com.example.do_an_ttltweb.model.User;
@@ -60,6 +61,13 @@ public class ContactServlet extends HttpServlet {
         String fullName = request.getParameter("name");
         String email = request.getParameter("email");
         String message = request.getParameter("message");
+
+        String captchaResponse = request.getParameter("g-recaptcha-response");
+        if (!CaptchaUtil.verify(captchaResponse)) {
+            request.setAttribute("error", "Vui lòng xác nhận bạn không phải robot!");
+            request.getRequestDispatcher("/help.jsp").forward(request, response);
+            return;
+        }
 
         if (message == null || message.trim().isEmpty()) {
             request.setAttribute("error", "Nội dung không được để trống!");

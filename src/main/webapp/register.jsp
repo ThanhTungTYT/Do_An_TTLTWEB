@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/register.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/includes/toast.jsp"/>
@@ -88,6 +89,8 @@
             <input type="checkbox" id="toggle-password" onclick="togglePassword()" title="Hiện/ẩn mật khẩu">
             <label class="lbtoggle" for="toggle-password">Hiển thị mật khẩu</label>
         </div>
+        <div class="g-recaptcha" data-sitekey="6LebghwtAAAAABCQgdvY_26FSv_aiHomwyOYv8lJ" style="margin-bottom: 5px"></div>
+        <small class="error-msg" id="err-captcha" style="color:red;"></small>
         <div class="bt_regis">
             <button type="button" id="clear-btn" onclick="location.href='${pageContext.request.contextPath}/login.jsp'">Quay lại</button>
             <button type="submit" id="register-btn">Đăng ký</button>

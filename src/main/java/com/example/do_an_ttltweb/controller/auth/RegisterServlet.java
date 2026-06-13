@@ -1,6 +1,7 @@
 package com.example.do_an_ttltweb.controller.auth;
 
 import com.example.do_an_ttltweb.helper.base.Validation;
+import com.example.do_an_ttltweb.helper.util.CaptchaUtil;
 import com.example.do_an_ttltweb.services.AuthService;
 import com.example.do_an_ttltweb.helper.email.EmailUtil;
 import jakarta.servlet.*;
@@ -31,6 +32,13 @@ public class RegisterServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmpassword");
+
+        String captchaResponse = request.getParameter("g-recaptcha-response");
+        if (!CaptchaUtil.verify(captchaResponse)) {
+            request.setAttribute("error", "Vui lòng xác nhận bạn không phải robot!");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
 
         if (authService.existsByEmail(email)) {
             request.setAttribute("error", "Email đã tồn tại!");
