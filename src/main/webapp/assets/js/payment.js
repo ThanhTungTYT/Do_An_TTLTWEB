@@ -595,6 +595,20 @@ document.addEventListener("DOMContentLoaded", function () {
     window.loadWards     = loadWards;
     window.onWardChange  = onWardChange;
 
+    (function initNoteCounter() {
+        const ta = document.getElementById('order-note');
+        const counter = document.getElementById('note-counter');
+        if (!ta || !counter) return;
+        const MAX = 300;
+        function update() {
+            const len = ta.value.length;
+            counter.textContent = len + ' / ' + MAX + ' ký tự';
+            counter.style.color = len > MAX ? '#dc3545' : (len >= MAX * 0.9 ? '#e67e22' : '#888');
+        }
+        ta.addEventListener('input', update);
+        update();
+    })();
+
     loadProvinces();
     calculateTotal();
     onPaymentMethodChange();

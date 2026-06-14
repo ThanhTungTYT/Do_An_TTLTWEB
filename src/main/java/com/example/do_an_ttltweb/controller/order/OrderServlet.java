@@ -1,6 +1,7 @@
 package com.example.do_an_ttltweb.controller.order;
 
 import com.example.do_an_ttltweb.dao.CartDao;
+import com.example.do_an_ttltweb.exception.OutOfStockException;
 import com.example.do_an_ttltweb.model.cart.Cart;
 import com.example.do_an_ttltweb.model.cart.CartItem;
 import com.example.do_an_ttltweb.model.*;
@@ -195,6 +196,13 @@ public class OrderServlet extends HttpServlet {
                 } else {
                     forwardWithError(req, resp, s, "Đặt hàng thất bại. Vui lòng thử lại.");
                 }
+            }
+        } catch (OutOfStockException e) {
+            String message = "Sản phẩm " + e.getProductName() + " đã hết hàng hoặc không đủ số lượng.";
+            if (isBankTransfer) {
+                sendJsonError(resp, message);
+            } else {
+                forwardWithError(req, resp, s, message);
             }
         } catch (RuntimeException e) {
             if (isBankTransfer) {

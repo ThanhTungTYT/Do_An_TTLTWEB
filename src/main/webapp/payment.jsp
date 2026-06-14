@@ -66,12 +66,6 @@
             <a href="cart.jsp"><i class="fas fa-arrow-left"></i> Quay lại giỏ hàng</a>
         </div>
 
-        <c:if test="${not empty requestScope.error}">
-            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;">
-                <i class="fas fa-exclamation-triangle"></i> ${requestScope.error}
-            </div>
-        </c:if>
-
         <div class="checkout-left">
             <section class="account-box">
                 <h3>Tài khoản</h3>
@@ -183,21 +177,6 @@
                 <textarea name="note" id="order-note" maxlength="300"
                           placeholder="Nhập ghi chú cho đơn hàng (nếu có) — tối đa 300 ký tự"></textarea>
                 <small id="note-counter" style="display:block; text-align:right; color:#888; font-size:13px; margin-top:4px;">0 / 300 ký tự</small>
-                <script>
-                    (function () {
-                        const ta = document.getElementById('order-note');
-                        const counter = document.getElementById('note-counter');
-                        if (!ta || !counter) return;
-                        const MAX = 300;
-                        function update() {
-                            const len = ta.value.length;
-                            counter.textContent = len + ' / ' + MAX + ' ký tự';
-                            counter.style.color = len > MAX ? '#dc3545' : (len >= MAX * 0.9 ? '#e67e22' : '#888');
-                        }
-                        ta.addEventListener('input', update);
-                        update();
-                    })();
-                </script>
             </section>
         </div>
 
