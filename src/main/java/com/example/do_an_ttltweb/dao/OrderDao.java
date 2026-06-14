@@ -1,6 +1,5 @@
 package com.example.do_an_ttltweb.dao;
 
-import com.example.do_an_ttltweb.exception.OutOfStockException;
 import com.example.do_an_ttltweb.helper.base.BaseDao;
 import com.example.do_an_ttltweb.model.cart.Cart;
 import com.example.do_an_ttltweb.model.cart.CartItem;
@@ -95,6 +94,26 @@ public class OrderDao extends BaseDao {
             }
         });
     }
+
+    /**
+     * Báo hiệu race condition lớp 2: tại thời điểm trừ kho trong giao dịch đặt hàng,
+     * sản phẩm đã hết hàng hoặc không còn đủ số lượng.
+     * Exception chỉ mang dữ liệu (tên sản phẩm); câu thông báo cho người dùng do
+     * tầng controller/servlet tự dựng để hiển thị toast.
+     */
+    public static class OutOfStockException extends RuntimeException {
+        private final String productName;
+
+        public OutOfStockException(String productName) {
+            super("Out of stock: " + productName);
+            this.productName = productName;
+        }
+
+        public String getProductName() {
+            return productName;
+        }
+    }
+
     public List<Order> getAllOrders() {
         return getJdbi().withHandle(h ->
                 h.createQuery(
