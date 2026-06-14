@@ -16,8 +16,8 @@ import java.net.URL;
 @WebServlet("/login-facebook")
 public class FacebookLoginServlet extends HttpServlet {
 
-    private static final String APP_ID ="1254182139570503";
-    private static final String APP_SECRET ="66ef26108918fa42d8f8827c8c4fdc6c";
+    private static final String APP_ID ="1989296738622542";
+    private static final String APP_SECRET ="da4de0792e7d5ff5df0f9346f9c8a5f5";
     private static final String REDIRECT_URI ="http://localhost:8080/Do_An_TTLTWEB/login-facebook";
 
     @Override
