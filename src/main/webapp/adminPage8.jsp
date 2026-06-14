@@ -166,52 +166,58 @@
         <input type="hidden" name="id" id="input-id" value="">
         <input type="hidden" name="page" value="${currentPage}">
 
-        <div class="p name-p">
-            <label>Mã Code</label>
-            <input type="text" name="code" id="input-code" required>
+        <div class="form-row">
+            <div class="p name-p">
+                <label>Mã Code</label>
+                <input type="text" name="code" id="input-code" required>
+            </div>
+            <div class="price-p">
+                <label>Mô tả</label>
+                <input type="text" name="description" id="input-description" placeholder="Nhập mô tả ngắn">
+            </div>
         </div>
 
-        <div class="price-p">
-            <label>Mô tả</label>
-            <textarea name="description" id="input-description" style="width: 60%; height: 50px; padding: 5px"></textarea>
+        <div class="form-row">
+            <div class="price-p">
+                <label>Đơn tối thiểu</label>
+                <input type="number" name="minOrderValue" id="input-min" required>
+            </div>
+
+            <div class="price-p">
+                <label>Mức giảm (%)</label>
+                <input type="number" name="discountPercent" id="input-discount" required>
+            </div>
         </div>
 
-        <div class="price-p">
-            <label>Đơn tối thiểu</label>
-            <input type="number" name="minOrderValue" id="input-min" required>
+        <div class="form-row">
+            <div class="count-p">
+                <label>Số lượng</label>
+                <input type="number" name="quantity" id="input-quantity" required>
+            </div>
+
+            <div class="type-p">
+                <label>Trạng thái</label>
+                <select name="state" id="input-state" required>
+                    <option value="" disabled selected>-- Chọn trạng thái --</option>
+                    <option value="active">Active (Hoạt động)</option>
+                    <option value="inactive">Inactive (Ngừng)</option>
+                </select>
+            </div>
         </div>
 
-        <div class="price-p">
-            <label>Mức giảm (%)</label>
-            <input type="number" name="discountPercent" id="input-discount" required>
-        </div>
+        <div class="form-row">
+            <div class="count-p">
+                <label>Ngày bắt đầu</label>
+                <input type="datetime-local" name="startDate" id="input-start" required>
+            </div>
 
-        <div class="count-p">
-            <label>Số lượng</label>
-            <input type="number" name="quantity" id="input-quantity" required>
-        </div>
-
-        <div class="count-p">
-            <label>Ngày bắt đầu</label>
-            <input type="datetime-local" name="startDate" id="input-start" required>
-        </div>
-
-        <div class="count-p">
-            <label>Hạn sử dụng</label>
-            <input type="datetime-local" name="endDate" id="input-end" required>
-        </div>
-
-        <div class="type-p">
-            <label>Trạng thái</label>
-            <select name="state" id="input-state" required>
-                <option value="" disabled selected>-- Chọn trạng thái --</option>
-                <option value="active">Active (Hoạt động)</option>
-                <option value="inactive">Inactive (Ngừng)</option>
-            </select>
+            <div class="count-p">
+                <label>Hạn sử dụng</label>
+                <input type="datetime-local" name="endDate" id="input-end" required>
+            </div>
         </div>
 
         <button class="submit" type="submit">Xác nhận</button>
-
     </form>
 </div>
 

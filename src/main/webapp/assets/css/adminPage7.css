@@ -66,3 +66,119 @@
     .delete-banner:hover {
         background: #b02a37;
     }
+
+    .form-add-custom {
+        display: none;
+        width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 0;
+        border-radius: 12px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-add-custom .form-title-custom {
+        position: sticky;
+        top: 0;
+        background: #c76739;
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 12px 12px 0 0;
+        z-index: 1;
+    }
+
+    .form-add-custom .form-title-custom p {
+        margin: 0;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+
+    .form-add-custom .form-title-custom .btn-close {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.3em;
+        cursor: pointer;
+    }
+
+    .form-add-custom .main-form-custom {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-add-custom .form-section-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+        border-bottom: 2px solid #c76739;
+        padding-bottom: 6px;
+    }
+
+    .form-add-custom .input-group-vertical {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .form-add-custom .input-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .form-add-custom .input-field label {
+        font-size: 0.88em;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .form-add-custom .input-field input[type="text"],
+    .form-add-custom .input-field input[type="datetime-local"],
+    .form-add-custom .input-field select {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.9em;
+        background: #f9f9f9;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .form-add-custom .input-field input:focus,
+    .form-add-custom .input-field select:focus {
+        border-color: #c76739;
+    }
+
+    .form-add-custom .input-grid-horizontal {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .form-add-custom .btn-submit-custom {
+        background: #c76739;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.2s;
+    }
+
+    .form-add-custom .btn-submit-custom:hover {
+        background: #a85530;
+    }
