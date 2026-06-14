@@ -1,8 +1,9 @@
 package com.example.do_an_ttltweb.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Product {
+public class Product implements Serializable {
     private int id;
     private int category_id;
     private String name;

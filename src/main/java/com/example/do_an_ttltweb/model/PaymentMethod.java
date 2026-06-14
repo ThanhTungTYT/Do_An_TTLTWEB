@@ -1,6 +1,8 @@
 package com.example.do_an_ttltweb.model;
 
-public class PaymentMethod {
+import java.io.Serializable;
+
+public class PaymentMethod implements Serializable {
     int id;
     String name;
 

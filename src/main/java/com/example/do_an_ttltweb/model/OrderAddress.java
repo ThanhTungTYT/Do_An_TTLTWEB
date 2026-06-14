@@ -1,6 +1,8 @@
 package com.example.do_an_ttltweb.model;
 
-public class OrderAddress {
+import java.io.Serializable;
+
+public class OrderAddress implements Serializable {
     int orderId;
     String country;
     String province;

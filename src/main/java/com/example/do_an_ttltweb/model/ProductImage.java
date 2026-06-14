@@ -1,6 +1,8 @@
 package com.example.do_an_ttltweb.model;
 
-public class ProductImage {
+import java.io.Serializable;
+
+public class ProductImage implements Serializable {
     private int id;
     private int product_id;
     private String image_url;

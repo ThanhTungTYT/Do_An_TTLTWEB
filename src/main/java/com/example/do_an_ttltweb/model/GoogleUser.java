@@ -1,6 +1,8 @@
 package com.example.do_an_ttltweb.model;
 
-public class GoogleUser {
+import java.io.Serializable;
+
+public class GoogleUser implements Serializable {
     private String id;
     private String email;
     private String name;
