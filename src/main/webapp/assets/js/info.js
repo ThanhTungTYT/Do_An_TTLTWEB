@@ -3,7 +3,7 @@ $(document).ready(function() {
     const ctx = window.appCtx || '';
 
     function loadProvinces() {
-        const savedProvince = $("#hidden_province").val().trim();
+        const savedProvince = ($("#hidden_province").val() || "").trim();
 
         $.getJSON(ctx + '/api/ghn/provinces', function(data) {
             let options = '<option value="">-- Chọn Tỉnh/Thành phố --</option>';
@@ -25,7 +25,7 @@ $(document).ready(function() {
     }
 
     function loadDistricts(provinceId) {
-        const savedDistrict = $("#hidden_district").val().trim();
+        const savedDistrict = ($("#hidden_district").val() || "").trim();
 
         $.getJSON(ctx + '/api/ghn/districts?province_id=' + provinceId, function(data) {
             let options = '<option value="">-- Chọn Quận/Huyện --</option>';
@@ -49,7 +49,7 @@ $(document).ready(function() {
     }
 
     function loadWards(districtId) {
-        const savedWard = $("#hidden_ward").val().trim();
+        const savedWard = ($("#hidden_ward").val() || "").trim();
 
         $.getJSON(ctx + '/api/ghn/wards?district_id=' + districtId, function(data) {
             let options = '<option value="">-- Chọn Phường/Xã --</option>';

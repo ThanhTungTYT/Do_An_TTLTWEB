@@ -52,6 +52,7 @@ public class DetailProductServlet extends HttpServlet {
             for (ProductReview r : allReviews) {
                 if (r.getUserId() == currentUserId) {
                     myReview = r;
+                    break;
                 }
             }
             if (myReview != null) sortedReviews.add(myReview);
