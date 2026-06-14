@@ -39,6 +39,10 @@ public class AdminFilter implements Filter {
             if (uri.contains("/admin/products") && user.hasPermission("manage_product")) isAllowed = true;
             else if (uri.contains("/admin/orders") && user.hasPermission("manage_order")) isAllowed = true;
             else if (uri.contains("/admin/users") && user.hasPermission("manage_user")) isAllowed = true;
+            else if (uri.contains("/admin/contact") && user.hasPermission("manage_contact")) isAllowed = true;
+            else if (uri.contains("/admin/banner") && user.hasPermission("manage_banner")) isAllowed = true;
+            else if (uri.contains("/admin/reviews") && user.hasPermission("manage_review")) isAllowed = true;
+            else if (uri.contains("/admin/promotion") && user.hasPermission("manage_promotion")) isAllowed = true;
             else if (uri.contains("/admin/dashboard")) isAllowed = true;
         }
         if (isAllowed) {
