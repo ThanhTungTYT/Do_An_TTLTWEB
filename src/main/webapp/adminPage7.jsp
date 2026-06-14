@@ -137,75 +137,95 @@
     </div>
 </div>
 
-<div class="form-add" id="form-add" style="display: none">
-    <div class="form-title">
-        <p>THÊM BANNER</p>
-        <button id="take-off">X</button>
+<div class="form-add-custom" id="form-add">
+    <div class="form-title-custom">
+        <p>THÊM BANNER MỚI</p>
+        <button id="take-off" class="btn-close">✕</button>
     </div>
 
-    <form class="main-form" method="post" action="${pageContext.request.contextPath}/admin/banner">
+    <form class="main-form-custom" method="post" action="${pageContext.request.contextPath}/admin/banner">
         <input type="hidden" name="action" value="add">
         <input type="hidden" name="page" value="${currentPage}">
-        <div class="p name-p">
-            <label>URL Banner</label>
-            <input type="text" name="banner_url" placeholder="Link ảnh banner">
-        </div>
-        <div class="type-p">
-            <label>Trạng thái</label>
-            <select name="status" required>
-                <option value="" disabled selected>-- Chọn trạng thái --</option>
-                <option value="active">active</option>
-                <option value="inactive">inactive</option>
-            </select>
-        </div>
-        <div class="p">
-            <label>Ngày bắt đầu</label>
-            <input type="datetime-local" name="start">
+
+        <div>
+            <p class="form-section-title">Thông tin hình ảnh</p>
+            <div class="input-group-vertical">
+                <div class="input-field">
+                    <label>URL Banner <span style="color:red">*</span></label>
+                    <input type="text" name="banner_url" placeholder="Nhập link ảnh banner" required>
+                </div>
+                <div class="input-field">
+                    <label>Trạng thái</label>
+                    <select name="status" required>
+                        <option value="" disabled selected>-- Chọn trạng thái --</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
-        <div class="p">
-            <label>Ngày kết thúc</label>
-            <input type="datetime-local" name="end">
+        <div>
+            <p class="form-section-title">Thời gian hiển thị</p>
+            <div class="input-grid-horizontal">
+                <div class="input-field">
+                    <label>Ngày bắt đầu</label>
+                    <input type="datetime-local" name="start">
+                </div>
+                <div class="input-field">
+                    <label>Ngày kết thúc</label>
+                    <input type="datetime-local" name="end">
+                </div>
+            </div>
         </div>
-        <button class="submit" type="submit">Thêm Banner</button>
+
+        <button class="btn-submit-custom" type="submit">+ Thêm Banner</button>
     </form>
 </div>
 
-<div class="form-add" id="form-remake" style="display: none">
-    <div class="form-title">
-        <p>SỬA BANNER</p>
-        <button id="close-remake">X</button>
+<div class="form-add-custom" id="form-remake">
+    <div class="form-title-custom">
+        <p>SỬA THÔNG TIN BANNER</p>
+        <button id="close-remake" class="btn-close">✕</button>
     </div>
 
-    <form class="main-form" method="post" action="${pageContext.request.contextPath}/admin/banner">
+    <form class="main-form-custom" method="post" action="${pageContext.request.contextPath}/admin/banner">
         <input type="hidden" name="action" value="update">
         <input type="hidden" name="bid" id="up_bid">
         <input type="hidden" name="page" value="${currentPage}">
-        <div class="p name-p">
-            <label>URL Banner</label>
-            <input type="text" name="up_url">
+
+        <div>
+            <p class="form-section-title">Cập nhật hình ảnh</p>
+            <div class="input-group-vertical">
+                <div class="input-field">
+                    <label>URL Banner</label>
+                    <input type="text" name="up_url">
+                </div>
+                <div class="input-field">
+                    <label>Trạng thái</label>
+                    <select name="up_status" id="up_status_select" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
-        <div class="type-p">
-            <label>Trạng thái</label>
-            <select name="up_status" required>
-                <option value="" disabled selected>-- Chọn trạng thái --</option>
-                <option value="active">active</option>
-                <option value="inactive">inactive</option>
-            </select>
+        <div>
+            <p class="form-section-title">Cập nhật thời gian</p>
+            <div class="input-grid-horizontal">
+                <div class="input-field">
+                    <label>Ngày bắt đầu</label>
+                    <input type="datetime-local" name="up_start">
+                </div>
+                <div class="input-field">
+                    <label>Ngày kết thúc</label>
+                    <input type="datetime-local" name="up_end">
+                </div>
+            </div>
         </div>
 
-        <div class="p">
-            <label>Ngày bắt đầu</label>
-            <input type="datetime-local" name="up_start">
-        </div>
-
-        <div class="p">
-            <label>Ngày kết thúc</label>
-            <input type="datetime-local" name="up_end">
-        </div>
-
-        <button class="submit" type="submit">Lưu Thay Đổi</button>
+        <button class="btn-submit-custom" type="submit">Lưu Thay Đổi</button>
     </form>
 </div>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>

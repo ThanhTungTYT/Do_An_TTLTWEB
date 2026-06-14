@@ -51,7 +51,7 @@ public class DetailProductServlet extends HttpServlet {
 
             for (ProductReview r : allReviews) {
                 if (r.getUserId() == currentUserId) {
-                    myReview = r; // review của user hiện tại
+                    myReview = r;
                 }
             }
             if (myReview != null) sortedReviews.add(myReview);
