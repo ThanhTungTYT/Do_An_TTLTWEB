@@ -379,7 +379,7 @@
 <script>
     window.contextPath = "${pageContext.request.contextPath}";
 </script>
-<script src="${pageContext.request.contextPath}/assets/js/payment.js?v=4"></script>
+<script src="${pageContext.request.contextPath}/assets/js/payment.js?v=5"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 </html>

@@ -155,4 +155,4 @@
 </div>
 
 <script>window.appCtx = '${pageContext.request.contextPath}';</script>
-<script src="${pageContext.request.contextPath}/assets/js/info.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/info.js?v=2"></script>

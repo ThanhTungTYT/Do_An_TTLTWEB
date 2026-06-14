@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const ctx = window.contextPath || "/Do_An_TTLTWEB";
+    const ctx = (typeof window.contextPath === "string") ? window.contextPath : "";
 
     var promotionSelect = document.getElementById("promotionSelect");
     var totalEl         = document.getElementById("total-price");
