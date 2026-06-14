@@ -28,6 +28,7 @@
         width: 40px;
         height: 30px;
         background: #c76739;
+        border-radius: 10px;
         color: white;
     }
 
@@ -86,8 +87,6 @@
         transform: translate(-50%, -50%);
         width: 600px;
         max-width: 95vw;
-        /* FIX: Dùng dvh để tính đúng chiều cao trên mọi màn hình,
-           fallback về vh cho trình duyệt cũ */
         max-height: 90vh;
         max-height: 90dvh;
         background: #fff;
@@ -436,4 +435,12 @@
     .form-add .main-form {
         scrollbar-width: thin;
         scrollbar-color: #c76739 #f1f1f1;
+    }
+    .status-text.Inactive {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .status-text.Active {
+        background: #d4edda;
+        color: #155724;
     }

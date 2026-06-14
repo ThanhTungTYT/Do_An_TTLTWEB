@@ -74,8 +74,11 @@ public class AdminPage2Servlet  extends HttpServlet {
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
 
-        List<Category> categories = categoryService.getAllCategories();
-        request.setAttribute("categories", categories);
+        List<Category> allCategories = categoryService.getAllCategories();
+        List<Category> activeCategories = categoryService.getActiveCategories();
+
+        request.setAttribute("categories", activeCategories);
+        request.setAttribute("allCategories", allCategories);
 
         request.getRequestDispatcher("/adminPage2.jsp").forward(request, response);
     }
@@ -94,8 +97,8 @@ public class AdminPage2Servlet  extends HttpServlet {
                 case "delete_list":
                     handleDeleteList(request, response);
                     break;
-                case "delete_category":
-                    handleDeleteCategory(request, response);
+                case "toggle_category":
+                    handleToggleCategory(request, response);
                     break;
                 case "edit_product":
                     handleEditProduct(request, response);
@@ -199,17 +202,6 @@ public class AdminPage2Servlet  extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/admin/products");
     }
 
-    private void handleDeleteCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            categoryService.deleteCategory(id); // Gọi service để xóa
-            request.getSession().setAttribute("success", "Xóa loại sản phẩm thành công!");
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            request.getSession().setAttribute("error", "ID loại sản phẩm không hợp lệ!");
-        }
-        response.sendRedirect(request.getContextPath() + "/admin/products");
-    }
     private void handleEditProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
 
@@ -275,6 +267,17 @@ public class AdminPage2Servlet  extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             request.getSession().setAttribute("error", "Lỗi hệ thống!");
+        }
+        response.sendRedirect(request.getContextPath() + "/admin/products");
+    }
+    private void handleToggleCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String newState = request.getParameter("state");
+            categoryService.updateCategoryState(id, newState);
+            request.getSession().setAttribute("success", "Cập nhật trạng thái loại sản phẩm thành công!");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("error", "ID không hợp lệ!");
         }
         response.sendRedirect(request.getContextPath() + "/admin/products");
     }

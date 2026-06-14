@@ -21,7 +21,7 @@ public class ProductListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Category> listCategories = catalogService.getAllCategories();
+        List<Category> listCategories = catalogService.getActiveCategories();
         request.setAttribute("listCategories", listCategories);
 
         String cidStr = request.getParameter("cid");

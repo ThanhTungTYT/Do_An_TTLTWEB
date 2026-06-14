@@ -13,7 +13,14 @@ function buildUrl(overrides) {
 function changePage(page) {
     window.location.href = buildUrl({ page: page });
 }
-
+function changeCid(cid) {
+    window.location.href = buildUrl({ filter: cid, page: 1 });
+}
+function toggleCategoryState(id, currentState) {
+    document.getElementById('input-cat-id').value = id;
+    document.getElementById('input-cat-state').value = currentState === 'Inactive' ? 'Active' : 'Inactive';
+    document.getElementById('form-toggle-cat').submit();
+}
 document.addEventListener('DOMContentLoaded', function () {
     const pageInput = document.getElementById('page-input');
     if (pageInput) {
@@ -87,10 +94,6 @@ function dongFormThemLoai() {
         if (content) content.style.filter = 'none';
     }
 }
-function deleteCategory(id) {
-        document.getElementById('input-cat-id').value = id;
-        document.getElementById('form-delete-cat').submit();
-}
 
 function openEditModal(button) {
     var id = button.getAttribute("data-id");
@@ -141,6 +144,37 @@ function toggleSelectAll(source) {
     let checkboxes = document.getElementsByName('productIds');
     for(let i=0, n=checkboxes.length; i<n; i++) {
         checkboxes[i].checked = source.checked;
+    }
+}
+(function () {
+    const rows = document.querySelectorAll('.cat-row');
+    const btn = document.getElementById('btn-show-more-cat');
+    if (rows.length > 5 && btn) btn.style.display = 'inline-block';
+})();
+
+let catShown = 5;
+
+function showMoreCat() {
+    const rows = document.querySelectorAll('.cat-row');
+    const btn = document.getElementById('btn-show-more-cat');
+
+    if (catShown >= rows.length) {
+        // Thu gọn
+        for (let i = 5; i < rows.length; i++) {
+            rows[i].style.display = 'none';
+        }
+        catShown = 5;
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Xem thêm';
+    } else {
+        // Xem thêm
+        const next = catShown + 5;
+        for (let i = catShown; i < next && i < rows.length; i++) {
+            rows[i].style.display = '';
+        }
+        catShown = next;
+        if (catShown >= rows.length) {
+            btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Thu gọn';
+        }
     }
 }
 
