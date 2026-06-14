@@ -1,7 +1,7 @@
 package com.example.do_an_ttltweb.controller.order;
 
 import com.example.do_an_ttltweb.dao.CartDao;
-import com.example.do_an_ttltweb.exception.OutOfStockException;
+import com.example.do_an_ttltweb.dao.OrderDao.OutOfStockException;
 import com.example.do_an_ttltweb.model.cart.Cart;
 import com.example.do_an_ttltweb.model.cart.CartItem;
 import com.example.do_an_ttltweb.model.*;
