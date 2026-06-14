@@ -29,12 +29,18 @@ public class CategoryDao extends BaseDao {
                         .list()
         );
     }
-    public void updateCategoryState(int id, String state) {
-        getJdbi().useHandle(handle ->
-                handle.createUpdate("UPDATE categories SET state = :state WHERE id = :id")
-                        .bind("state", state)
-                        .bind("id", id)
-                        .execute()
-        );
+    public void updateCategory(int id, String name, String state) {
+        getJdbi().useHandle(handle -> {
+            handle.createUpdate("UPDATE categories SET name = :name, state = :state WHERE id = :id")
+                    .bind("name", name)
+                    .bind("state", state)
+                    .bind("id", id)
+                    .execute();
+
+            handle.createUpdate("UPDATE products SET state = :pstate WHERE category_id = :id")
+                    .bind("pstate", state.equals("Inactive") ? "inactive" : "active")
+                    .bind("id", id)
+                    .execute();
+        });
     }
 }

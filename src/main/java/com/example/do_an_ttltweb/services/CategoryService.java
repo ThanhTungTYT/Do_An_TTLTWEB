@@ -20,7 +20,7 @@ public class CategoryService {
     public List<Category> getActiveCategories() {
         return categoryDao.getActiveCategories();
     }
-    public void updateCategoryState(int id, String state) {
-        categoryDao.updateCategoryState(id, state);
+    public void updateCategory(int id,String name, String state) {
+        categoryDao.updateCategory(id,name, state);
     }
 }
