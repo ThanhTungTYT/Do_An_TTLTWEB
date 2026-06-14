@@ -22,7 +22,7 @@ public class ReviewDao extends BaseDao {
 
     public List<ProductReview> getReviewForProduct(int pid){
         return getJdbi().withHandle(handle ->
-            handle.createQuery("SELECT r.*, u.full_name AS username FROM products_review r JOIN users u ON r.user_id = u.id WHERE product_id = :pid ORDER BY r.created_at DESC")
+            handle.createQuery("SELECT r.*, u.full_name AS username FROM products_review r JOIN users u ON r.user_id = u.id WHERE product_id = :pid ORDER BY r.created_at DESC, r.id DESC")
                     .bind("pid", pid)
                     .mapToBean(ProductReview.class)
                     .list()

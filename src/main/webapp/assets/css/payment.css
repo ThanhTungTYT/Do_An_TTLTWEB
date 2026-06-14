@@ -127,12 +127,39 @@ input[type="radio"] {
     color: #c76739;
 }
 
+#cart-list {
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+#cart-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+#cart-list::-webkit-scrollbar-thumb {
+    background: #d9d9d9;
+    border-radius: 3px;
+}
+
+#cart-list::-webkit-scrollbar-thumb:hover {
+    background: #c76739;
+}
+
+#cart-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 .cart-item {
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: 15px 0;
     border-bottom: 1px solid #f2f2f2;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
 }
 
 .item-top {
