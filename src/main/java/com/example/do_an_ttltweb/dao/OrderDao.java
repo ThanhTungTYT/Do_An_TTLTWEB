@@ -1,5 +1,6 @@
 package com.example.do_an_ttltweb.dao;
 
+import com.example.do_an_ttltweb.exception.OutOfStockException;
 import com.example.do_an_ttltweb.helper.base.BaseDao;
 import com.example.do_an_ttltweb.model.cart.Cart;
 import com.example.do_an_ttltweb.model.cart.CartItem;
@@ -69,7 +70,7 @@ public class OrderDao extends BaseDao {
                             .execute();
 
                     if (updateProduct == 0) {
-                        throw new RuntimeException("Sản phẩm " + i.getProduct().getName() + " đã hết hàng hoặc không đủ số lượng.");
+                        throw new OutOfStockException(i.getProduct().getName());
                     }
 
                     h.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :pid AND stock <= 0")
