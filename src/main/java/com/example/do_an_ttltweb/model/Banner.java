@@ -1,8 +1,9 @@
 package com.example.do_an_ttltweb.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Banner {
+public class Banner implements Serializable {
     private int id;
     private String banner_url;
     private String status;

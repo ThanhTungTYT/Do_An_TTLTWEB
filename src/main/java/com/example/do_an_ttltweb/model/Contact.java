@@ -1,8 +1,9 @@
 package com.example.do_an_ttltweb.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Contact {
+public class Contact implements Serializable {
     private int id;
     private int user_id;
     private String full_name;
