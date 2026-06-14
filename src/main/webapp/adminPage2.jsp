@@ -74,7 +74,7 @@
     <div class="main-menu">
         <select onchange="changeCid(this.value)" style="float: left;">
             <option value="0" ${currentFilter == 0 ? 'selected' : ''}>Tất cả sản phẩm</option>
-            <c:forEach items="${categories}" var="c">
+            <c:forEach items="${allCategories}" var="c">
                 <option value="${c.id}" ${currentFilter == c.id ? 'selected' : ''}>${c.name}</option>
             </c:forEach>
         </select>
@@ -103,7 +103,9 @@
                         <span class="status-text ${c.state eq 'Inactive' ? 'inactive' : 'active'}">${c.state}</span>
                     </td>
                     <td>
-                        <button type="button" onclick="toggleCategoryState(${c.id}, '${c.state}')" title="Đổi trạng thái">
+                        <button type="button"
+                                onclick="openEditCat(${c.id}, '${c.name}', '${c.state}')"
+                                title="Sửa loại">
                             <i class="fa-solid fa-pen"></i>
                         </button>
                     </td>
@@ -121,7 +123,7 @@
         <div class="list-header">
             <h3>DANH SÁCH SẢN PHẨM</h3>
             <button type="button" class="btn-delete-checked" onclick="deleteCheckedProducts()">
-                <i class="fa-solid fa-trash"></i> Xóa đã chọn
+                Ẩn sản phẩm đã chọn
             </button>
         </div>        <table>
             <thead>
@@ -436,7 +438,7 @@
 
     <div class="form-title">
         <p >THÊM LOẠI SẢN PHẨM</p>
-        <button type="button" onclick="dongFormThemLoai()">X</button>
+        <button type="button" id="close-cat">X</button>
     </div>
 
     <form class="main-form" action="${pageContext.request.contextPath}/admin/products" method="post">
@@ -452,11 +454,28 @@
     <input type="hidden" name="action" id="delete-action">
     <input type="hidden" name="ids" id="delete-ids-multi">
 </form>
-<form id="form-toggle-cat" action="${pageContext.request.contextPath}/admin/products" method="post" style="display: none;">
-    <input type="hidden" name="action" value="toggle_category">
-    <input type="hidden" name="id" id="input-cat-id">
-    <input type="hidden" name="state" id="input-cat-state">
-</form>
+<div id="form-edit-cat" class="form-add" style="display:none;">
+    <div class="form-title">
+        <p>SỬA LOẠI SẢN PHẨM</p>
+        <button type="button" id="close-edit-cat">X</button>
+    </div>
+    <form class="main-form" action="${pageContext.request.contextPath}/admin/products" method="post">
+        <input type="hidden" name="action" value="edit_category">
+        <input type="hidden" name="id" id="edit-cat-id">
+        <div class="p name-p">
+            <label>Tên loại sản phẩm</label>
+            <input type="text" name="category_name" id="edit-cat-name" required>
+        </div>
+        <div class="state-p">
+            <label>Trạng thái</label>
+            <select name="state" id="edit-cat-state">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+        <button class="submit" type="submit">Cập nhật</button>
+    </form>
+</div>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 <script src="${pageContext.request.contextPath}/assets/js/admin.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/adminPage2.js"></script>

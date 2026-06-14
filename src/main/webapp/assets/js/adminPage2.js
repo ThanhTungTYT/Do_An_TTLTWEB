@@ -16,29 +16,6 @@ function changePage(page) {
 function changeCid(cid) {
     window.location.href = buildUrl({ filter: cid, page: 1 });
 }
-function toggleCategoryState(id, currentState) {
-    document.getElementById('input-cat-id').value = id;
-    document.getElementById('input-cat-state').value = currentState === 'Inactive' ? 'Active' : 'Inactive';
-    document.getElementById('form-toggle-cat').submit();
-}
-document.addEventListener('DOMContentLoaded', function () {
-    const pageInput = document.getElementById('page-input');
-    if (pageInput) {
-        pageInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                let targetPage = parseInt(this.value, 10);
-                let maxPage = parseInt(this.getAttribute('data-max'), 10);
-                if (isNaN(targetPage) || targetPage < 1) targetPage = 1;
-                else if (targetPage > maxPage) targetPage = maxPage;
-                changePage(targetPage);
-            }
-        });
-        pageInput.addEventListener('blur', function () {
-            this.value = this.defaultValue;
-        });
-    }
-});
 
 function previewImage(input) {
     const file = input.files[0];
@@ -73,27 +50,6 @@ function setBoxImage(box, imgUrl) {
         box.classList.remove("filled");
     }
 }
-function addCat() {
-    var popup = document.getElementById('form-add-cat');
-    var content = document.getElementById('right-content');
-
-    if (popup) {
-        popup.style.display = 'block';
-        if (content) content.style.filter = 'blur(5px)';
-    } else {
-        console.error("Lỗi: Không tìm thấy ID form-add-cat");
-    }
-}
-
-function dongFormThemLoai() {
-    var popup = document.getElementById('form-add-cat');
-    var content = document.getElementById('right-content');
-
-    if (popup) {
-        popup.style.display = 'none';
-        if (content) content.style.filter = 'none';
-    }
-}
 
 function openEditModal(button) {
     var id = button.getAttribute("data-id");
@@ -119,13 +75,7 @@ function openEditModal(button) {
 
     var stateSelect = document.getElementById("edit-state");
     if (stateSelect) {
-        if (state && state.trim() !== "") {
-            stateSelect.value = state.trim().toLowerCase() === 'inactive'
-                ? 'Inactive'
-                : 'Active';
-        } else {
-            stateSelect.value = 'Active';
-        }
+        stateSelect.value = (state && state.trim().toLowerCase() === 'inactive') ? 'inactive' : 'active';
     }
 
     var imgMain = button.getAttribute("data-img-main");
@@ -138,6 +88,24 @@ function openEditModal(button) {
 
 function closeEditModal() {
     document.getElementById("form-remake").style.display = "none";
+    document.getElementById("right-content").style.filter = "none";
+}
+
+function openEditCat(id, name, state) {
+    document.getElementById('edit-cat-id').value    = id;
+    document.getElementById('edit-cat-name').value  = name;
+    document.getElementById('edit-cat-state').value = state;
+    const form = document.getElementById('form-edit-cat');
+    if (form) {
+        form.style.display = 'flex';
+        document.getElementById('right-content').style.filter = 'blur(5px)';
+    }
+}
+
+function closeEditCat() {
+    const form = document.getElementById('form-edit-cat');
+    if (form) form.style.display = 'none';
+    document.getElementById('right-content').style.filter = 'none';
 }
 
 function toggleSelectAll(source) {
@@ -146,6 +114,18 @@ function toggleSelectAll(source) {
         checkboxes[i].checked = source.checked;
     }
 }
+
+function deleteCheckedProducts() {
+    const checkboxes = document.querySelectorAll('input[name="productIds"]:checked');
+    if (checkboxes.length === 0) return;
+    let ids = [];
+    checkboxes.forEach(cb => ids.push(cb.value));
+    document.getElementById('delete-action').value    = 'delete_list';
+    document.getElementById('delete-ids-multi').value = ids.join(",");
+    document.getElementById('delete-form').submit();
+}
+
+// Xem thêm / Thu gọn danh sách loại
 (function () {
     const rows = document.querySelectorAll('.cat-row');
     const btn = document.getElementById('btn-show-more-cat');
@@ -159,18 +139,13 @@ function showMoreCat() {
     const btn = document.getElementById('btn-show-more-cat');
 
     if (catShown >= rows.length) {
-        // Thu gọn
-        for (let i = 5; i < rows.length; i++) {
-            rows[i].style.display = 'none';
-        }
+        for (let i = 5; i < rows.length; i++) rows[i].style.display = 'none';
         catShown = 5;
         btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Xem thêm';
     } else {
         // Xem thêm
         const next = catShown + 5;
-        for (let i = catShown; i < next && i < rows.length; i++) {
-            rows[i].style.display = '';
-        }
+        for (let i = catShown; i < next && i < rows.length; i++) rows[i].style.display = '';
         catShown = next;
         if (catShown >= rows.length) {
             btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Thu gọn';
@@ -178,23 +153,9 @@ function showMoreCat() {
     }
 }
 
-function deleteCheckedProducts() {
-    const checkboxes = document.querySelectorAll('input[name="productIds"]:checked');
-
-    if (checkboxes.length === 0) {
-        return;
-    }
-
-        let ids = [];
-        checkboxes.forEach(cb => ids.push(cb.value));
-
-        document.getElementById('delete-action').value = 'delete_list';
-        document.getElementById('delete-ids-multi').value = ids.join(",");
-        document.getElementById('delete-form').submit();
-}
-
 document.addEventListener('DOMContentLoaded', function () {
-    const formIds = ['form-add', 'form-remake', 'form-add-cat'];
+    // Scroll wheel trong form
+    const formIds = ['form-add', 'form-remake', 'form-add-cat', 'form-edit-cat'];
     formIds.forEach(function (id) {
         const form = document.getElementById(id);
         if (!form) return;
@@ -210,4 +171,22 @@ document.addEventListener('DOMContentLoaded', function () {
             e.stopPropagation();
         }, { passive: true });
     });
+
+    // Page input
+    const pageInput = document.getElementById('page-input');
+    if (pageInput) {
+        pageInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                let targetPage = parseInt(this.value, 10);
+                let maxPage    = parseInt(this.getAttribute('data-max'), 10);
+                if (isNaN(targetPage) || targetPage < 1) targetPage = 1;
+                else if (targetPage > maxPage) targetPage = maxPage;
+                changePage(targetPage);
+            }
+        });
+        pageInput.addEventListener('blur', function () {
+            this.value = this.defaultValue;
+        });
+    }
 });

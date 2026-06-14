@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    ['form-add', 'form-remake', 'form-add-cat'].forEach(id => {
+    ['form-add', 'form-remake', 'form-add-cat', 'form-edit-cat'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
     });
@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const form_add = document.getElementById("form-add");           // Modal Thêm SP
         const form_remake = document.getElementById("form-remake");     // Modal Sửa SP
         const form_add_cat = document.getElementById("form-add-cat");   // Modal Thêm Loại
+        const form_edit_cat = document.getElementById("form-edit-cat"); // Modal Sua Loại
         const detail = document.getElementById("detail-p");             // Modal Chi tiết
 
         // --- A. XỬ LÝ MENU TRÁI ---
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(form_add) form_add.style.left = "50%";
                 if(form_remake) form_remake.style.left = "50%";
                 if(form_add_cat) form_add_cat.style.left = "50%";
+                if(form_edit_cat) form_edit_cat.style.left = "50%";
                 if(detail) detail.style.left = "50%";
             } else {
                 menu.style.display = "";
@@ -44,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(form_add) form_add.style.left = "60%";
                 if(form_remake) form_remake.style.left = "60%";
                 if(form_add_cat) form_add_cat.style.left = "60%";
+                if(form_edit_cat) form_edit_cat.style.left = "60%";
                 if(detail) detail.style.left = "60%";
             }
         }
@@ -78,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- D. FORM THÊM LOẠI SẢN PHẨM (Nút #add-cat) ---
         // Quan trọng: Đã khớp với ID add-cat bạn vừa sửa ở Bước 1
-        if (e.target.closest('#add-cat')) {
+        if (e.target.closest('#add-cat-btn')) {
             if (form_add_cat) {
                 form_add_cat.style.display = 'block';
                 if(content) content.style.filter = 'blur(5px)';
@@ -94,7 +97,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- E. FORM CHI TIẾT ---
+        // --- E. FORM SỬA LOẠI SẢN PHẨM ---
+        if (e.target.closest('#close-edit-cat')) {
+            if (form_edit_cat) {
+                form_edit_cat.style.display = 'none';
+                if (content) content.style.filter = 'blur(0)';
+            }
+        }
+
+        // --- F. FORM CHI TIẾT ---
         if (e.target.closest('.detail')) {
             if (detail) {
                 detail.style.display = 'flex';
@@ -109,11 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- F. ĐÓNG MODAL KHI BẤM RA NGOÀI ---
+        // --- G. ĐÓNG MODAL KHI BẤM RA NGOÀI ---
         const modals = [
             { el: form_add,     openSel: '#add' },
             { el: form_remake,  openSel: '.remake' },
             { el: form_add_cat, openSel: '#add-cat-btn, #add-cat' },
+            { el: form_edit_cat, openSel: '.cat-row button' },
             { el: detail,       openSel: '.detail' }
         ];
         modals.forEach(({ el, openSel }) => {

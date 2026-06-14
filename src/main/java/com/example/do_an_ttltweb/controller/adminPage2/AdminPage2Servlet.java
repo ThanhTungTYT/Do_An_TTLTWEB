@@ -75,9 +75,7 @@ public class AdminPage2Servlet  extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
 
         List<Category> allCategories = categoryService.getAllCategories();
-        List<Category> activeCategories = categoryService.getActiveCategories();
 
-        request.setAttribute("categories", activeCategories);
         request.setAttribute("allCategories", allCategories);
 
         request.getRequestDispatcher("/adminPage2.jsp").forward(request, response);
@@ -97,8 +95,8 @@ public class AdminPage2Servlet  extends HttpServlet {
                 case "delete_list":
                     handleDeleteList(request, response);
                     break;
-                case "toggle_category":
-                    handleToggleCategory(request, response);
+                case "edit_category":
+                    handleEditCategory(request, response);
                     break;
                 case "edit_product":
                     handleEditProduct(request, response);
@@ -270,14 +268,16 @@ public class AdminPage2Servlet  extends HttpServlet {
         }
         response.sendRedirect(request.getContextPath() + "/admin/products");
     }
-    private void handleToggleCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleEditCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             int id = Integer.parseInt(request.getParameter("id"));
-            String newState = request.getParameter("state");
-            categoryService.updateCategoryState(id, newState);
-            request.getSession().setAttribute("success", "Cập nhật trạng thái loại sản phẩm thành công!");
-        } catch (NumberFormatException e) {
-            request.getSession().setAttribute("error", "ID không hợp lệ!");
+            String name = request.getParameter("category_name");
+            String state = request.getParameter("state");
+            categoryService.updateCategory(id, name, state);
+            request.getSession().setAttribute("success", "Cập nhật loại sản phẩm thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("error", "Cập nhật thất bại!");
         }
         response.sendRedirect(request.getContextPath() + "/admin/products");
     }

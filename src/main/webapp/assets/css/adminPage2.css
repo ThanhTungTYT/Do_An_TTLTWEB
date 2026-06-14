@@ -64,7 +64,7 @@
         align-items: center;
         gap: 7px;
         padding: 9px 18px;
-        background: #e74c3c;
+        background: #c76739;
         color: #fff;
         border: none;
         border-radius: 8px;
@@ -75,7 +75,7 @@
     }
 
     .btn-delete-checked:hover {
-        background: #c0392b;
+        background: #8c4827;
         transform: translateY(-1px);
     }
 
@@ -287,6 +287,9 @@
         border-radius: 10px;
         cursor: pointer;
         border: none;
+    }
+    .right-content .cat-list button:hover {
+        background: #8c4828;
     }
 
     /* --- Upload ảnh sản phẩm (form Thêm/Sửa) --- */
