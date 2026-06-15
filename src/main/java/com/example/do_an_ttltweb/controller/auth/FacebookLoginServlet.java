@@ -28,7 +28,13 @@ public class FacebookLoginServlet extends HttpServlet {
         String code = request.getParameter("code");
 
         if (code == null) {
-            response.sendRedirect("login.jsp");
+            String redirectUri = getRedirectUri(request);
+            String authUrl = "https://www.facebook.com/v18.0/dialog/oauth"
+                    + "?client_id=" + URLEncoder.encode(APP_ID, StandardCharsets.UTF_8.name())
+                    + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8.name())
+                    + "&response_type=code"
+                    + "&scope=public_profile";
+            response.sendRedirect(authUrl);
             return;
         }
         try {
@@ -107,10 +113,9 @@ public class FacebookLoginServlet extends HttpServlet {
     }
 
     private String getRedirectUri(HttpServletRequest request) {
-        String scheme = request.getHeader("X-Forwarded-Proto");
-        if (scheme == null) {
-            scheme = request.getScheme();
-        }
+        String forwardedProto = request.getHeader("X-Forwarded-Proto");
+        boolean behindProxy = forwardedProto != null;
+        String scheme = behindProxy ? forwardedProto : request.getScheme();
 
         String serverName = request.getHeader("X-Forwarded-Host");
         if (serverName == null) {
@@ -121,16 +126,16 @@ public class FacebookLoginServlet extends HttpServlet {
             serverName = serverName.split(":")[0];
         }
 
-        String portHeader = request.getHeader("X-Forwarded-Port");
-        int serverPort = (portHeader != null) ? Integer.parseInt(portHeader) : request.getServerPort();
-
         String contextPath = request.getContextPath();
 
         StringBuilder url = new StringBuilder();
         url.append(scheme).append("://").append(serverName);
 
-        if (("http".equals(scheme) && serverPort != 80) || ("https".equals(scheme) && serverPort != 443)) {
-            url.append(":").append(serverPort);
+        if (!behindProxy) {
+            int serverPort = request.getServerPort();
+            if (("http".equals(scheme) && serverPort != 80) || ("https".equals(scheme) && serverPort != 443)) {
+                url.append(":").append(serverPort);
+            }
         }
 
         url.append(contextPath).append("/login-facebook");
