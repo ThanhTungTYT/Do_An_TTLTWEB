@@ -127,49 +127,6 @@
                         <i class="fas fa-university payment-icon"></i> Chuyển khoản / QR Banking
                     </span>
                 </label>
-
-                    <div id="bank-info-panel" class="bank-info-panel" style="display:none;">
-                        <div class="bank-info-header">
-                            <i class="fas fa-info-circle"></i> Thông tin chuyển khoản
-                        </div>
-                        <div class="bank-info-body">
-                            <div class="bank-info-row">
-                                <span class="bank-info-label">Ngân hàng:</span>
-                                <span class="bank-info-value">BIDV</span>
-                            </div>
-                            <div class="bank-info-row">
-                                <span class="bank-info-label">Số tài khoản:</span>
-                                <span class="bank-info-value" id="bank-account-number">
-                                    8800273817
-                                    <button type="button" class="copy-btn" onclick="copyText('8800273817', this)">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                </span>
-                            </div>
-                            <div class="bank-info-row">
-                                <span class="bank-info-label">Chủ tài khoản:</span>
-                                <span class="bank-info-value">AROMA CAFE</span>
-                            </div>
-                            <div class="bank-info-row">
-                                <span class="bank-info-label">Nội dung CK:</span>
-                                <span class="bank-info-value" id="transfer-content">
-                                    <span id="transfer-content-text">AROMACAFE</span>
-                                    <button type="button" class="copy-btn" id="copy-content-btn"
-                                            onclick="copyTransferContent()">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                </span>
-                            </div>
-                            <div id="qr-section" class="qr-section">
-                                <p class="qr-label">Quét mã QR để thanh toán:</p>
-                                <img id="qr-image"
-                                     src="https://img.vietqr.io/image/BIDV-8800273817-compact2.png?amount=0&addInfo=AROMACAFE+${sessionScope.user.id}&accountName=AROMA+CAFE"
-                                     alt="QR Code thanh toán"
-                                     class="qr-img">
-                                <p class="qr-note"><i class="fas fa-exclamation-circle"></i> QR sẽ tự động cập nhật số tiền khi đặt hàng</p>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
             <section class="note-box">
@@ -282,8 +239,8 @@
                 <div class="modal-bank-row">
                     <span><i class="fas fa-credit-card"></i> Số tài khoản</span>
                     <strong>
-                        8800273817
-                        <button type="button" class="copy-btn" onclick="copyText('8800273817', this)">
+                        070137280254
+                        <button type="button" class="copy-btn" onclick="copyText('070137280254', this)">
                             <i class="fas fa-copy"></i>
                         </button>
                     </strong>
@@ -310,7 +267,7 @@
             <div class="modal-qr-section">
                 <p class="qr-label"><i class="fas fa-qrcode"></i> Quét mã QR thanh toán:</p>
                 <img id="modal-qr-image"
-                     src="https://img.vietqr.io/image/BIDV-8800273817-compact2.png?amount=0&addInfo=AROMACAFE+${sessionScope.user.id}&accountName=AROMA+CAFE"
+                     src="https://img.vietqr.io/image/SACOMBANK-070137280254-compact2.png?amount=0&addInfo=AROMACAFE+${sessionScope.user.id}&accountName=AROMA+CAFE"
                      alt="QR Code"
                      class="qr-img modal-qr-img">
                 <p class="qr-note">
