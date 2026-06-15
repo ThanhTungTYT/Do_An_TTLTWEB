@@ -4,6 +4,11 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
+    <context-param>
+        <param-name>SEPAY_API_KEY</param-name>
+        <param-value>AROMA</param-value>
+    </context-param>
+
     <filter>
         <filter-name>AdminFilter</filter-name>
         <filter-class>com.example.do_an_ttltweb.helper.filter.AdminFilter</filter-class>
