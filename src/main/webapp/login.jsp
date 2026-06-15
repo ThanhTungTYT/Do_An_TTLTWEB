@@ -91,11 +91,11 @@
     </div>
 
     <div class="social-login-buttons">
-        <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=682060554420-qs22m1250tphcaablu0m653jo1s59n7j.apps.googleusercontent.com&redirect_uri=http://localhost:8080/Do_An_TTLTWEB/login-google&response_type=code&scope=email%20profile&access_type=offline"
+        <a href="${pageContext.request.contextPath}/login-google"
            class="btn-social btn-google" title="Đăng nhập bằng Google">
             <i class="fab fa-google"></i>
         </a>
-        <a href="https://www.facebook.com/v18.0/dialog/oauth?client_id=1989296738622542&redirect_uri=http://localhost:8080/Do_An_TTLTWEB/login-facebook&scope=public_profile"
+        <a href="${pageContext.request.contextPath}/login-facebook"
            class="btn-social btn-facebook">
             <i class="fab fa-facebook-f"></i>
         </a>

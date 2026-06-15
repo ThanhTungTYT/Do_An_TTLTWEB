@@ -29,8 +29,16 @@ public class GoogleLoginServlet extends HttpServlet {
 
         String code = request.getParameter("code");
 
+        // Chưa có code -> bắt đầu luồng OAuth: dựng URL Google với redirect_uri động (khớp môi trường)
         if (code == null) {
-            response.sendRedirect("login.jsp");
+            String redirectUri = getRedirectUri(request);
+            String authUrl = "https://accounts.google.com/o/oauth2/v2/auth"
+                    + "?client_id=" + URLEncoder.encode(CLIENT_ID, StandardCharsets.UTF_8.name())
+                    + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8.name())
+                    + "&response_type=code"
+                    + "&scope=" + URLEncoder.encode("email profile", StandardCharsets.UTF_8.name())
+                    + "&access_type=offline";
+            response.sendRedirect(authUrl);
             return;
         }
 
@@ -133,10 +141,9 @@ public class GoogleLoginServlet extends HttpServlet {
     }
 
     private String getRedirectUri(HttpServletRequest request) {
-        String scheme = request.getHeader("X-Forwarded-Proto");
-        if (scheme == null) {
-            scheme = request.getScheme();
-        }
+        String forwardedProto = request.getHeader("X-Forwarded-Proto");
+        boolean behindProxy = forwardedProto != null;
+        String scheme = behindProxy ? forwardedProto : request.getScheme();
 
         String serverName = request.getHeader("X-Forwarded-Host");
         if (serverName == null) {
@@ -147,16 +154,16 @@ public class GoogleLoginServlet extends HttpServlet {
             serverName = serverName.split(":")[0];
         }
 
-        String portHeader = request.getHeader("X-Forwarded-Port");
-        int serverPort = (portHeader != null) ? Integer.parseInt(portHeader) : request.getServerPort();
-
         String contextPath = request.getContextPath();
 
         StringBuilder url = new StringBuilder();
         url.append(scheme).append("://").append(serverName);
 
-        if (("http".equals(scheme) && serverPort != 80) || ("https".equals(scheme) && serverPort != 443)) {
-            url.append(":").append(serverPort);
+        if (!behindProxy) {
+            int serverPort = request.getServerPort();
+            if (("http".equals(scheme) && serverPort != 80) || ("https".equals(scheme) && serverPort != 443)) {
+                url.append(":").append(serverPort);
+            }
         }
 
         url.append(contextPath).append("/login-google");
