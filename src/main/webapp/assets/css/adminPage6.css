@@ -41,6 +41,26 @@
         justify-content: center;
         vertical-align: middle;
     }
+    .review .delete {
+        font-weight: 500;
+        font-size: 15px;
+        margin-top: 0;
+        margin-right: 5px;
+        color: white;
+        background: #c73939;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+    }
+    .review .delete:hover{
+        background: #b02a37;
+    }
 
     .review td button:hover {
         background: #8c4828;

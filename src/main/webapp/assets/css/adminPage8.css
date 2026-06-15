@@ -14,7 +14,22 @@
     .list-discount table {
         margin-top: 5px;
     }
-
+    .list-discount .btn-action.btn-delete {
+        font-weight: 500;
+        font-size: 15px;
+        margin-top: 5px;
+        margin-right: 10px;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+        background-color: #c73939;
+    }
+    .list-discount .btn-action.btn-delete:hover {
+        background-color: #b02a37;
+    }
     .list-discount td button {
         font-weight: 500;
         font-size: 15px;
@@ -47,9 +62,6 @@
         font-size: 16px;
     }
 
-    .list-discount td a.btn-action.btn-delete {
-        background-color: #c76739;
-    }
 
     .list-discount td a.btn-action.btn-edit {
         background-color: #c76739;

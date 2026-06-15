@@ -465,7 +465,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await fetch(`${ctx}/api/check-order-status?orderId=${orderId}`);
             const data = await res.json();
 
-            if (data.status === "Đã thanh toán" || data.status === "Đang xử lý") {
+            if (data.status === "Đang giao" || data.status === "Đang xử lý") {
                 handlePaymentSuccess();
             }
         } catch (e) {
@@ -612,4 +612,17 @@ document.addEventListener("DOMContentLoaded", function () {
     loadProvinces();
     calculateTotal();
     onPaymentMethodChange();
+
+    if (window.__pendingOrderId && window.__pendingFinalAmount) {
+        bankOrderCreated   = true;
+        currentBankOrderId = window.__pendingOrderId;
+
+        const bankRadio = document.querySelector('input[name="paymentMethod"][value="bank"]');
+        if (bankRadio) {
+            bankRadio.checked = true;
+            onPaymentMethodChange();
+        }
+        disableFormInputs();
+        openBankModal(window.__pendingOrderId, window.__pendingFinalAmount);
+    }
 });

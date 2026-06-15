@@ -336,6 +336,12 @@
 <script>
     window.contextPath = "${pageContext.request.contextPath}";
 </script>
+<c:if test="${not empty requestScope.pendingOrderId}">
+    <script>
+        window.__pendingOrderId     = ${requestScope.pendingOrderId};
+        window.__pendingFinalAmount = ${requestScope.pendingFinalAmount};
+    </script>
+</c:if>
 <script src="${pageContext.request.contextPath}/assets/js/payment.js?v=5"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
