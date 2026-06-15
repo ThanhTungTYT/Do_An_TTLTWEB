@@ -40,7 +40,7 @@ public class AuthDao extends BaseDao {
         return getJdbi().withHandle(handle ->
                 handle.createUpdate(
                                 "INSERT INTO users(full_name, email, phone, password_hash, role, created_at, status) " +
-                                        "VALUES (:fullname, :email, :phone, :pass, 'Customer', NOW(), 'active')"
+                                        "VALUES (:fullname, :email, :phone, :pass, 'customer', NOW(), 'active')"
                         )
                         .bind("fullname", user.getFull_name())
                         .bind("email", user.getEmail())

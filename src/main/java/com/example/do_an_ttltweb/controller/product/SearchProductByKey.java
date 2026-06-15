@@ -45,7 +45,7 @@ public class SearchProductByKey extends HttpServlet {
         int totalPages;
         int pageSize = 25;
 
-        List<Category> listCategories = categoryService.getAllCategories();
+        List<Category> listCategories = categoryService.getActiveCategories();
 
         if (keyword != null && !keyword.trim().isEmpty()) {
             listProducts = productService.searchProductsByPrice(keyword, cid, sort, page, pageSize, minPrice, maxPrice);

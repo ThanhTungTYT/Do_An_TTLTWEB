@@ -115,12 +115,12 @@ function toggleSelectAll(source) {
     }
 }
 
-function deleteCheckedProducts() {
+function toggleCheckedProducts() {
     const checkboxes = document.querySelectorAll('input[name="productIds"]:checked');
     if (checkboxes.length === 0) return;
     let ids = [];
     checkboxes.forEach(cb => ids.push(cb.value));
-    document.getElementById('delete-action').value    = 'delete_list';
+    document.getElementById('delete-action').value    = 'toggle_list';
     document.getElementById('delete-ids-multi').value = ids.join(",");
     document.getElementById('delete-form').submit();
 }

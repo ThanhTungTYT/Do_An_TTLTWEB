@@ -33,7 +33,9 @@ public class AdminFilter implements Filter {
 
         boolean isAllowed = false;
 
-        if ("admin".equalsIgnoreCase(user.getRole())) {
+        if (uri.contains("/admin/redirect")) {
+            isAllowed = true;
+        } else if ("admin".equalsIgnoreCase(user.getRole())) {
             isAllowed = true;
         } else {
             if (uri.contains("/admin/products") && user.hasPermission("manage_product")) isAllowed = true;
@@ -43,7 +45,7 @@ public class AdminFilter implements Filter {
             else if (uri.contains("/admin/banner") && user.hasPermission("manage_banner")) isAllowed = true;
             else if (uri.contains("/admin/reviews") && user.hasPermission("manage_review")) isAllowed = true;
             else if (uri.contains("/admin/promotion") && user.hasPermission("manage_promotion")) isAllowed = true;
-            else if (uri.contains("/admin/dashboard")) isAllowed = true;
+            else if (uri.contains("/admin/dashboard") && user.hasPermission("view_dashboard")) isAllowed = true;
         }
         if (isAllowed) {
             chain.doFilter(request, response);

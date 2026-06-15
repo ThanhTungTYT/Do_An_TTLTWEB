@@ -125,15 +125,15 @@
                     Hỗ trợ khách hàng
                 </div>
                 <div class="support-list">
-                    <a href="#" class="item facebook">
+                    <a href="https://www.facebook.com/atnguyen.75640/" class="item facebook">
                         <i class="fab fa-facebook"></i>
                         <span>Facebook</span>
                     </a>
-                    <a href="#" class="item insta">
+                    <a href="https://www.instagram.com/nguyendat6159/" class="item insta">
                         <i class="fab fa-instagram"></i>
                         <span>Instagram</span>
                     </a>
-                    <a href="#" class="item youtube">
+                    <a href="https://www.youtube.com/@nguyenlechannel4855/featured" class="item youtube">
                         <i class="fab fa-youtube"></i>
                         <span>Youtube</span>
                     </a>

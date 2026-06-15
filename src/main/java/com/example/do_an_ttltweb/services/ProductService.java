@@ -123,6 +123,19 @@ public class ProductService {
             }
         }
     }
+
+    public void toggleListProductsState(String[] ids) {
+        if (ids == null || ids.length == 0) return;
+
+        for (String idStr : ids) {
+            try {
+                int id = Integer.parseInt(idStr.trim());
+                productDao.toggleProductState(id);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public List<Product> searchProducts(String keyword, int page, int pageSize) {
         int offset = (page - 1) * pageSize;
         return productDao.searchProductsPaginated(keyword, pageSize, offset);

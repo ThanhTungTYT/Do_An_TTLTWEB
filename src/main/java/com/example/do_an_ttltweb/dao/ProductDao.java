@@ -211,6 +211,14 @@ public class ProductDao extends BaseDao {
         );
     }
 
+    public boolean toggleProductState(int id) {
+        return getJdbi().withHandle(handle ->
+                handle.createUpdate("UPDATE products SET state = CASE WHEN state = 'active' THEN 'inactive' ELSE 'active' END WHERE id = :id")
+                        .bind("id", id)
+                        .execute() > 0
+        );
+    }
+
 
     public boolean updateProduct(Product p) {
         return getJdbi().withHandle(handle ->

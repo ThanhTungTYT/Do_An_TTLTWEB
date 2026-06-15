@@ -75,6 +75,10 @@ public class AdminPage2Servlet  extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
 
         List<Category> allCategories = categoryService.getAllCategories();
+        List<Category> categories = categoryService.getActiveCategories();
+
+        request.setAttribute("categories", categories);
+        request.setAttribute("allCategories", allCategories);
 
         request.setAttribute("allCategories", allCategories);
 
@@ -94,6 +98,9 @@ public class AdminPage2Servlet  extends HttpServlet {
                     break;
                 case "delete_list":
                     handleDeleteList(request, response);
+                    break;
+                case "toggle_list":
+                    handleToggleList(request, response);
                     break;
                 case "edit_category":
                     handleEditCategory(request, response);
@@ -196,6 +203,21 @@ public class AdminPage2Servlet  extends HttpServlet {
             request.getSession().setAttribute("success", "Xóa sản phẩm thành công!");
         } else {
             request.getSession().setAttribute("error", "Vui lòng chọn sản phẩm để xóa!");
+        }
+        response.sendRedirect(request.getContextPath() + "/admin/products");
+    }
+
+    private void handleToggleList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String idsStr = request.getParameter("ids");
+
+        if (idsStr != null && !idsStr.trim().isEmpty()) {
+            String[] ids = idsStr.split(",");
+
+            productService.toggleListProductsState(ids);
+
+            request.getSession().setAttribute("success", "Đã đổi trạng thái ẩn/hiện sản phẩm đã chọn!");
+        } else {
+            request.getSession().setAttribute("error", "Vui lòng chọn sản phẩm!");
         }
         response.sendRedirect(request.getContextPath() + "/admin/products");
     }
