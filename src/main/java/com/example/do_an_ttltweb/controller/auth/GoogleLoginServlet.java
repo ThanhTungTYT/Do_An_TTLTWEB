@@ -13,6 +13,8 @@ import jakarta.servlet.http.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @WebServlet("/login-google")
@@ -20,7 +22,6 @@ public class GoogleLoginServlet extends HttpServlet {
 
     private static final String CLIENT_ID = "682060554420-qs22m1250tphcaablu0m653jo1s59n7j.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "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";
-    private static final String REDIRECT_URI = "http://localhost:8080/Do_An_TTLTWEB/login-google";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -34,7 +35,7 @@ public class GoogleLoginServlet extends HttpServlet {
         }
 
         try {
-            JsonObject tokenJson = getTokenJson(code);
+            JsonObject tokenJson = getTokenJson(code, request);
 
             GoogleUser ggUser = parseUserFromIdToken(tokenJson.get("id_token").getAsString());
 
@@ -66,7 +67,8 @@ public class GoogleLoginServlet extends HttpServlet {
         }
     }
 
-    private JsonObject getTokenJson(String code) throws IOException {
+    private JsonObject getTokenJson(String code, HttpServletRequest request) throws IOException {
+        String redirectUri = getRedirectUri(request);
 
         URL url = new URL("https://oauth2.googleapis.com/token");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -74,10 +76,10 @@ public class GoogleLoginServlet extends HttpServlet {
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);
 
-        String params = "code=" + code +
-                "&client_id=" + CLIENT_ID +
-                "&client_secret=" + CLIENT_SECRET +
-                "&redirect_uri=" + REDIRECT_URI +
+        String params = "code=" + URLEncoder.encode(code, StandardCharsets.UTF_8.name()) +
+                "&client_id=" + URLEncoder.encode(CLIENT_ID, StandardCharsets.UTF_8.name()) +
+                "&client_secret=" + URLEncoder.encode(CLIENT_SECRET, StandardCharsets.UTF_8.name()) +
+                "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8.name()) +
                 "&grant_type=authorization_code";
 
         OutputStream os = conn.getOutputStream();
@@ -128,5 +130,36 @@ public class GoogleLoginServlet extends HttpServlet {
         user.setName(json.get("name").getAsString());
 
         return user;
+    }
+
+    private String getRedirectUri(HttpServletRequest request) {
+        String scheme = request.getHeader("X-Forwarded-Proto");
+        if (scheme == null) {
+            scheme = request.getScheme();
+        }
+
+        String serverName = request.getHeader("X-Forwarded-Host");
+        if (serverName == null) {
+            serverName = request.getServerName();
+        }
+
+        if (serverName.contains(":")) {
+            serverName = serverName.split(":")[0];
+        }
+
+        String portHeader = request.getHeader("X-Forwarded-Port");
+        int serverPort = (portHeader != null) ? Integer.parseInt(portHeader) : request.getServerPort();
+
+        String contextPath = request.getContextPath();
+
+        StringBuilder url = new StringBuilder();
+        url.append(scheme).append("://").append(serverName);
+
+        if (("http".equals(scheme) && serverPort != 80) || ("https".equals(scheme) && serverPort != 443)) {
+            url.append(":").append(serverPort);
+        }
+
+        url.append(contextPath).append("/login-google");
+        return url.toString();
     }
 }
