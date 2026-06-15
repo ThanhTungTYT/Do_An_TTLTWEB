@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const qrImg = document.getElementById("qr-image");
         if (qrImg) {
-            qrImg.src = `https://img.vietqr.io/image/BIDV-8800273817-compact2.png?amount=${amountInt}&addInfo=${content}&accountName=AROMA+CAFE`;
+            qrImg.src = `https://img.vietqr.io/image/SACOMBANK-070137280254-compact2.png?amount=${amountInt}&addInfo=${content}&accountName=AROMA+CAFE`;
         }
     }
 
@@ -444,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (transferContent) transferContent.textContent = `AROMACAFE ${orderId}`;
 
         if (modalQrImg) {
-            modalQrImg.src = `https://img.vietqr.io/image/BIDV-8800273817-compact2.png?amount=${amountInt}&addInfo=AROMACAFE+${orderId}&accountName=AROMA+CAFE`;
+            modalQrImg.src = `https://img.vietqr.io/image/SACOMBANK-070137280254-compact2.png?amount=${amountInt}&addInfo=AROMACAFE+${orderId}&accountName=AROMA+CAFE`;
         }
 
         modal.style.display = "flex";
