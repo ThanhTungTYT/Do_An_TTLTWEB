@@ -11,6 +11,11 @@ $(document).ready(function () {
     }
 
     $('.sidebar-link').on('click', function (e) {
+        // Link mở trang riêng (vd Trang quản trị) -> để trình duyệt điều hướng bình thường,
+        // không nạp AJAX vào #content-area (tránh lồng nguyên trang & nạp lại script.js).
+        if ($(this).data('fullPage')) {
+            return;
+        }
         e.preventDefault();
         $('.sidebar-link').removeClass('active');
         $(this).addClass('active');

@@ -29,7 +29,6 @@ public class GoogleLoginServlet extends HttpServlet {
 
         String code = request.getParameter("code");
 
-        // Chưa có code -> bắt đầu luồng OAuth: dựng URL Google với redirect_uri động (khớp môi trường)
         if (code == null) {
             String redirectUri = getRedirectUri(request);
             String authUrl = "https://accounts.google.com/o/oauth2/v2/auth"

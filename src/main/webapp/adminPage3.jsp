@@ -36,7 +36,9 @@
         <img src="${pageContext.request.contextPath}/assets/img/logo.png" onclick="location.href='${pageContext.request.contextPath}/'" width="300px" height="100px">
     </div>
     <div class="menu">
-        <a href="${pageContext.request.contextPath}/admin/dashboard" class="menu-item">Tổng quan</a>
+        <c:if test="${sessionScope.user.hasPermission('view_dashboard')}">
+            <a href="${pageContext.request.contextPath}/admin/dashboard" class="menu-item">Tổng quan</a>
+        </c:if>
 
         <c:if test="${sessionScope.user.hasPermission('manage_product')}">
             <a href="${pageContext.request.contextPath}/admin/products" class="menu-item">Quản lí sản phẩm</a>

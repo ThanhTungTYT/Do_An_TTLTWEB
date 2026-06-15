@@ -71,10 +71,10 @@
                 <li><a href="${pageContext.request.contextPath}/change-password" class="sidebar-link">Đổi mật khẩu</a></li>
                 <c:if test="${sessionScope.user.role eq 'admin' or sessionScope.user.permissions.size() > 1}">
                     <li>
-                        <a href="${pageContext.request.contextPath}/admin/dashboard"
+                        <a href="${pageContext.request.contextPath}/admin/redirect"
                            class="sidebar-link"
-                           style="color:white; font-weight:bold;"
-                           onclick="window.location.href=this.href; return false;">
+                           data-full-page="true"
+                           style="color:white; font-weight:bold;">
                             <i class="fas fa-shield-alt"></i> Trang quản trị
                         </a>
                     </li>
@@ -118,7 +118,7 @@
     </div>
 </footer>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
-<script src="${pageContext.request.contextPath}/assets/js/account.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/account.js?v=2"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
 </body>
 

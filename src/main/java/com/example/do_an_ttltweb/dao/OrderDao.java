@@ -95,12 +95,6 @@ public class OrderDao extends BaseDao {
         });
     }
 
-    /**
-     * Báo hiệu race condition lớp 2: tại thời điểm trừ kho trong giao dịch đặt hàng,
-     * sản phẩm đã hết hàng hoặc không còn đủ số lượng.
-     * Exception chỉ mang dữ liệu (tên sản phẩm); câu thông báo cho người dùng do
-     * tầng controller/servlet tự dựng để hiển thị toast.
-     */
     public static class OutOfStockException extends RuntimeException {
         private final String productName;
 
@@ -217,7 +211,7 @@ public class OrderDao extends BaseDao {
 
             for (OrderItem item : items) {
                 handle.createUpdate("UPDATE products " +
-                                "SET stock = stock + :qty, sold = sold - :qty " +
+                                "SET stock = stock + :qty, sold = GREATEST(0, sold - :qty) " +
                                 "WHERE id = :pid"
                         )
                         .bind("qty", item.getQuantity())
@@ -486,7 +480,7 @@ public class OrderDao extends BaseDao {
         return getJdbi().inTransaction(h -> {
             int updated = h.createUpdate(
                             "UPDATE orders SET status = :status, ghn_order_code = :ghnCode " +
-                                    "WHERE id = :id AND status = 'Ch\u1EDD thanh to\u00E1n'")
+                                    "WHERE id = :id AND status IN ('Đang xử lý', 'Yêu cầu hủy', 'Chờ thanh toán')")
                     .bind("status", status)
                     .bind("ghnCode", ghnCode)
                     .bind("id", orderId)
