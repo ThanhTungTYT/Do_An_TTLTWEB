@@ -31,27 +31,28 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        System.out.println("OrderServlet doGet called. URI: " + req.getRequestURI());
-
         HttpSession s = req.getSession(false);
 
         if (s == null || s.getAttribute("checkoutCart") == null) {
-            System.out.println("DEBUG: Missing checkoutCart, redirecting to cart.jsp");
             resp.sendRedirect("cart.jsp");
             return;
         }
 
+        User user = (User) s.getAttribute("user");
+
         Integer pendingBankOrderId = (Integer) s.getAttribute("pendingBankOrderId");
         if (pendingBankOrderId != null) {
             Order pendingOrder = orderService.getOrderById(pendingBankOrderId);
-            if (pendingOrder == null || !"Ch\u1EDD thanh to\u00E1n".equals(pendingOrder.getStatus())) {
+            if (pendingOrder == null || !"Chờ thanh toán".equals(pendingOrder.getStatus())) {
                 s.removeAttribute("pendingBankOrderId");
                 s.removeAttribute("checkoutCart");
                 resp.sendRedirect("cart.jsp");
                 return;
             }
+            req.setAttribute("pendingOrderId", pendingBankOrderId);
+            req.setAttribute("pendingFinalAmount", Math.round(pendingOrder.getFinalAmount()));
         }
-        User user = (User) s.getAttribute("user");
+
         Address defaultAddress = accountService.getUserAddress(user.getId());
 
         req.setAttribute("userAddress", defaultAddress);
