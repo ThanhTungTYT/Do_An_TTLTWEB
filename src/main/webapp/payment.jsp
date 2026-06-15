@@ -234,7 +234,7 @@
             <div class="modal-bank-details">
                 <div class="modal-bank-row">
                     <span><i class="fas fa-university"></i> Ngân hàng</span>
-                    <strong>BIDV</strong>
+                    <strong>Sacombank</strong>
                 </div>
                 <div class="modal-bank-row">
                     <span><i class="fas fa-credit-card"></i> Số tài khoản</span>
