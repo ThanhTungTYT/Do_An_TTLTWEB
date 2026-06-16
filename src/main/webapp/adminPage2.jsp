@@ -80,6 +80,9 @@
                 <option value="${c.id}" ${currentFilter == c.id ? 'selected' : ''}>${c.name}</option>
             </c:forEach>
         </select>
+        <button type="button" id="open-inventory-btn" style="background-color: #e67e22; color: white;">
+            <i class="fa-solid fa-clock-rotate-left"></i> Nhật ký kho
+        </button>
         <button type="button" onclick="addCat()" id="add-cat-btn">
             + Thêm loại sản phẩm
         </button>
@@ -478,9 +481,70 @@
         <button class="submit" type="submit">Cập nhật</button>
     </form>
 </div>
+<div class="form-add" id="form-inventory-log"
+     style="display: none; max-width: 850px; width: 80%;
+            position: fixed; z-index: 9999;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+            left: 60%;
+            top: 50%;
+            transform: translate(-50%, -50%);">    <div class="form-title">
+        <p>NHẬT KÝ BIẾN ĐỘNG KHO (XUẤT / NHẬP)</p>
+        <button id="close-inventory-log" type="button">X</button>
+    </div>
+    <div id="inventory-log-body" style="padding: 20px; max-height: 450px; overflow-y: auto;">
+        <p>Đang tải dữ liệu lịch sử...</p>
+    </div>
+</div>
 <button class="slide-top" id="slide-top"><i class="fas fa-angle-up"></i></button>
 <script src="${pageContext.request.contextPath}/assets/js/admin.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/adminPage2.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.js"></script>
+<script>
+    function repositionInventoryLog() {
+        var logForm = document.getElementById('form-inventory-log');
+        if (logForm && logForm.style.display === 'block') {
+            var rightContent = document.getElementById('right-content');
+            if (rightContent) {
+                var rect = rightContent.getBoundingClientRect();
+                var centerOfRight = rect.left + (rect.width / 2);
+                logForm.style.left = centerOfRight + 'px';
+            }
+        }
+    }
+
+    document.getElementById('open-inventory-btn').addEventListener('click', function() {
+        var logForm = document.getElementById('form-inventory-log');
+        var logBody = document.getElementById('inventory-log-body');
+
+        logForm.style.display = 'block';
+
+        repositionInventoryLog();
+
+        logBody.innerHTML = '<p style="text-align:center;">Đang truy vấn dữ liệu từ kho hàng...</p>';
+
+        fetch('${pageContext.request.contextPath}/admin/products?action=get_inventory_log')
+            .then(response => response.text())
+            .then(htmlResult => {
+                logBody.innerHTML = htmlResult;
+                repositionInventoryLog();
+            })
+            .catch(err => {
+                logBody.innerHTML = '<p style="color:red; text-align:center;">Lỗi! Không thể tải dữ liệu nhật ký.</p>';
+            });
+    });
+
+    document.getElementById('close-inventory-log').addEventListener('click', function() {
+        document.getElementById('form-inventory-log').style.display = 'none';
+    });
+
+    window.addEventListener('resize', repositionInventoryLog);
+
+    var sliderMenuBtn = document.getElementById('slider-menu');
+    if (sliderMenuBtn) {
+        sliderMenuBtn.addEventListener('click', function() {
+            setTimeout(repositionInventoryLog, 100);
+        });
+    }
+</script>
 </body>
 </html>
