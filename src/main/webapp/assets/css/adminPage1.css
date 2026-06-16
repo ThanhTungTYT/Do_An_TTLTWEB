@@ -272,14 +272,38 @@
         text-overflow: ellipsis;
     }
 
-    .product-stats-container .table-card:nth-child(1) .col-id { width: 15% !important; }
-    .product-stats-container .table-card:nth-child(1) .col-name { width: 55% !important; }
-    .product-stats-container .table-card:nth-child(1) .col-qty { width: 30% !important; }
+    .product-stats-container .table-card:nth-child(1) .col-id { width: 12% !important; }
+    .product-stats-container .table-card:nth-child(1) .col-name { width: 38% !important; }
+    .product-stats-container .table-card:nth-child(1) .col-qty { width: 20% !important; }
+    .product-stats-container .table-card:nth-child(1) .col-date { width: 30% !important; }
 
-    .product-stats-container .table-card:nth-child(2) .col-id { width: 15% !important; }
-    .product-stats-container .table-card:nth-child(2) .col-name { width: 40% !important; }
-    .product-stats-container .table-card:nth-child(2) .col-days { width: 25% !important; }
-    .product-stats-container .table-card:nth-child(2) .col-qty { width: 20% !important; }
+    .product-stats-container .table-card:nth-child(2) .col-id { width: 12% !important; }
+    .product-stats-container .table-card:nth-child(2) .col-name { width: 33% !important; }
+    .product-stats-container .table-card:nth-child(2) .col-days { width: 20% !important; }
+    .product-stats-container .table-card:nth-child(2) .col-stock { width: 17% !important; }
+    .product-stats-container .table-card:nth-child(2) .col-qty { width: 18% !important; }
+
+    /* Thanh cuộn cho 2 danh sách thống kê (giống giỏ hàng trang thanh toán) */
+    .stats-scroll {
+        max-height: 360px;
+        overflow-y: auto;
+    }
+    .stats-scroll table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: #f8f9fa;
+    }
+    .stats-scroll::-webkit-scrollbar { width: 6px; }
+    .stats-scroll::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 3px; }
+    .stats-scroll::-webkit-scrollbar-thumb:hover { background: #c76739; }
+    .stats-scroll::-webkit-scrollbar-track { background: transparent; }
+
+    .title-note {
+        font-size: 13px;
+        font-weight: 400;
+        color: #888;
+    }
 
     .table-card.margin-zero {
         margin: 0;
