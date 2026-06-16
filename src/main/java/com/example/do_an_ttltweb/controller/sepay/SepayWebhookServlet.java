@@ -101,7 +101,7 @@ public class SepayWebhookServlet extends HttpServlet {
                 System.out.println("Lỗi khi tự động đẩy đơn sang GHN: " + e.getMessage());
             }
 
-            boolean updated = orderService.updateOrderStatusAndGhn(orderId, nextStatus, ghnOrderCode);
+            boolean updated = orderService.confirmPaymentAndDeductStock(orderId, nextStatus, ghnOrderCode);
 
             if (updated) {
                 resp.setStatus(HttpServletResponse.SC_OK);

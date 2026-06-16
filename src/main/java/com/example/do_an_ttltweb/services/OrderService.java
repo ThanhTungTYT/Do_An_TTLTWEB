@@ -68,8 +68,8 @@ public class OrderService {
     public boolean updateOrderStatusById(int orderId, String status) {
         return dao.updateOrderStatusById(orderId, status);
     }
-    public boolean confirmPaymentAndDeductStock(int orderId, String newStatus) {
-        return dao.confirmPaymentAndDeductStock(orderId, newStatus);
+    public boolean confirmPaymentAndDeductStock(int orderId, String newStatus, String ghnCode) {
+        return dao.confirmPaymentAndDeductStock(orderId, newStatus, ghnCode);
     }
 
     public String createGhnOrderAfterPaid(Order order, OrderAddress address) {

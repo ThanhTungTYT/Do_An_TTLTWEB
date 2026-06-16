@@ -59,21 +59,24 @@ public class OrderDao extends BaseDao {
                             .bind("price", i.getPrice())
                             .bind("quantity", i.getQuantity())
                             .add();
-                    int updateProduct = h.createUpdate(
-                                    "UPDATE products " +
-                                            "SET stock = stock - :qty, sold = sold + :qty " +
-                                            "WHERE id = :pid AND stock >= :qty AND state = 'active'")
-                            .bind("qty", i.getQuantity())
-                            .bind("pid", i.getProduct().getId())
-                            .execute();
 
-                    if (updateProduct == 0) {
-                        throw new OutOfStockException(i.getProduct().getName());
+                    if (!isPendingPayment) {
+                        int updateProduct = h.createUpdate(
+                                        "UPDATE products " +
+                                                "SET stock = stock - :qty, sold = sold + :qty " +
+                                                "WHERE id = :pid AND stock >= :qty AND state = 'active'")
+                                .bind("qty", i.getQuantity())
+                                .bind("pid", i.getProduct().getId())
+                                .execute();
+
+                        if (updateProduct == 0) {
+                            throw new OutOfStockException(i.getProduct().getName());
+                        }
+
+                        h.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :pid AND stock <= 0")
+                                .bind("pid", i.getProduct().getId())
+                                .execute();
                     }
-
-                    h.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :pid AND stock <= 0")
-                            .bind("pid", i.getProduct().getId())
-                            .execute();
                 }
                 batch.execute();
 
@@ -190,6 +193,14 @@ public class OrderDao extends BaseDao {
     public boolean cancelOrder(Order order, int userId) {
         return getJdbi().inTransaction(handle -> {
 
+            String oldStatus = handle.createQuery(
+                            "SELECT status FROM orders WHERE id = :id AND user_id = :userId")
+                    .bind("id", order.getId())
+                    .bind("userId", userId)
+                    .mapTo(String.class)
+                    .findOne()
+                    .orElse(null);
+
             int updateOrder = handle.createUpdate(
                             "UPDATE orders SET status = :status WHERE id = :id AND user_id = :userId"
                     )
@@ -202,25 +213,31 @@ public class OrderDao extends BaseDao {
                 throw new RuntimeException("Không tìm thấy đơn hàng");
             }
 
-            List<OrderItem> items = handle.createQuery(
-                            "SELECT product_id, quantity FROM order_items WHERE order_id = :oid"
-                    )
-                    .bind("oid", order.getId())
-                    .mapToBean(OrderItem.class)
-                    .list();
+            boolean wasDeducted = oldStatus != null
+                    && !"Chờ thanh toán".equals(oldStatus)
+                    && !"Đã hủy".equals(oldStatus);
 
-            for (OrderItem item : items) {
-                handle.createUpdate("UPDATE products " +
-                                "SET stock = stock + :qty, sold = GREATEST(0, sold - :qty) " +
-                                "WHERE id = :pid"
+            if (wasDeducted) {
+                List<OrderItem> items = handle.createQuery(
+                                "SELECT product_id, quantity FROM order_items WHERE order_id = :oid"
                         )
-                        .bind("qty", item.getQuantity())
-                        .bind("pid", item.getProductId())
-                        .execute();
+                        .bind("oid", order.getId())
+                        .mapToBean(OrderItem.class)
+                        .list();
 
-                handle.createUpdate("UPDATE products SET state = 'active' WHERE id = :pid AND stock > 0")
-                        .bind("pid", item.getProductId())
-                        .execute();
+                for (OrderItem item : items) {
+                    handle.createUpdate("UPDATE products " +
+                                    "SET stock = stock + :qty, sold = GREATEST(0, sold - :qty) " +
+                                    "WHERE id = :pid"
+                            )
+                            .bind("qty", item.getQuantity())
+                            .bind("pid", item.getProductId())
+                            .execute();
+
+                    handle.createUpdate("UPDATE products SET state = 'active' WHERE id = :pid AND stock > 0")
+                            .bind("pid", item.getProductId())
+                            .execute();
+                }
             }
 
             Integer promoId = handle.createQuery("SELECT promo_id FROM orders WHERE id = :oid")
@@ -290,7 +307,6 @@ public class OrderDao extends BaseDao {
     public List<Map<String, Object>> getTopProducts(Timestamp start, Timestamp end, boolean allTime, int limit) {
         String sql;
         if (allTime) {
-            // "Tất cả": xếp theo tổng đã bán tích lũy (products.sold), kèm ngày bán (đã giao) gần nhất
             sql = "SELECT p.id AS productId, p.name AS productName, p.sold AS totalSold, " +
                     "(SELECT MAX(o.created_at) FROM order_items oi JOIN orders o ON oi.order_id = o.id " +
                     " WHERE oi.product_id = p.id AND o.status NOT IN ('Đã hủy', 'Chờ thanh toán')) AS lastSold " +
@@ -298,7 +314,6 @@ public class OrderDao extends BaseDao {
                     "WHERE p.sold > 0 " +
                     "ORDER BY p.sold DESC";
         } else {
-            // Theo bộ lọc thời gian: xếp theo số lượng bán trong kỳ
             sql = "SELECT p.id AS productId, p.name AS productName, " +
                     "SUM(oi.quantity) AS totalSold, MAX(o.created_at) AS lastSold " +
                     "FROM order_items oi " +
@@ -308,7 +323,6 @@ public class OrderDao extends BaseDao {
                     "GROUP BY p.id, p.name " +
                     "ORDER BY totalSold DESC";
         }
-        // limit <= 0 => lấy toàn bộ (không giới hạn)
         final String finalSql = (limit > 0) ? sql + " LIMIT :limit" : sql;
         final boolean usePeriod = !allTime;
         return getJdbi().withHandle(handle -> {
@@ -340,14 +354,12 @@ public class OrderDao extends BaseDao {
     public List<Map<String, Object>> getWorstProducts(Timestamp start, Timestamp end, boolean allTime, int limit) {
         String sql;
         if (allTime) {
-            // "Tất cả": xếp theo tổng đã bán tích lũy (products.sold) tăng dần
             sql = "SELECT p.id AS productId, p.name AS productName, p.created_at AS createdAt, " +
                     "p.stock AS stock, p.sold AS totalSold " +
                     "FROM products p " +
                     "WHERE p.state = 'active' " +
                     "ORDER BY p.sold ASC, p.created_at ASC";
         } else {
-            // Theo bộ lọc thời gian: xếp theo số lượng bán trong kỳ tăng dần
             sql = "SELECT p.id AS productId, p.name AS productName, p.created_at AS createdAt, " +
                     "p.stock AS stock, COALESCE(SUM(oi.quantity), 0) AS totalSold " +
                     "FROM products p " +
@@ -357,7 +369,6 @@ public class OrderDao extends BaseDao {
                     "GROUP BY p.id, p.name, p.created_at, p.stock " +
                     "ORDER BY totalSold ASC, p.created_at ASC";
         }
-        // limit <= 0 => lấy toàn bộ (không giới hạn)
         final String finalSql = (limit > 0) ? sql + " LIMIT :limit" : sql;
         final boolean usePeriod = !allTime;
         return getJdbi().withHandle(handle -> {
@@ -501,44 +512,14 @@ public class OrderDao extends BaseDao {
     }
 
     public boolean updateOrderStatusAndGhn(int orderId, String status, String ghnCode) {
-        return getJdbi().inTransaction(h -> {
-            int updated = h.createUpdate(
-                            "UPDATE orders SET status = :status, ghn_order_code = :ghnCode " +
-                                    "WHERE id = :id AND status IN ('Đang xử lý', 'Yêu cầu hủy', 'Chờ thanh toán')")
-                    .bind("status", status)
-                    .bind("ghnCode", ghnCode)
-                    .bind("id", orderId)
-                    .execute();
-
-            if (updated == 0) {
-                return false;
-            }
-
-            List<OrderItem> items = h.createQuery(
-                            "SELECT product_id, quantity FROM order_items WHERE order_id = :oid")
-                    .bind("oid", orderId)
-                    .mapToBean(OrderItem.class)
-                    .list();
-
-            for (OrderItem item : items) {
-                int rows = h.createUpdate(
-                                "UPDATE products SET stock = stock - :qty, sold = sold + :qty " +
-                                        "WHERE id = :pid AND stock >= :qty AND state = 'active'")
-                        .bind("qty", item.getQuantity())
-                        .bind("pid", item.getProductId())
-                        .execute();
-
-                if (rows == 0) {
-                    throw new RuntimeException("San pham id=" + item.getProductId() + " khong du hang khi xac nhan thanh toan.");
-                }
-
-                h.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :pid AND stock <= 0")
-                        .bind("pid", item.getProductId())
-                        .execute();
-            }
-
-            return true;
-        });
+        return getJdbi().withHandle(h ->
+                h.createUpdate(
+                                "UPDATE orders SET status = :status, ghn_order_code = :ghnCode WHERE id = :id")
+                        .bind("status", status)
+                        .bind("ghnCode", ghnCode)
+                        .bind("id", orderId)
+                        .execute() > 0
+        );
     }
     public boolean updateOrderStatusById(int orderId, String status) {
         return getJdbi().withHandle(handle ->
@@ -554,12 +535,13 @@ public class OrderDao extends BaseDao {
     }
 
 
-    public boolean confirmPaymentAndDeductStock(int orderId, String newStatus) {
+    public boolean confirmPaymentAndDeductStock(int orderId, String newStatus, String ghnCode) {
         return getJdbi().inTransaction(h -> {
             int updated = h.createUpdate(
-                            "UPDATE orders SET status = :status " +
+                            "UPDATE orders SET status = :status, ghn_order_code = :ghnCode " +
                                     "WHERE id = :orderId AND status = 'Chờ thanh toán'")
                     .bind("status", newStatus)
+                    .bind("ghnCode", ghnCode)
                     .bind("orderId", orderId)
                     .execute();
 
@@ -613,6 +595,12 @@ public class OrderDao extends BaseDao {
                 System.err.println("Lỗi khi gọi API hủy đơn của GHN: " + e.getMessage());
             }
 
+            String oldStatus = handle.createQuery("SELECT status FROM orders WHERE id = :id")
+                    .bind("id", orderId)
+                    .mapTo(String.class)
+                    .findOne()
+                    .orElse(null);
+
             int updateOrder = handle.createUpdate(
                             "UPDATE orders SET status = 'Đã hủy' WHERE id = :id"
                     )
@@ -623,25 +611,31 @@ public class OrderDao extends BaseDao {
                 throw new RuntimeException("Không tìm thấy đơn hàng hoặc đơn hàng đã bị thay đổi.");
             }
 
-            List<OrderItem> items = handle.createQuery(
-                            "SELECT product_id, quantity FROM order_items WHERE order_id = :oid"
-                    )
-                    .bind("oid", orderId)
-                    .mapToBean(OrderItem.class)
-                    .list();
+            boolean wasDeducted = oldStatus != null
+                    && !"Chờ thanh toán".equals(oldStatus)
+                    && !"Đã hủy".equals(oldStatus);
 
-            for (OrderItem item : items) {
-                handle.createUpdate("UPDATE products " +
-                                "SET stock = stock + :qty, sold = sold - :qty " +
-                                "WHERE id = :pid"
+            if (wasDeducted) {
+                List<OrderItem> items = handle.createQuery(
+                                "SELECT product_id, quantity FROM order_items WHERE order_id = :oid"
                         )
-                        .bind("qty", item.getQuantity())
-                        .bind("pid", item.getProductId())
-                        .execute();
+                        .bind("oid", orderId)
+                        .mapToBean(OrderItem.class)
+                        .list();
 
-                handle.createUpdate("UPDATE products SET state = 'active' WHERE id = :pid AND stock > 0")
-                        .bind("pid", item.getProductId())
-                        .execute();
+                for (OrderItem item : items) {
+                    handle.createUpdate("UPDATE products " +
+                                    "SET stock = stock + :qty, sold = sold - :qty " +
+                                    "WHERE id = :pid"
+                            )
+                            .bind("qty", item.getQuantity())
+                            .bind("pid", item.getProductId())
+                            .execute();
+
+                    handle.createUpdate("UPDATE products SET state = 'active' WHERE id = :pid AND stock > 0")
+                            .bind("pid", item.getProductId())
+                            .execute();
+                }
             }
 
             Integer promoId = handle.createQuery("SELECT promo_id FROM orders WHERE id = :oid")
