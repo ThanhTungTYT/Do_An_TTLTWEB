@@ -125,7 +125,7 @@ public class GHNService {
     public String createOrder(Order order, OrderAddress address,
                               List<OrderItem> items) throws IOException {
         int totalWeight = items.stream()
-                .mapToInt(i -> 500 * i.getQuantity())
+                .mapToInt(i -> i.getProduct().getWeight_grams() * i.getQuantity())
                 .sum();
 
         int fromDistrictId = 3695;
