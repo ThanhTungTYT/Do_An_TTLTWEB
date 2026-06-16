@@ -41,7 +41,7 @@
                     </td>
 
                     <td style="padding:12px; color:#666;">
-                        <fmt:formatDate value="${log.created_at}" pattern="dd/MM/yyyy HH:mm"/>
+                        <fmt:formatDate value="${log.created_at}" pattern="dd/MM/yyyy HH:mm" timeZone="Asia/Ho_Chi_Minh"/>
                     </td>
                 </tr>
             </c:forEach>
