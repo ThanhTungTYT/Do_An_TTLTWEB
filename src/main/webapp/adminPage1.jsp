@@ -221,11 +221,16 @@
                         <td>${o.receiverName}</td>
                         <td>${o.createdAt}</td>
                         <td>
-                        <span class="status
-                            ${o.status == 'Đang xử lý' ? 'pending' :
-                              o.status == 'Đã giao' ? 'completed' : 'cancelled'}">
-                                ${o.status}
-                        </span>
+                        <span class="status ${o.status}">
+                                <c:choose>
+                                    <c:when test="${o.status == 'Đang xử lý'}">Đang xử lý</c:when>
+                                    <c:when test="${o.status == 'Chờ thanh toán'}">Chờ thanh toán</c:when>
+                                    <c:when test="${o.status == 'Đang giao'}">Đang giao</c:when>
+                                    <c:when test="${o.status == 'Yêu cầu hủy'}">Yêu cầu hủy</c:when>
+                                    <c:when test="${o.status == 'Đã giao'}">Đã giao</c:when>
+                                    <c:when test="${o.status == 'Đã hủy'}">Đã huỷ</c:when>
+                                </c:choose>
+                            </span>
                         </td>
                         <td><fmt:formatNumber value="${o.finalAmount} " type="number" groupingUsed="true"/> VND</td>
                     </tr>

@@ -59,7 +59,6 @@ public class OrderDao extends BaseDao {
                             .bind("price", i.getPrice())
                             .bind("quantity", i.getQuantity())
                             .add();
-                    if (!isPendingPayment) {
                     int updateProduct = h.createUpdate(
                                     "UPDATE products " +
                                             "SET stock = stock - :qty, sold = sold + :qty " +
@@ -75,7 +74,6 @@ public class OrderDao extends BaseDao {
                     h.createUpdate("UPDATE products SET state = 'inactive' WHERE id = :pid AND stock <= 0")
                             .bind("pid", i.getProduct().getId())
                             .execute();
-                    }
                 }
                 batch.execute();
 
