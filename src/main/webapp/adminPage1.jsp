@@ -10,7 +10,7 @@
     <title>Trang Quản Trị Aroma Café</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage1.css?v=3">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminPage1.css?v=4">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
 </head>
 <body>
@@ -133,14 +133,17 @@
 
         <div class="table-card margin-zero">
             <h3 class="title-top-products">
-                <i class="fa-solid fa-fire icon-margin"></i>Top 10 sản phẩm bán chạy
+                <i class="fa-solid fa-fire icon-margin"></i>Top sản phẩm bán chạy
+                <span class="title-note">(xếp theo bộ lọc thời gian)</span>
             </h3>
+            <div class="stats-scroll">
             <table>
                 <thead>
                 <tr>
                     <th class="col-id">Mã SP</th>
                     <th class="col-name">Tên sản phẩm</th>
                     <th class="col-qty">Số lượng bán</th>
+                    <th class="col-date">Thời gian bán gần nhất</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -153,27 +156,37 @@
                                 ${row.totalSold}
                         </span>
                         </td>
+                        <td class="text-center text-muted font-small">
+                            <c:choose>
+                                <c:when test="${row.daysSinceLastSold == null}">—</c:when>
+                                <c:when test="${row.daysSinceLastSold == 0}">Hôm nay</c:when>
+                                <c:otherwise>${row.daysSinceLastSold} ngày trước</c:otherwise>
+                            </c:choose>
+                        </td>
                     </tr>
                 </c:forEach>
                 <c:if test="${empty topProducts}">
                     <tr>
-                        <td colspan="3" class="text-center">Không có dữ liệu</td>
+                        <td colspan="4" class="text-center">Không có dữ liệu</td>
                     </tr>
                 </c:if>
                 </tbody>
             </table>
+            </div>
         </div>
 
         <div class="table-card margin-zero">
             <h3 class="title-worst-products">
-                <i class="fa-solid fa-snowflake icon-margin"></i>Top 10 sản phẩm bán ế
+                <i class="fa-solid fa-snowflake icon-margin"></i>Top sản phẩm bán ế
             </h3>
+            <div class="stats-scroll">
             <table>
                 <thead>
                 <tr>
                     <th class="col-id">Mã SP</th>
                     <th class="col-name">Tên sản phẩm</th>
                     <th class="col-days">Thời gian tồn</th>
+                    <th class="col-stock">Tồn kho</th>
                     <th class="col-qty">Số lượng bán</th>
                 </tr>
                 </thead>
@@ -183,6 +196,7 @@
                         <td class="text-center">#${row.product.id}</td>
                         <td class="text-left font-bold">${row.product.name}</td>
                         <td class="text-center text-muted font-small">${row.daysInStock} ngày</td>
+                        <td class="text-center text-muted font-small">${row.product.stock}</td>
                         <td class="text-center">
                         <span class="status cancelled badge-qty">
                                 ${row.totalSold}
@@ -192,11 +206,12 @@
                 </c:forEach>
                 <c:if test="${empty worstProducts}">
                     <tr>
-                        <td colspan="4" class="text-center">Không có dữ liệu</td>
+                        <td colspan="5" class="text-center">Không có dữ liệu</td>
                     </tr>
                 </c:if>
                 </tbody>
             </table>
+            </div>
         </div>
 
     </div>

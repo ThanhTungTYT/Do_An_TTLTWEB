@@ -14,6 +14,9 @@ public class AdminPage1Service {
     private OrderDao orderDao = new OrderDao();
     private AccountDao accountDao = new AccountDao();
 
+    // 0 = lấy toàn bộ sản phẩm (không giới hạn); danh sách có thanh cuộn ở giao diện
+    private static final int PRODUCT_LIST_LIMIT = 0;
+
     public Timestamp getStartTime(String filter) {
         Calendar cal = Calendar.getInstance();
 
@@ -54,11 +57,11 @@ public class AdminPage1Service {
     }
 
     public List<Map<String, Object>> getTopProducts(String filter) {
-        return orderDao.getTopProducts(getStartTime(filter), getEndTime());
+        return orderDao.getTopProducts(getStartTime(filter), getEndTime(), "all".equals(filter), PRODUCT_LIST_LIMIT);
     }
 
     public List<Map<String, Object>> getWorstProducts(String filter) {
-        return orderDao.getWorstProducts(getStartTime(filter), getEndTime());
+        return orderDao.getWorstProducts(getStartTime(filter), getEndTime(), "all".equals(filter), PRODUCT_LIST_LIMIT);
     }
 
     public List<Order> getOrders(String filter) {
@@ -82,11 +85,11 @@ public class AdminPage1Service {
     }
 
     public List<Map<String, Object>> getTopProducts(Timestamp start, Timestamp end) {
-        return orderDao.getTopProducts(start, end);
+        return orderDao.getTopProducts(start, end, false, PRODUCT_LIST_LIMIT);
     }
 
     public List<Map<String, Object>> getWorstProducts(Timestamp start, Timestamp end) {
-        return orderDao.getWorstProducts(start, end);
+        return orderDao.getWorstProducts(start, end, false, PRODUCT_LIST_LIMIT);
     }
 
     public List<Order> getOrders(Timestamp start, Timestamp end) {

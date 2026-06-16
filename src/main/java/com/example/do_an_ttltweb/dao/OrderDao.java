@@ -285,77 +285,101 @@ public class OrderDao extends BaseDao {
         );
     }
 
-    public List<Map<String, Object>> getTopProducts(Timestamp start, Timestamp end) {
-        return getJdbi().withHandle(handle ->
-                handle.createQuery(
-                                "SELECT " +
-                                        "p.id AS productId, " +
-                                        "p.name AS productName, " +
-                                        "SUM(oi.quantity) AS totalSold " +
-                                        "FROM order_items oi " +
-                                        "JOIN orders o ON oi.order_id = o.id " +
-                                        "JOIN products p ON oi.product_id = p.id " +
-                                        "WHERE o.status = 'Đã giao' " +
-                                        "AND o.created_at BETWEEN :start AND :end " +
-                                        "GROUP BY p.id, p.name " +
-                                        "ORDER BY totalSold DESC " +
-                                        "LIMIT 10"
-                        )
-                        .bind("start", start)
-                        .bind("end", end)
-                        .map((rs, ctx) -> {
+    public List<Map<String, Object>> getTopProducts(Timestamp start, Timestamp end, boolean allTime, int limit) {
+        String sql;
+        if (allTime) {
+            // "Tất cả": xếp theo tổng đã bán tích lũy (products.sold), kèm ngày bán (đã giao) gần nhất
+            sql = "SELECT p.id AS productId, p.name AS productName, p.sold AS totalSold, " +
+                    "(SELECT MAX(o.created_at) FROM order_items oi JOIN orders o ON oi.order_id = o.id " +
+                    " WHERE oi.product_id = p.id AND o.status NOT IN ('Đã hủy', 'Chờ thanh toán')) AS lastSold " +
+                    "FROM products p " +
+                    "WHERE p.sold > 0 " +
+                    "ORDER BY p.sold DESC";
+        } else {
+            // Theo bộ lọc thời gian: xếp theo số lượng bán trong kỳ
+            sql = "SELECT p.id AS productId, p.name AS productName, " +
+                    "SUM(oi.quantity) AS totalSold, MAX(o.created_at) AS lastSold " +
+                    "FROM order_items oi " +
+                    "JOIN orders o ON oi.order_id = o.id " +
+                    "JOIN products p ON oi.product_id = p.id " +
+                    "WHERE o.status = 'Đã giao' AND o.created_at BETWEEN :start AND :end " +
+                    "GROUP BY p.id, p.name " +
+                    "ORDER BY totalSold DESC";
+        }
+        // limit <= 0 => lấy toàn bộ (không giới hạn)
+        final String finalSql = (limit > 0) ? sql + " LIMIT :limit" : sql;
+        final boolean usePeriod = !allTime;
+        return getJdbi().withHandle(handle -> {
+            var query = handle.createQuery(finalSql);
+            if (limit > 0) query.bind("limit", limit);
+            if (usePeriod) query.bind("start", start).bind("end", end);
+            return query.map((rs, ctx) -> {
+                Product product = new Product();
+                product.setId(rs.getInt("productId"));
+                product.setName(rs.getString("productName"));
 
-                            Product product = new Product();
-                            product.setId(rs.getInt("productId"));
-                            product.setName(rs.getString("productName"));
+                Timestamp lastSold = rs.getTimestamp("lastSold");
+                Integer daysSinceLastSold = null;
+                if (lastSold != null) {
+                    long diffInMillies = Math.abs(end.getTime() - lastSold.getTime());
+                    daysSinceLastSold = (int) java.util.concurrent.TimeUnit.DAYS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);
+                }
 
-                            Map<String, Object> row = new HashMap<>();
-                            row.put("product", product);
-                            row.put("totalSold", rs.getInt("totalSold"));
+                Map<String, Object> row = new HashMap<>();
+                row.put("product", product);
+                row.put("totalSold", rs.getInt("totalSold"));
+                row.put("daysSinceLastSold", daysSinceLastSold);
 
-                            return row;
-                        })
-                        .list()
-        );
+                return row;
+            }).list();
+        });
     }
 
-    public List<Map<String, Object>> getWorstProducts(Timestamp start, Timestamp end) {
-        return getJdbi().withHandle(handle ->
-                handle.createQuery(
-                                "SELECT " +
-                                        "  p.id AS productId, " +
-                                        "  p.name AS productName, " +
-                                        "  p.created_at AS createdAt, " +
-                                        "  COALESCE(SUM(oi.quantity), 0) AS totalSold " +
-                                        "FROM products p " +
-                                        "LEFT JOIN order_items oi ON p.id = oi.product_id " +
-                                        "LEFT JOIN orders o ON oi.order_id = o.id " +
-                                        "  AND o.status = 'Đã giao' " +
-                                        "  AND o.created_at BETWEEN :start AND :end " +
-                                        "WHERE p.state = 'active' " +
-                                        "GROUP BY p.id, p.name, p.created_at " +
-                                        "ORDER BY totalSold ASC, p.created_at ASC " +
-                                        "LIMIT 10"
-                        )
-                        .bind("start", start)
-                        .bind("end", end)
-                        .map((rs, ctx) -> {
-                            Product product = new Product();
-                            product.setId(rs.getInt("productId"));
-                            product.setName(rs.getString("productName"));
-                            Timestamp createdAt = rs.getTimestamp("createdAt");
-                            long diffInMillies = Math.abs(end.getTime() - createdAt.getTime());
-                            long daysInStock = java.util.concurrent.TimeUnit.DAYS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);
+    public List<Map<String, Object>> getWorstProducts(Timestamp start, Timestamp end, boolean allTime, int limit) {
+        String sql;
+        if (allTime) {
+            // "Tất cả": xếp theo tổng đã bán tích lũy (products.sold) tăng dần
+            sql = "SELECT p.id AS productId, p.name AS productName, p.created_at AS createdAt, " +
+                    "p.stock AS stock, p.sold AS totalSold " +
+                    "FROM products p " +
+                    "WHERE p.state = 'active' " +
+                    "ORDER BY p.sold ASC, p.created_at ASC";
+        } else {
+            // Theo bộ lọc thời gian: xếp theo số lượng bán trong kỳ tăng dần
+            sql = "SELECT p.id AS productId, p.name AS productName, p.created_at AS createdAt, " +
+                    "p.stock AS stock, COALESCE(SUM(oi.quantity), 0) AS totalSold " +
+                    "FROM products p " +
+                    "LEFT JOIN order_items oi ON p.id = oi.product_id " +
+                    "LEFT JOIN orders o ON oi.order_id = o.id AND o.status = 'Đã giao' AND o.created_at BETWEEN :start AND :end " +
+                    "WHERE p.state = 'active' " +
+                    "GROUP BY p.id, p.name, p.created_at, p.stock " +
+                    "ORDER BY totalSold ASC, p.created_at ASC";
+        }
+        // limit <= 0 => lấy toàn bộ (không giới hạn)
+        final String finalSql = (limit > 0) ? sql + " LIMIT :limit" : sql;
+        final boolean usePeriod = !allTime;
+        return getJdbi().withHandle(handle -> {
+            var query = handle.createQuery(finalSql);
+            if (limit > 0) query.bind("limit", limit);
+            if (usePeriod) query.bind("start", start).bind("end", end);
+            return query.map((rs, ctx) -> {
+                Product product = new Product();
+                product.setId(rs.getInt("productId"));
+                product.setName(rs.getString("productName"));
+                product.setStock(rs.getInt("stock"));
 
-                            Map<String, Object> row = new HashMap<>();
-                            row.put("product", product);
-                            row.put("totalSold", rs.getInt("totalSold"));
-                            row.put("daysInStock", (int) daysInStock);
+                Timestamp createdAt = rs.getTimestamp("createdAt");
+                long diffInMillies = Math.abs(end.getTime() - createdAt.getTime());
+                long daysInStock = java.util.concurrent.TimeUnit.DAYS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);
 
-                            return row;
-                        })
-                        .list()
-        );
+                Map<String, Object> row = new HashMap<>();
+                row.put("product", product);
+                row.put("totalSold", rs.getInt("totalSold"));
+                row.put("daysInStock", (int) daysInStock);
+
+                return row;
+            }).list();
+        });
     }
 
     public List<Order> getOrdersByDate(Timestamp start, Timestamp end) {
