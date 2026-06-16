@@ -58,7 +58,7 @@ public class PromotionDao extends BaseDao {
 
     public List<Promotion> searchPromotions(String keyword) {
         return getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT id, code, description, " +
+                handle.createQuery("SELECT id, code, description, state, " +
                                 "discount_percent AS discountPercent, " +
                                 "min_order_value AS minOrderValue, " +
                                 "start_date AS startDate, " +

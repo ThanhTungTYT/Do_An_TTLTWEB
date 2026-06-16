@@ -205,11 +205,35 @@
         margin-bottom: 20px;
         color: #495057;
     }
-
-    .status.pending {
-        background-color: #fff0c2;
-        color: #f39c12;
+    .status.Đang.xử.lý {
+        background: #cfe2ff;
+        color: #084298;
     }
+    .status.Chờ.thanh.toán {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    .status.Đã.giao {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status.Đã.hủy {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .status.Đang.giao {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .status.Yêu.cầu.hủy {
+        background-color: #ffe8cc;
+        color: #d9480f;
+        border: 1px solid #ffd8a8;
+    }
+
 
     .status.completed {
         background-color: #c8f7dc;

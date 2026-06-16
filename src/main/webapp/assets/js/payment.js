@@ -623,6 +623,5 @@ document.addEventListener("DOMContentLoaded", function () {
             onPaymentMethodChange();
         }
         disableFormInputs();
-        openBankModal(window.__pendingOrderId, window.__pendingFinalAmount);
     }
 });
