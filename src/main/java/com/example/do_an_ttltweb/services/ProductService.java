@@ -5,6 +5,7 @@ import com.example.do_an_ttltweb.dao.ProductDao;
 import com.example.do_an_ttltweb.helper.upload.FileUploadHelper;
 import com.example.do_an_ttltweb.model.Product;
 import com.example.do_an_ttltweb.model.ProductImage;
+import com.example.do_an_ttltweb.model.InventoryLog;
 import jakarta.servlet.http.Part;
 
 import java.util.List;
@@ -171,5 +172,17 @@ public class ProductService {
         int totalProducts = productDao.countSearchProductsByPrice(keyword, cid, minPrice, maxPrice);
         if (totalProducts == 0) return 1;
         return (int) Math.ceil((double) totalProducts / pageSize);
+    }
+
+    public void insertInventoryLog(int productId, int quantity, String actionType) {
+        productDao.insertInventoryLog(productId, quantity, actionType);
+    }
+
+    public List<InventoryLog> getAllInventoryLogs() {
+        return productDao.getAllInventoryLogs();
+    }
+
+    public int getLatestProductId() {
+        return productDao.getLatestProductId();
     }
 }

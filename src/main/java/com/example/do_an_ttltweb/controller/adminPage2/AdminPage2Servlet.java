@@ -3,6 +3,7 @@ package com.example.do_an_ttltweb.controller.adminPage2;
 import com.example.do_an_ttltweb.model.Category;
 import com.example.do_an_ttltweb.model.Product;
 import com.example.do_an_ttltweb.model.ProductImage;
+import com.example.do_an_ttltweb.model.InventoryLog;
 import com.example.do_an_ttltweb.services.CategoryService;
 import com.example.do_an_ttltweb.services.ImageService;
 import com.example.do_an_ttltweb.services.ProductService;
@@ -32,6 +33,15 @@ public class AdminPage2Servlet  extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String actionParam = request.getParameter("action");
+        if ("get_inventory_log".equals(actionParam)) {
+            List<com.example.do_an_ttltweb.model.InventoryLog> logs = productService.getAllInventoryLogs();
+            request.setAttribute("inventoryLogs", logs);
+            request.getRequestDispatcher("/inventory_log_table.jsp").forward(request, response);
+            return;
+        }
+
         String filter = request.getParameter("filter");
         String pageStr = request.getParameter("page");
 
@@ -166,6 +176,11 @@ public class AdminPage2Servlet  extends HttpServlet {
         boolean isSuccess = productService.addProductWithFiles(newProduct, imageParts, webappRealPath);
 
         if (isSuccess) {
+            int latestId = productService.getLatestProductId();
+            if (latestId > 0) {
+                productService.insertInventoryLog(latestId, stock, "IMPORT");
+            }
+
             request.getSession().setAttribute("success", "Thêm sản phẩm thành công!");
             response.sendRedirect(request.getContextPath() + "/admin/products");
         } else {
@@ -268,9 +283,23 @@ public class AdminPage2Servlet  extends HttpServlet {
                 return;
             }
 
+            int oldStock = 0;
+            Product oldProduct = productService.getProduct(id);
+            if (oldProduct != null) {
+                oldStock = oldProduct.getStock();
+            }
+
             boolean isSuccess = productService.updateProduct(p);
 
             if (isSuccess) {
+                int diffStock = stock - oldStock;
+
+                if (diffStock > 0) {
+                    productService.insertInventoryLog(id, diffStock, "IMPORT");
+                } else if (diffStock < 0) {
+                    productService.insertInventoryLog(id, Math.abs(diffStock), "EXPORT");
+                }
+
                 Map<Integer, Part> imageParts = readImageParts(request);
                 if (!imageParts.isEmpty()) {
                     String webappRealPath = getServletContext().getRealPath("");

@@ -2,6 +2,7 @@ package com.example.do_an_ttltweb.dao;
 
 import com.example.do_an_ttltweb.model.Product;
 import com.example.do_an_ttltweb.helper.base.BaseDao;
+import com.example.do_an_ttltweb.model.InventoryLog;
 
 import java.util.List;
 
@@ -393,5 +394,35 @@ public class ProductDao extends BaseDao {
             if (cid > 0) q.bind("cid", cid);
             return q.mapTo(Integer.class).one();
         });
+    }
+    public void insertInventoryLog(int productId, int quantity, String actionType) {
+        getJdbi().useHandle(handle ->
+                handle.createUpdate("INSERT INTO inventory_logs (product_id, quantity, action_type) " +
+                                "VALUES (:productId, :quantity, :actionType)")
+                        .bind("productId", productId)
+                        .bind("quantity", quantity)
+                        .bind("actionType", actionType)
+                        .execute()
+        );
+    }
+
+    public List<InventoryLog> getAllInventoryLogs() {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT l.id, l.product_id, p.name AS product_name, l.quantity, l.action_type, l.created_at " +
+                                "FROM inventory_logs l " +
+                                "JOIN products p ON l.product_id = p.id " +
+                                "ORDER BY l.created_at DESC")
+                        .mapToBean(InventoryLog.class)
+                        .list()
+        );
+    }
+
+    public int getLatestProductId() {
+        return getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT MAX(id) FROM products")
+                        .mapTo(Integer.class)
+                        .findOne()
+                        .orElse(0)
+        );
     }
 }
