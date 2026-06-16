@@ -199,7 +199,7 @@
 
             <div class="type-p">
                 <label>Trạng thái</label>
-                <select name="state" id="input-state" required>
+                <select name="state" id="input-state" required style="height: auto !important; line-height: normal;">
                     <option value="" disabled selected>-- Chọn trạng thái --</option>
                     <option value="active">Active (Hoạt động)</option>
                     <option value="inactive">Inactive (Ngừng)</option>

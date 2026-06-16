@@ -275,7 +275,7 @@
             <p style="font-weight: bold; margin-bottom: 10px; color: #333; border-bottom: 2px solid #c76739; padding-bottom: 6px;">
                 Role chính
             </p>
-            <select name="up_role" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95em; background: #f9f9f9; cursor: pointer;">
+            <select name="up_role" style="width: 100%; height: auto !important; padding: 8px 12px; line-height: normal; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95em; background: #f9f9f9; cursor: pointer;">
                 <option value="admin">Admin</option>
                 <option value="customer">Customer</option>
             </select>

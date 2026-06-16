@@ -143,6 +143,7 @@ public class OrderDao extends BaseDao {
                                 "SELECT " +
                                         " oi.id, oi.order_id, oi.product_id, oi.quantity, oi.price, " +
                                         " p.name AS product_name, " +
+                                        " p.weight_grams, " +
                                         " ( " +
                                         "   SELECT pi.image_url " +
                                         "   FROM product_images pi " +
@@ -159,6 +160,7 @@ public class OrderDao extends BaseDao {
                             product.setId(rs.getInt("product_id"));
                             product.setName(rs.getString("product_name"));
                             product.setImage_url(rs.getString("image_url"));
+                            product.setWeight_grams(rs.getInt("weight_grams"));
 
                             OrderItem item = new OrderItem();
                             item.setId(rs.getInt("id"));
