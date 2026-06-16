@@ -90,12 +90,12 @@ public class SepayWebhookServlet extends HttpServlet {
             }
 
             String ghnOrderCode = null;
-            String nextStatus = "Đang giao";
+            String nextStatus = "Đang xử lý";
             try {
                 OrderAddress address = orderService.getAddressByOrderId(orderId);
                 ghnOrderCode = orderService.createGhnOrderAfterPaid(order, address);
                 if (ghnOrderCode != null && !ghnOrderCode.isBlank()) {
-                    nextStatus = "Đang xử lý";
+                    nextStatus = "Đang giao";
                 }
             } catch (Exception e) {
                 System.out.println("Lỗi khi tự động đẩy đơn sang GHN: " + e.getMessage());
